@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.Date;
 @Entity
-@Table
+@Table(name = "previous_works_histories")
 @Data
 public class PreviousWorkHistory {
     @Id

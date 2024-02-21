@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "leave_to_leaves")
 @Data
 
 public class LeaveToLeave {
@@ -20,5 +20,5 @@ public class LeaveToLeave {
 
 
     @OneToMany(mappedBy = "leaveToLeave")
-    private List<FullDayLeaves> fullDayLeavesList;
+    private List<FullDayLeave> fullDayLeavesList;
 }

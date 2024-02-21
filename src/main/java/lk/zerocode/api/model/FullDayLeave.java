@@ -5,21 +5,22 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 @Entity
-@Table
+@Table(name = "full_day_leaves")
 @Data
 
-public class OtherLeaves {
+public class FullDayLeave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String department;
     private String leaveType;
-    private String dayType;
     private String reason;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Integer noOfDays;
     private LocalDate financialYear;
     private LocalDate applyDate;
     private String approvedPersonName;
@@ -29,10 +30,14 @@ public class OtherLeaves {
     @ManyToOne
     private Employee employee;
 
+
     @ManyToOne
-    private MonthlyBasedLeaves monthlyBasedLeaves;
+    private MaternityLeave maternityLeave;
 
+    @ManyToOne
+    private LeaveToLeave leaveToLeave;
 
-
+    @ManyToOne
+    private YearlyBasedLeave yearBasedLeave;
 
 }

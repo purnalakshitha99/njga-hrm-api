@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "maternity_leaves")
 @Data
 
 public class MaternityLeave {
@@ -20,5 +20,5 @@ public class MaternityLeave {
 
 
     @OneToMany(mappedBy = "maternityLeave")
-    private List<FullDayLeaves> fullDayLeavesList;
+    private List<FullDayLeave> fullDayLeavesList;
 }

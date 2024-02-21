@@ -4,12 +4,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Date;
+
 @Entity
-@Table
+@Table(name = "department_details")
 @Data
 
-public class DependentDetails {
+public class DependentDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

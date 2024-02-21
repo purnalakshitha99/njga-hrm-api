@@ -5,11 +5,10 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "employees")
 @Data
 public class Employee {
 
@@ -32,13 +31,13 @@ public class Employee {
     private List<PreviousWorkHistory> previousWorkHistories;
 
     @OneToOne(mappedBy = "employee")
-    private CurrentWorkDetails currentWorkDetails;
+    private CurrentWorkDetail currentWorkDetails;
 
     @OneToMany(mappedBy = "employee")
     private List<EducationQualification> educationQualificationList;
 
     @OneToMany(mappedBy = "employee")
-    private List<DependentDetails> dependentDetailsList;
+    private List<DependentDetail> dependentDetailsList;
 
     @OneToMany(mappedBy = "employee")
     private List<EmergencyContact> emergencyContactList;
@@ -56,10 +55,10 @@ public class Employee {
     private List<Notice> noticeList;
 
     @OneToMany(mappedBy = "employee")
-    private List<FullDayLeaves> fullDayLeavesList;
+    private List<FullDayLeave> fullDayLeavesList;
 
     @OneToMany(mappedBy = "employee")
-    private List<OtherLeaves> otherLeavesList;
+    private List<OtherLeave> otherLeavesList;
 
 
 

@@ -6,10 +6,10 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "yearly_based_leaves")
 @Data
 
-public class YearBasedLeave {
+public class YearlyBasedLeave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,5 +19,5 @@ public class YearBasedLeave {
 
 
     @OneToMany(mappedBy = "yearBasedLeave")
-    private List<FullDayLeaves> fullDayLeavesList;
+    private List<FullDayLeave> fullDayLeavesList;
 }
