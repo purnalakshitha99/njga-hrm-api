@@ -6,6 +6,8 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
+
 @Entity
 @Table
 @Data
@@ -25,5 +27,15 @@ public class Employee {
     private String contactNumber;
     private String workTelephone;
     private String imagePath;
+
+    @OneToMany(mappedBy = "employee")
+    private List<PreviousWorkHistory> previousWorkHistories;
+
+    @OneToOne(mappedBy = "employee")
+    private CurrentWorkDetails currentWorkDetails;
+
+
+
+
 
 }

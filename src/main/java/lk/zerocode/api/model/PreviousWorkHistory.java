@@ -17,4 +17,7 @@ public class PreviousWorkHistory {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    @ManyToOne
+    private Employee employee;
+
 }

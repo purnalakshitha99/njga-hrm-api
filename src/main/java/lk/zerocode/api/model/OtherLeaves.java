@@ -9,7 +9,7 @@ import java.time.LocalTime;
 @Table
 @Data
 
-public class TimeBasedLeaves {
+public class OtherLeaves {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
