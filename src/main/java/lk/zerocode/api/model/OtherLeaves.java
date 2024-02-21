@@ -5,11 +5,13 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+
 @Entity
 @Table
 @Data
 
-public class TimeBasedLeaves {
+public class OtherLeaves {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,5 +25,11 @@ public class TimeBasedLeaves {
     private String approvedPersonName;
     private LocalDate approvedDate;
     private LocalTime approvedTime;
+
+    @ManyToOne
+    private Employee employee;
+
+    @OneToMany(mappedBy = "otherLeaves")
+    private List<MonthlyBasedLeaves> monthlyBasedLeavesList;
 
 }

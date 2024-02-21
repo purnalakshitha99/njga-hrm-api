@@ -7,7 +7,7 @@ import lombok.Data;
 @Table
 @Data
 
-public class MonthlyLeaves {
+public class MonthlyBasedLeaves {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -15,5 +15,8 @@ public class MonthlyLeaves {
     private String category;
     private Integer noOfDays;
     private Integer noOfHours;
+
+    @ManyToOne
+    private OtherLeaves otherLeaves;
 
 }

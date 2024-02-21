@@ -14,4 +14,7 @@ public class MaternityLeave {
     private Long id;
     private LocalDate startDate;
     private LocalDate expireDate;
+
+    @ManyToOne
+    private FullDayLeaves fullDayLeaves;
 }

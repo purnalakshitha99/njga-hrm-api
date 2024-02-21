@@ -3,6 +3,8 @@ package lk.zerocode.api.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Table
 @Data
@@ -15,4 +17,8 @@ public class Notice {
     private String title;
     private String description;
     private String imgPath;
+
+    @JoinTable(name = "employee_notice",joinColumns = @JoinColumn(name = "noticeId"),inverseJoinColumns = @JoinColumn(name = "empId"))
+    @ManyToMany
+    private List<Employee> employeeList;
 }
