@@ -14,4 +14,7 @@ public class LeaveToLeave {
     private Long id;
     private LocalDate grantDate;
     private LocalDate expireDate;
+
+    @ManyToOne
+    private FullDayLeaves fullDayLeaves;
 }

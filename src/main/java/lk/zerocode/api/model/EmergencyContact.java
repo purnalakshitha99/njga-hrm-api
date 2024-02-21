@@ -15,4 +15,7 @@ public class EmergencyContact {
     private String relationship;
     private String contact;
 
+    @ManyToOne
+    private Employee employee;
+
 }

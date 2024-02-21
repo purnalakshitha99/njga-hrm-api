@@ -14,4 +14,7 @@ public class YearBasedLeave {
     private String type;
     private String category;
     private Integer noOfDays;
+
+    @ManyToOne
+    private FullDayLeaves fullDayLeaves;
 }

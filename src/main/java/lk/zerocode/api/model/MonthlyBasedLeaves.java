@@ -16,4 +16,7 @@ public class MonthlyBasedLeaves {
     private Integer noOfDays;
     private Integer noOfHours;
 
+    @ManyToOne
+    private OtherLeaves otherLeaves;
+
 }

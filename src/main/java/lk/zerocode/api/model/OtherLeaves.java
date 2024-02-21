@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+
 @Entity
 @Table
 @Data
@@ -23,5 +25,11 @@ public class OtherLeaves {
     private String approvedPersonName;
     private LocalDate approvedDate;
     private LocalTime approvedTime;
+
+    @ManyToOne
+    private Employee employee;
+
+    @OneToMany(mappedBy = "otherLeaves")
+    private List<MonthlyBasedLeaves> monthlyBasedLeavesList;
 
 }

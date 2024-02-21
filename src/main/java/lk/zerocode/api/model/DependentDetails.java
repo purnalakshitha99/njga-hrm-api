@@ -16,4 +16,7 @@ public class DependentDetails {
     private String dependentsName;
     private String relationship;
     private LocalDate dob;
+
+    @ManyToOne
+    private Employee employee;
 }
