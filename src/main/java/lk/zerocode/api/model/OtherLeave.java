@@ -5,13 +5,12 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 @Entity
-@Table
+@Table(name = "other_leaves")
 @Data
 
-public class OtherLeaves {
+public class OtherLeave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,7 +29,7 @@ public class OtherLeaves {
     private Employee employee;
 
     @ManyToOne
-    private MonthlyBasedLeaves monthlyBasedLeaves;
+    private MonthlyBasedLeave monthlyBasedLeaves;
 
 
 
