@@ -6,10 +6,10 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "yearly_based_leaves")
 @Data
 
-public class YearBasedLeave {
+public class YearlyBasedLeaves {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
