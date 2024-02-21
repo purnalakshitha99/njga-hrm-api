@@ -20,5 +20,5 @@ public class LeaveToLeave {
 
 
     @OneToMany(mappedBy = "leaveToLeave")
-    private List<FullDayLeaves> fullDayLeavesList;
+    private List<FullDayLeave> fullDayLeavesList;
 }

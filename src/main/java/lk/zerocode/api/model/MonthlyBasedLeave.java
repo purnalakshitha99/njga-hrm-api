@@ -6,10 +6,10 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "monthly_based_leaves")
 @Data
 
-public class MonthlyBasedLeaves {
+public class MonthlyBasedLeave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,6 +19,6 @@ public class MonthlyBasedLeaves {
     private Integer noOfHours;
 
     @OneToMany(mappedBy = "monthlyBasedLeaves")
-    private List<OtherLeaves> otherLeavesList;
+    private List<OtherLeave> otherLeavesList;
 
 }
