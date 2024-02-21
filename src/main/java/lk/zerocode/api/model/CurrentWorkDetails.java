@@ -19,6 +19,8 @@ public class CurrentWorkDetails {
     private String empCategory;
     private String empType;
     private String workTelephone;
+    @OneToOne
+    private Employee employee;
 
 
 }
