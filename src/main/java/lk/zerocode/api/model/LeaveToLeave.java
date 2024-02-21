@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
+
 @Entity
 @Table
 @Data
@@ -15,6 +17,8 @@ public class LeaveToLeave {
     private LocalDate grantDate;
     private LocalDate expireDate;
 
-    @ManyToOne
-    private FullDayLeaves fullDayLeaves;
+
+
+    @OneToMany(mappedBy = "leaveToLeave")
+    private List<FullDayLeaves> fullDayLeavesList;
 }

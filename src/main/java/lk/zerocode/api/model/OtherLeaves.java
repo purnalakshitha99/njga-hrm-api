@@ -29,7 +29,10 @@ public class OtherLeaves {
     @ManyToOne
     private Employee employee;
 
-    @OneToMany(mappedBy = "otherLeaves")
-    private List<MonthlyBasedLeaves> monthlyBasedLeavesList;
+    @ManyToOne
+    private MonthlyBasedLeaves monthlyBasedLeaves;
+
+
+
 
 }

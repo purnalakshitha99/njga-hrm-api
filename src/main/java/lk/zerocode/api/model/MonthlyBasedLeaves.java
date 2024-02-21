@@ -3,6 +3,8 @@ package lk.zerocode.api.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Table
 @Data
@@ -16,7 +18,7 @@ public class MonthlyBasedLeaves {
     private Integer noOfDays;
     private Integer noOfHours;
 
-    @ManyToOne
-    private OtherLeaves otherLeaves;
+    @OneToMany(mappedBy = "monthlyBasedLeaves")
+    private List<OtherLeaves> otherLeavesList;
 
 }
