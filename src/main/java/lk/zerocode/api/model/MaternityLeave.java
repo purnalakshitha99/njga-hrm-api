@@ -20,5 +20,5 @@ public class MaternityLeave {
 
 
     @OneToMany(mappedBy = "maternityLeave")
-    private List<FullDayLeaves> fullDayLeavesList;
+    private List<FullDayLeave> fullDayLeavesList;
 }

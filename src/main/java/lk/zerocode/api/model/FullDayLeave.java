@@ -7,10 +7,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table
+@Table(name = "full_day_leaves")
 @Data
 
-public class FullDayLeaves {
+public class FullDayLeave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,6 +38,6 @@ public class FullDayLeaves {
     private LeaveToLeave leaveToLeave;
 
     @ManyToOne
-    private YearlyBasedLeaves yearBasedLeave;
+    private YearlyBasedLeave yearBasedLeave;
 
 }

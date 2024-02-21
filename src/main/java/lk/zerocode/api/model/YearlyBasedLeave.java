@@ -9,7 +9,7 @@ import java.util.List;
 @Table(name = "yearly_based_leaves")
 @Data
 
-public class YearlyBasedLeaves {
+public class YearlyBasedLeave {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,5 +19,5 @@ public class YearlyBasedLeaves {
 
 
     @OneToMany(mappedBy = "yearBasedLeave")
-    private List<FullDayLeaves> fullDayLeavesList;
+    private List<FullDayLeave> fullDayLeavesList;
 }
