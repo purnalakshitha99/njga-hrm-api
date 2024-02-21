@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
+
 @Entity
 @Table
 @Data
@@ -15,6 +17,8 @@ public class MaternityLeave {
     private LocalDate startDate;
     private LocalDate expireDate;
 
-    @ManyToOne
-    private FullDayLeaves fullDayLeaves;
+
+
+    @OneToMany(mappedBy = "maternityLeave")
+    private List<FullDayLeaves> fullDayLeavesList;
 }

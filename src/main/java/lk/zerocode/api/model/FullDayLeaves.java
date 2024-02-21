@@ -31,13 +31,14 @@ public class FullDayLeaves {
     @ManyToOne
     private Employee employee;
 
-    @OneToMany(mappedBy = "fullDayLeaves")
-    private List<MaternityLeave> maternityLeaveList;
 
-    @OneToMany(mappedBy = "fullDayLeaves")
-    private List<LeaveToLeave> leaveToLeaveList;
+    @ManyToOne
+    private MaternityLeave maternityLeave;
 
-    @OneToMany(mappedBy = "fullDayLeaves")
-    private List<YearBasedLeave> yearBasedLeaveList;
+    @ManyToOne
+    private LeaveToLeave leaveToLeave;
+
+    @ManyToOne
+    private YearBasedLeave yearBasedLeave;
 
 }
