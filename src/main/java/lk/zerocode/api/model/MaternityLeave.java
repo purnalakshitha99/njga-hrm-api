@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "maternity_leaves")
 @Data
 
 public class MaternityLeave {
