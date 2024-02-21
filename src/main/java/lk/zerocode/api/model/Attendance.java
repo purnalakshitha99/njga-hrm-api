@@ -23,6 +23,9 @@ public class Attendance {
     private String dayType;
     private String status;
 
+    @ManyToOne
+    private Employee employee;
+
 
 
 }

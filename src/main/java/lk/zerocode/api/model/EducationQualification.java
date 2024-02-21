@@ -18,4 +18,9 @@ public class EducationQualification {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    @ManyToOne
+    private Employee employee;
+
+
+
 }

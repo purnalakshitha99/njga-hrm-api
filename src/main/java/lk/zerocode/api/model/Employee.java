@@ -34,6 +34,35 @@ public class Employee {
     @OneToOne(mappedBy = "employee")
     private CurrentWorkDetails currentWorkDetails;
 
+    @OneToMany(mappedBy = "employee")
+    private List<EducationQualification> educationQualificationList;
+
+    @OneToMany(mappedBy = "employee")
+    private List<DependentDetails> dependentDetailsList;
+
+    @OneToMany(mappedBy = "employee")
+    private List<EmergencyContact> emergencyContactList;
+
+    @ManyToOne
+    private Branch branch;
+
+    @OneToMany(mappedBy = "employee")
+    private List<FingerPrint> fingerPrintList;
+
+    @OneToMany(mappedBy = "employee")
+    private List<Attendance> attendanceList;
+
+    @ManyToMany(mappedBy = "employeeList")
+    private List<Notice> noticeList;
+
+    @OneToMany(mappedBy = "employee")
+    private List<FullDayLeaves> fullDayLeavesList;
+
+    @OneToMany(mappedBy = "employee")
+    private List<OtherLeaves> otherLeavesList;
+
+
+
 
 
 
