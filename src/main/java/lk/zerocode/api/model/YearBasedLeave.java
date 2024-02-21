@@ -3,6 +3,8 @@ package lk.zerocode.api.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Table
 @Data
@@ -15,6 +17,7 @@ public class YearBasedLeave {
     private String category;
     private Integer noOfDays;
 
-    @ManyToOne
-    private FullDayLeaves fullDayLeaves;
+
+    @OneToMany(mappedBy = "yearBasedLeave")
+    private List<FullDayLeaves> fullDayLeavesList;
 }
