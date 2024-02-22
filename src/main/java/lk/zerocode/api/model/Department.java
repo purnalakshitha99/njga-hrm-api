@@ -6,7 +6,11 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
+<<<<<<< HEAD
+@Table(name="departments")
+=======
 @Table(name = "departments")
+>>>>>>> main
 @Data
 
 public class Department {
@@ -18,5 +22,8 @@ public class Department {
 
     @ManyToMany(mappedBy = "departmentList")
     private List<Branch> branchList;
+
+    @OneToMany(mappedBy = "department")
+    private List<CurrentWorkDetail> currentWorkDetailList;
 
 }

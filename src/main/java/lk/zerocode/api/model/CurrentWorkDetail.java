@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "current_work_details")
@@ -12,15 +13,23 @@ public class CurrentWorkDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String branchName;
-    private String department;
+
     private String designation;
     private LocalDate startDate;
-    private String empCategory;
-    private String empType;
+
     private String workTelephone;
     @OneToOne
     private Employee employee;
+
+    @ManyToOne
+    private Branch branch;
+
+    @ManyToOne
+    private Department department;
+
+    @ManyToOne
+    private EmpCategory empCategory;
+
 
 
 }
