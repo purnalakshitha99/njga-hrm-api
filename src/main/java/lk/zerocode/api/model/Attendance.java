@@ -12,9 +12,11 @@ import java.time.LocalTime;
 
 
 public class Attendance {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private LocalDate date;
     private LocalTime actualCheckIn;
     private LocalTime actualCheckOut;
@@ -25,7 +27,4 @@ public class Attendance {
 
     @ManyToOne
     private Employee employee;
-
-
-
 }
