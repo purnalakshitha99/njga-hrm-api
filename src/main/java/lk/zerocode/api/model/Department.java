@@ -6,9 +6,12 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
+<<<<<<< HEAD
+@Table(name="departments")
+=======
 @Table(name = "departments")
+>>>>>>> main
 @Data
-
 public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
