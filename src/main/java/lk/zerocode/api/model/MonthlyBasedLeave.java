@@ -5,14 +5,15 @@ import lombok.Data;
 
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "monthly_based_leaves")
-@Data
-
 public class MonthlyBasedLeave {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String type;
     private String category;
     private Integer noOfDays;
@@ -20,5 +21,4 @@ public class MonthlyBasedLeave {
 
     @OneToMany(mappedBy = "monthlyBasedLeaves")
     private List<OtherLeave> otherLeavesList;
-
 }
