@@ -23,4 +23,7 @@ public class Department {
     @ManyToMany(mappedBy = "departmentList")
     private List<Branch> branchList;
 
+    @OneToMany(mappedBy = "department")
+    private List<CurrentWorkDetail> currentWorkDetailList;
+
 }

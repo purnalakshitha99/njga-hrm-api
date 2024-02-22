@@ -42,8 +42,8 @@ public class Employee {
     @OneToMany(mappedBy = "employee")
     private List<EmergencyContact> emergencyContactList;
 
-    @ManyToOne
-    private Branch branch;
+//    @ManyToOne
+//    private Branch branch;
 
     @OneToMany(mappedBy = "employee")
     private List<FingerPrint> fingerPrintList;
@@ -59,6 +59,8 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee")
     private List<OtherLeave> otherLeavesList;
+
+
 
 
 
