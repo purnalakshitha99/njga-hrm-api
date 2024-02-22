@@ -6,9 +6,9 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "current_work_details")
-@Data
 public class CurrentWorkDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +16,8 @@ public class CurrentWorkDetail {
 
     private String designation;
     private LocalDate startDate;
-
     private String workTelephone;
+
     @OneToOne
     private Employee employee;
 
@@ -29,7 +29,4 @@ public class CurrentWorkDetail {
 
     @ManyToOne
     private EmpCategory empCategory;
-
-
-
 }

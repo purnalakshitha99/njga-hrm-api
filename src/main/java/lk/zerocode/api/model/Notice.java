@@ -5,13 +5,15 @@ import lombok.Data;
 
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "notices")
-@Data
 public class Notice {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String empCategory;
     private String empType;
     private String title;

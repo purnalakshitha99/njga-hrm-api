@@ -19,7 +19,7 @@ public class BasicDetailsImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
     private BranchesRepository branchesRepository;
     @Override
-    public BasicDetailsResponse saveBasicDetails(Employee employee, Long branch_id) throws EmployeeNotFoundException {
+    public BasicDetailsResponse saveBasicDetails(Employee employee) throws EmployeeNotFoundException {
 
 
 

@@ -1,15 +1,16 @@
 package lk.zerocode.api.model;
 
+
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
 
-@Entity
-@Table(name="departments")
 @Data
-
+@Entity
+@Table(name = "departments")
 public class Department {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,5 +22,4 @@ public class Department {
 
     @OneToMany(mappedBy = "department")
     private List<CurrentWorkDetail> currentWorkDetailList;
-
 }

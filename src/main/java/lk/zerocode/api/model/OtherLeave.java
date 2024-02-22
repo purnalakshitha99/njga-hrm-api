@@ -6,14 +6,15 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+@Data
 @Entity
 @Table(name = "other_leaves")
-@Data
-
 public class OtherLeave {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String department;
     private String leaveType;
@@ -30,8 +31,4 @@ public class OtherLeave {
 
     @ManyToOne
     private MonthlyBasedLeave monthlyBasedLeaves;
-
-
-
-
 }
