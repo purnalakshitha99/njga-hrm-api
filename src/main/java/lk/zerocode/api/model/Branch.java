@@ -16,12 +16,14 @@ public class Branch {
     private String name;
     private String city;
 
-    @OneToMany(mappedBy = "branch")
-    private List<Employee> employeeList;
-
     @JoinTable(name = "branch_department",joinColumns = @JoinColumn(name = "branchId"),
             inverseJoinColumns = @JoinColumn(name = "depId"))
     @ManyToMany
     private List<Department> departmentList;
+
+    @OneToMany(mappedBy = "branch")
+    private List<CurrentWorkDetail> currentWorkDetailList;
+
+
 
 }

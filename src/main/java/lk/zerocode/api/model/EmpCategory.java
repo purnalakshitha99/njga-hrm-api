@@ -6,20 +6,16 @@ import lombok.Data;
 import java.util.List;
 
 @Entity
-@Table(name = "departments")
+@Table(name = "employee_categories")
 @Data
 
-public class Department {
+public class EmpCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String depId;
-    private String name;
+    private String empCategory;
+    private String empType;
 
-    @ManyToMany(mappedBy = "departmentList")
-    private List<Branch> branchList;
-
-    @OneToMany(mappedBy = "department")
+    @OneToMany(mappedBy = "empCategory")
     private List<CurrentWorkDetail> currentWorkDetailList;
-
 }
