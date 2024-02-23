@@ -8,7 +8,6 @@ import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.repository.DependentRepository;
 import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.service.DependentService;
-import lk.zerocode.api.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +16,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class DependentDetailImpl implements DependentService {
+
     private EmployeeRepository employeeRepository;
     private DependentRepository dependentRepository;
     @Override
