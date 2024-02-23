@@ -7,4 +7,5 @@ import lombok.Data;
 @Builder
 public class DependentDetailResponse {
     private Long id;
+    private String empName;
 }

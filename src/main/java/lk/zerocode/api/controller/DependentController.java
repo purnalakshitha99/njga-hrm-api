@@ -17,7 +17,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class DependentController {
     private DependentService dependentService;
-    @PostMapping(value = "/employees/{emp-id}/dependents",headers = "version=v1")
+    @PostMapping(value = "/employees/{id}/dependents",headers = "version=v1")
     public DependentDetailResponse addDependent(@PathVariable Long id, @RequestBody DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException {
         return dependentService.saveDependentDetails(id,dependentDetailRequest);
     }

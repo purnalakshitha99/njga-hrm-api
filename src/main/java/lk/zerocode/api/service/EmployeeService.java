@@ -5,7 +5,6 @@ import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.Employee;
 import org.springframework.stereotype.Service;
 
-
 @Service
 public interface EmployeeService {
     BasicDetailsResponse saveBasicDetails(Employee employee) throws EmployeeNotFoundException;}

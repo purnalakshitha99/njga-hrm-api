@@ -21,14 +21,21 @@ public class DependentDetailImpl implements DependentService {
     private DependentRepository dependentRepository;
     @Override
     public DependentDetailResponse saveDependentDetails(Long id, DependentDetailRequest dependentDetailRequest) throws EmployeeNotFoundException {
+        // TODO: 2024-02-23 Employee not found exception 
         Optional<Employee> employeeOptional = employeeRepository.findById(id);
         Employee employee = employeeOptional.get();
         if(employeeOptional.isPresent()){
             DependentDetail dependentDetail = new DependentDetail();
             dependentDetail.setDependentsName(dependentDetailRequest.getDependentName());
-//            dependentDetail.setDob(dependentDetailRequest);
+            dependentDetail.setDob(dependentDetailRequest.getDob());
+            dependentDetail.setRelationship(dependentDetailRequest.getRelationship());
+            dependentDetail.setEmployee(employee);
+            dependentRepository.save(dependentDetail);
         }
-        return null;
-
+        DependentDetailResponse dependentDetailResponse=DependentDetailResponse.builder()
+                .id(employee.getId())
+                .empName(employee.getFirstName())
+                .build();
+        return dependentDetailResponse;
     }
 }
