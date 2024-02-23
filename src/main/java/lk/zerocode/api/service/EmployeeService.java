@@ -7,4 +7,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface EmployeeService {
-    BasicDetailsResponse saveBasicDetails(Employee employee) throws EmployeeNotFoundException;}
+    BasicDetailsResponse saveBasicDetails(Employee employee) throws EmployeeNotFoundException;
+}
