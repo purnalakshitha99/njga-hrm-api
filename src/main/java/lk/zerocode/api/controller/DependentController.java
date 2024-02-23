@@ -1,6 +1,8 @@
 package lk.zerocode.api.controller;
 
-import lk.zerocode.api.controller.request.DependentDetailReq;
+import lk.zerocode.api.controller.request.DependentDetailRequest;
+import lk.zerocode.api.controller.response.DependentDetailResponse;
+import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class DependentController {
     private EmployeeService employeeService;
-    @PostMapping(value = "/students",headers = "version=v1")
-    public void addDependent(@RequestBody DependentDetailReq dependentDetailReq, @PathVariable Long id){
-        employeeService.addDependent(dependentDetailReq,id);
+    @PostMapping(value = "/employees/{emp-id}/dependents",headers = "version=v1")
+    public DependentDetailResponse addDependent(@PathVariable Long id,@RequestBody DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException {
+        return employeeService.saveDependentDetails(id,dependentDetailRequest);
     }
 }
