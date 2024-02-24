@@ -6,10 +6,9 @@ import lk.zerocode.api.model.Gender;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
-public class EmployeeRequest {
+public class BasicDetailsRequest {
 
     private Long id;
     private String emp_id;
