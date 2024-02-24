@@ -11,6 +11,8 @@ import lk.zerocode.api.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class BasicDetailsImpl implements EmployeeService {
@@ -21,14 +23,17 @@ public class BasicDetailsImpl implements EmployeeService {
     public BasicDetailsResponse saveBasicDetails(EmployeeRequest employeeRequest) throws EmployeeNotFoundException {
         Employee employee = new Employee();
         Optional<Employee> empOpt = employeeRepository.findEmployeeByEmpId(employeeRequest.getEmp_id());
-        if (!empOpt.isPresent()){
+        if (empOpt.isPresent()){
+            throw new EmployeeNotFoundException("Employee id Exist");
+        }
+        else {
             employee.setEmpId(employeeRequest.getEmp_id());
             employee.setFirstName(employeeRequest.getFirst_name());
             employee.setLastName(employeeRequest.getLast_name());
             employee.setDob(employeeRequest.getDob());
             employee.setAddress(employeeRequest.getAddress());
             employee.setContactNumber(employeeRequest.getContact_number());
-            employee.setEmpId(employeeRequest.getEmail());
+            employee.setEmail(employeeRequest.getEmail());
             employee.setImagePath(employeeRequest.getImage_path());
             employee.setNic(employeeRequest.getNic());
             employee.setWorkTelephone(employeeRequest.getWork_telephone());
@@ -40,9 +45,7 @@ public class BasicDetailsImpl implements EmployeeService {
                     .id(employee.getId())
                     .build();
             return basicDetailsResponse;
-        }
-        else {
-            throw new EmployeeNotFoundException("Employee id Exist");
+
         }
 
     }
