@@ -18,7 +18,8 @@ import java.util.Optional;
 public class DependentController {
     private DependentService dependentService;
     @PostMapping(value = "/employees/{id}/dependents",headers = "version=v1")
-    public DependentDetailResponse addDependent(@PathVariable Long id, @RequestBody DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException {
+    public DependentDetailResponse addDependent(@PathVariable ("id") Long id, @RequestBody DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException {
         return dependentService.saveDependentDetails(id,dependentDetailRequest);
     }
 }
+
