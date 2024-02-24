@@ -16,7 +16,7 @@ public class AppControllerAdvicer {
     @ExceptionHandler({EmployeeNotFoundException.class})
    public ErrorResponse handleNFException(Exception exception){
        ErrorResponse errorResponse = new ErrorResponse();
-       errorResponse.setMessage("Employee Not Found");
+       errorResponse.setMessage(exception.getMessage());
 
        return errorResponse;
    }
