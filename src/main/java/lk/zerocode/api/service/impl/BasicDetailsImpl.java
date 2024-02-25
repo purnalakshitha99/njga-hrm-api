@@ -22,11 +22,12 @@ public class BasicDetailsImpl implements EmployeeService {
 
     @Override
     public IdResponse saveBasicDetails(BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException {
-        Employee employee = new Employee();
+
         Optional<Employee> empOpt = employeeRepository.findEmployeeByEmpId(basicDetailsRequest.getEmp_id());
         if (empOpt.isPresent()) {
             throw new EmployeeNotFoundException("Employee id Exist");
         } else {
+            Employee employee = new Employee();
             employee.setEmpId(basicDetailsRequest.getEmp_id());
             employee.setFirstName(basicDetailsRequest.getFirst_name());
             employee.setLastName(basicDetailsRequest.getLast_name());
@@ -74,6 +75,7 @@ public class BasicDetailsImpl implements EmployeeService {
     }
     @Override
     public BasicDetailsResponse getByEmpEmail(String email) throws EmployeeNotFoundException {
+
         Optional<Employee> empOpt = employeeRepository.findEmployeeByEmail(email);
 
         if (!empOpt.isPresent()){
