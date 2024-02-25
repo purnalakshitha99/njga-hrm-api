@@ -72,7 +72,6 @@ public class DependentDetailImpl implements DependentService {
 
         if(!optionalDependentDetail.isPresent()){
             throw new EmployeeNotFoundException("Dependent Not Found!");
-            // TODO: 2024-02-25 Dependent Not Found Exception
         }
         else {
             return optionalDependentDetail
