@@ -9,9 +9,14 @@ import lk.zerocode.api.repository.BranchesRepository;
 import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.service.EmployeeService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -22,11 +27,12 @@ public class BasicDetailsImpl implements EmployeeService {
 
     @Override
     public IdResponse saveBasicDetails(BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException {
-        Employee employee = new Employee();
+
         Optional<Employee> empOpt = employeeRepository.findEmployeeByEmpId(basicDetailsRequest.getEmp_id());
         if (empOpt.isPresent()) {
             throw new EmployeeNotFoundException("Employee id Exist");
         } else {
+            Employee employee = new Employee();
             employee.setEmpId(basicDetailsRequest.getEmp_id());
             employee.setFirstName(basicDetailsRequest.getFirst_name());
             employee.setLastName(basicDetailsRequest.getLast_name());
@@ -72,16 +78,17 @@ public class BasicDetailsImpl implements EmployeeService {
                     .build();
         }
     }
+
     @Override
     public BasicDetailsResponse getByEmpEmail(String email) throws EmployeeNotFoundException {
+
         Optional<Employee> empOpt = employeeRepository.findEmployeeByEmail(email);
 
-        if (!empOpt.isPresent()){
+        if (!empOpt.isPresent()) {
             throw new EmployeeNotFoundException("Employee Not Found!");
-        }
-        else {
+        } else {
             Employee employee = empOpt.get();
-            return  BasicDetailsResponse.builder()
+            return BasicDetailsResponse.builder()
                     .emp_id(employee.getEmpId())
                     .first_name(employee.getFirstName())
                     .last_name(employee.getLastName())
@@ -96,6 +103,70 @@ public class BasicDetailsImpl implements EmployeeService {
                     .build();
         }
     }
+
+    @Override
+    public List<BasicDetailsResponse> getAll() {
+
+        List<Employee> employees = employeeRepository.findAll();
+
+        return employees.stream()
+                .map(employee -> BasicDetailsResponse.builder()
+                        .emp_id(employee.getEmpId())
+                        .first_name(employee.getFirstName())
+                        .last_name(employee.getLastName())
+                        .dob(employee.getDob())
+                        .address(employee.getAddress())
+                        .contact_number(employee.getContactNumber())
+                        .email(employee.getEmail())
+                        .image_path(employee.getImagePath())
+                        .nic(employee.getNic())
+                        .work_telephone(employee.getWorkTelephone())
+                        .gender(employee.getGender())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ResponseEntity<String> updateBasicDetails(String id, BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException {
+
+        Optional<Employee> optEmp = employeeRepository.findEmployeeByEmpId(id);
+
+        if (!optEmp.isPresent()) {
+            throw new EmployeeNotFoundException("Employee Not Found!");
+        } else {
+            Employee updatedEmployee = optEmp.get();
+            updatedEmployee.setEmpId(basicDetailsRequest.getEmp_id());
+            updatedEmployee.setFirstName(basicDetailsRequest.getFirst_name());
+            updatedEmployee.setLastName(basicDetailsRequest.getLast_name());
+            updatedEmployee.setDob(basicDetailsRequest.getDob());
+            updatedEmployee.setAddress(basicDetailsRequest.getAddress());
+            updatedEmployee.setContactNumber(basicDetailsRequest.getContact_number());
+            updatedEmployee.setEmail(basicDetailsRequest.getEmail());
+            updatedEmployee.setImagePath(basicDetailsRequest.getImage_path());
+            updatedEmployee.setNic(basicDetailsRequest.getNic());
+            updatedEmployee.setWorkTelephone(basicDetailsRequest.getWork_telephone());
+            updatedEmployee.setGender(basicDetailsRequest.getGender());
+
+            employeeRepository.save(updatedEmployee);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body("Basic Details Update successfully!");
+
+//            return BasicDetailsResponse.builder()
+//                    .emp_id(updatedEmployee.getEmpId())
+//                    .first_name(updatedEmployee.getFirstName())
+//                    .last_name(updatedEmployee.getLastName())
+//                    .dob(updatedEmployee.getDob())
+//                    .address(updatedEmployee.getAddress())
+//                    .contact_number(updatedEmployee.getContactNumber())
+//                    .email(updatedEmployee.getEmail())
+//                    .image_path(updatedEmployee.getImagePath())
+//                    .nic(updatedEmployee.getNic())
+//                    .work_telephone(updatedEmployee.getWorkTelephone())
+//                    .gender(updatedEmployee.getGender())
+//                    .build();
+        }
+    }
 }
+
 
 
