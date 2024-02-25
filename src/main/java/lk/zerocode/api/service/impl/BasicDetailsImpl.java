@@ -122,6 +122,44 @@ public class BasicDetailsImpl implements EmployeeService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public BasicDetailsResponse updateBasicDetails(String id, BasicDetailsRequest basicDetailsRequest)throws EmployeeNotFoundException {
+
+        Optional<Employee> optEmp = employeeRepository.findEmployeeByEmpId(id);
+
+        if (!optEmp.isPresent()){
+            throw new EmployeeNotFoundException("Employee Not Found!");
+        }
+        else {
+            Employee updatedEmployee = optEmp.get();
+            updatedEmployee.setEmpId(basicDetailsRequest.getEmp_id());
+            updatedEmployee.setFirstName(basicDetailsRequest.getFirst_name());
+            updatedEmployee.setLastName(basicDetailsRequest.getLast_name());
+            updatedEmployee.setDob(basicDetailsRequest.getDob());
+            updatedEmployee.setAddress(basicDetailsRequest.getAddress());
+            updatedEmployee.setContactNumber(basicDetailsRequest.getContact_number());
+            updatedEmployee.setEmail(basicDetailsRequest.getEmail());
+            updatedEmployee.setImagePath(basicDetailsRequest.getImage_path());
+            updatedEmployee.setNic(basicDetailsRequest.getNic());
+            updatedEmployee.setWorkTelephone(basicDetailsRequest.getWork_telephone());
+            updatedEmployee.setGender(basicDetailsRequest.getGender());
+
+            return BasicDetailsResponse.builder()
+                    .emp_id(updatedEmployee.getEmpId())
+                    .first_name(updatedEmployee.getFirstName())
+                    .last_name(updatedEmployee.getLastName())
+                    .dob(updatedEmployee.getDob())
+                    .address(updatedEmployee.getAddress())
+                    .contact_number(updatedEmployee.getContactNumber())
+                    .email(updatedEmployee.getEmail())
+                    .image_path(updatedEmployee.getImagePath())
+                    .nic(updatedEmployee.getNic())
+                    .work_telephone(updatedEmployee.getWorkTelephone())
+                    .gender(updatedEmployee.getGender())
+                    .build();
+        }
+    }
 }
 
 

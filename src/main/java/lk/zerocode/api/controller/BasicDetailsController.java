@@ -34,7 +34,7 @@ public class BasicDetailsController {
         return employeeService.getAll();
     }
 
-    public BasicDetailsResponse update(@PathVariable ("emp_id") String id, @RequestBody BasicDetailsRequest basicDetailsRequest){
+    public BasicDetailsResponse update(@PathVariable ("emp_id") String id, @RequestBody BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException{
         return employeeService.updateBasicDetails(id, basicDetailsRequest);
     }
 }

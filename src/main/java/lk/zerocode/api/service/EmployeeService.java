@@ -16,5 +16,5 @@ public interface EmployeeService {
 
      List<BasicDetailsResponse> getAll() throws EmployeeNotFoundException;
 
-    BasicDetailsResponse updateBasicDetails(String id, BasicDetailsRequest basicDetailsRequest);
+    BasicDetailsResponse updateBasicDetails(String id, BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException;
 }
