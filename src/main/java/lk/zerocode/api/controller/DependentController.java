@@ -23,5 +23,10 @@ public class DependentController {
     public List<DependentDetailResponse> getDependentByEmpId(@PathVariable("id")Long id)throws EmployeeNotFoundException{
         return dependentService.getDependentByEmpId(id);
     }
+//    @PutMapping(value = "/dependents/{id}/dependent",headers = "version=v1")
+    @PutMapping("/dependents/{id}/dependent")
+    public Optional<DependentDetailResponse> updateDependentDetails(@PathVariable("id")Long id,@RequestBody DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException{
+        return dependentService.updateDependentDetail(id,dependentDetailRequest);
+    }
 }
 

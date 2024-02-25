@@ -22,12 +22,13 @@ public class DependentDetailImpl implements DependentService {
     private EmployeeRepository employeeRepository;
     private DependentRepository dependentRepository;
     @Override
-    public DependentDetailResponse saveDependentDetails(Long id, DependentDetailRequest dependentDetailRequest) throws EmployeeNotFoundException {
-        Optional<Employee> employeeOptional = employeeRepository.findById(id);
+    public DependentDetailResponse saveDependentDetails(Long id, DependentDetailRequest dependentDetailRequest) throws EmployeeNotFoundException {Optional<Employee> employeeOptional = employeeRepository.findById(id);
+
         if (!employeeOptional.isPresent()) {
             throw new EmployeeNotFoundException("Employee not Found");
         } else {
             Employee employee = employeeOptional.get();
+
             DependentDetail dependentDetail = new DependentDetail();
             dependentDetail.setDependentsName(dependentDetailRequest.getDependentName());
             dependentDetail.setDob(dependentDetailRequest.getDob());
@@ -43,10 +44,11 @@ public class DependentDetailImpl implements DependentService {
             return dependentDetailResponse;
         }
     }
+
     @Override
     public List<DependentDetailResponse> getDependentByEmpId(Long id) throws EmployeeNotFoundException {
-        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
 
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
         if(!optionalEmployee.isPresent()){
             throw new EmployeeNotFoundException("Employee not found");
         }
@@ -60,6 +62,33 @@ public class DependentDetailImpl implements DependentService {
                             .relation(dependentDetails.getRelationship())
                             .build())
                     .collect(Collectors.toList());
+        }
+    }
+
+    @Override
+    public Optional<DependentDetailResponse> updateDependentDetail(Long id, DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException{
+
+        Optional<DependentDetail> optionalDependentDetail = dependentRepository.findById(id);
+
+        if(!optionalDependentDetail.isPresent()){
+            throw new EmployeeNotFoundException("Dependent Not Found!");
+            // TODO: 2024-02-25 Dependent Not Found Exception
+        }
+        else {
+            return optionalDependentDetail
+                    .map(dependentDetailUpdated -> {
+                        dependentDetailUpdated.setDependentsName(dependentDetailRequest.getDependentName());
+                        dependentDetailUpdated.setDob(dependentDetailRequest.getDob());
+                        dependentDetailUpdated.setRelationship(dependentDetailRequest.getRelationship());
+                        dependentRepository.save(dependentDetailUpdated);
+
+                        DependentDetailResponse dependentDetailResponse = DependentDetailResponse.builder()
+                                .dependentName(dependentDetailUpdated.getDependentsName())
+                                .relation(dependentDetailUpdated.getRelationship())
+                                .dob(dependentDetailUpdated.getDob())
+                                .build();
+                        return dependentDetailResponse;
+                    });
         }
     }
 }
