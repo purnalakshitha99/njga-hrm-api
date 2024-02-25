@@ -9,6 +9,9 @@ import lk.zerocode.api.repository.BranchesRepository;
 import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.service.EmployeeService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -124,14 +127,13 @@ public class BasicDetailsImpl implements EmployeeService {
     }
 
     @Override
-    public BasicDetailsResponse updateBasicDetails(String id, BasicDetailsRequest basicDetailsRequest)throws EmployeeNotFoundException {
+    public ResponseEntity<String> updateBasicDetails(String id, BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException {
 
         Optional<Employee> optEmp = employeeRepository.findEmployeeByEmpId(id);
 
-        if (!optEmp.isPresent()){
+        if (!optEmp.isPresent()) {
             throw new EmployeeNotFoundException("Employee Not Found!");
-        }
-        else {
+        } else {
             Employee updatedEmployee = optEmp.get();
             updatedEmployee.setEmpId(basicDetailsRequest.getEmp_id());
             updatedEmployee.setFirstName(basicDetailsRequest.getFirst_name());
@@ -145,19 +147,23 @@ public class BasicDetailsImpl implements EmployeeService {
             updatedEmployee.setWorkTelephone(basicDetailsRequest.getWork_telephone());
             updatedEmployee.setGender(basicDetailsRequest.getGender());
 
-            return BasicDetailsResponse.builder()
-                    .emp_id(updatedEmployee.getEmpId())
-                    .first_name(updatedEmployee.getFirstName())
-                    .last_name(updatedEmployee.getLastName())
-                    .dob(updatedEmployee.getDob())
-                    .address(updatedEmployee.getAddress())
-                    .contact_number(updatedEmployee.getContactNumber())
-                    .email(updatedEmployee.getEmail())
-                    .image_path(updatedEmployee.getImagePath())
-                    .nic(updatedEmployee.getNic())
-                    .work_telephone(updatedEmployee.getWorkTelephone())
-                    .gender(updatedEmployee.getGender())
-                    .build();
+            employeeRepository.save(updatedEmployee);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body("Basic Details Update successfully!");
+
+//            return BasicDetailsResponse.builder()
+//                    .emp_id(updatedEmployee.getEmpId())
+//                    .first_name(updatedEmployee.getFirstName())
+//                    .last_name(updatedEmployee.getLastName())
+//                    .dob(updatedEmployee.getDob())
+//                    .address(updatedEmployee.getAddress())
+//                    .contact_number(updatedEmployee.getContactNumber())
+//                    .email(updatedEmployee.getEmail())
+//                    .image_path(updatedEmployee.getImagePath())
+//                    .nic(updatedEmployee.getNic())
+//                    .work_telephone(updatedEmployee.getWorkTelephone())
+//                    .gender(updatedEmployee.getGender())
+//                    .build();
         }
     }
 }

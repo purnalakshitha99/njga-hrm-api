@@ -6,6 +6,7 @@ import lk.zerocode.api.controller.response.IdResponse;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.service.EmployeeService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +35,8 @@ public class BasicDetailsController {
         return employeeService.getAll();
     }
 
-    public BasicDetailsResponse update(@PathVariable ("emp_id") String id, @RequestBody BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException{
+    @PutMapping("/employee/{emp_id}")
+    public ResponseEntity<String> update(@PathVariable ("emp_id") String id, @RequestBody BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException{
         return employeeService.updateBasicDetails(id, basicDetailsRequest);
     }
 }
