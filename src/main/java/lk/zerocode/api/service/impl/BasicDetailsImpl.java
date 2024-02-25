@@ -11,7 +11,9 @@ import lk.zerocode.api.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -73,17 +75,17 @@ public class BasicDetailsImpl implements EmployeeService {
                     .build();
         }
     }
+
     @Override
     public BasicDetailsResponse getByEmpEmail(String email) throws EmployeeNotFoundException {
 
         Optional<Employee> empOpt = employeeRepository.findEmployeeByEmail(email);
 
-        if (!empOpt.isPresent()){
+        if (!empOpt.isPresent()) {
             throw new EmployeeNotFoundException("Employee Not Found!");
-        }
-        else {
+        } else {
             Employee employee = empOpt.get();
-            return  BasicDetailsResponse.builder()
+            return BasicDetailsResponse.builder()
                     .emp_id(employee.getEmpId())
                     .first_name(employee.getFirstName())
                     .last_name(employee.getLastName())
@@ -98,6 +100,29 @@ public class BasicDetailsImpl implements EmployeeService {
                     .build();
         }
     }
+
+    @Override
+    public List<BasicDetailsResponse> getAll() {
+
+        List<Employee> employees = employeeRepository.findAll();
+
+        return employees.stream()
+                .map(employee -> BasicDetailsResponse.builder()
+                        .emp_id(employee.getEmpId())
+                        .first_name(employee.getFirstName())
+                        .last_name(employee.getLastName())
+                        .dob(employee.getDob())
+                        .address(employee.getAddress())
+                        .contact_number(employee.getContactNumber())
+                        .email(employee.getEmail())
+                        .image_path(employee.getImagePath())
+                        .nic(employee.getNic())
+                        .work_telephone(employee.getWorkTelephone())
+                        .gender(employee.getGender())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
+
 
 
