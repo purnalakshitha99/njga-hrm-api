@@ -11,6 +11,7 @@ import lk.zerocode.api.service.EducationQualificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -42,43 +43,29 @@ public class EducationQualificationServiceImpl implements EducationQualification
                     .build();
             return educationQualificationResponse;
         }
-
         return null;
+    }
+
+    @Override
+    public void delete(Long id, Long employeeId) {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
+        if (optionalEmployee.isPresent()){
+            Employee employee=optionalEmployee.get();
+            List<EducationQualification> educationQualificationList=employee.getEducationQualificationList();
+
+            EducationQualification qualificationToDelete=educationQualificationList.stream()
+                    .filter(educationQualification -> educationQualification.getId().equals(id))
+                    .findFirst()
+                    .orElse(null);
+
+            if (qualificationToDelete !=null){
+                educationQualificationList.remove(qualificationToDelete);
+                employeeRepository.save(employee);
+                educationQualificationRepository.deleteById(id);
+                System.out.println("Education Qualification Delete Successfully");
+            }
+        }
     }
 }
 
 
-//    Optional<Designation> optionalDesignation=designationRepository.findById(designationId);
-//        designationRepository.findById(designationId).orElseThrow(()->
-//                new EntityNotFoundException("designation not found"));
-//
-//                if (optionalDesignation.isPresent()) {
-//                Designation designation = optionalDesignation.get();
-//                Employee employee=new Employee();
-//                employee.setFirstName(employeeRequest.getFirstName());
-//                employee.setLastName(employeeRequest.getLastName());
-//                employee.setDob(employeeRequest.getDob());
-//                employee.setAge(employeeRequest.getAge());
-//                employee.setGender(employeeRequest.getGender());
-//                employee.setNationality(employeeRequest.getNationality());
-//                employee.setAddress(employeeRequest.getAddress());
-//                employee.setMaritalStatus(employeeRequest.getMaritalStatus());
-//                employee.setEmail(employeeRequest.getEmail());
-//                employee.setContactNumber(employeeRequest.getContactNumber());
-//                employee.setDesignation(designation);
-//                employeeRepository.save(employee);
-//
-//                EmployeeResponse employeeResponse=new EmployeeResponse();
-//                employeeResponse.setFirstName(employee.getFirstName());
-//                employeeResponse.setLastName(employee.getLastName());
-//                employeeResponse.setDob(employee.getDob());
-//                employeeResponse.setAge(employee.getAge());
-//                employeeResponse.setGender(employee.getGender());
-//                employeeResponse.setNationality(employee.getNationality());
-//                employeeResponse.setAddress(employee.getAddress());
-//                employeeResponse.setMaritalStatus(employee.getMaritalStatus());
-//                employeeResponse.setEmail(employee.getEmail());
-//                employeeResponse.setContactNumber(employee.getContactNumber());
-//                return employeeResponse;
-//                }
-//                return null;

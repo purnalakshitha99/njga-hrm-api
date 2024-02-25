@@ -8,4 +8,5 @@ import org.springframework.stereotype.Service;
 public interface EducationQualificationService {
 
     EducationQualificationResponse create(Long id, EducationQualificationRequest educationQualificationRequest);
+    void delete(Long id, Long employeeId);
 }
