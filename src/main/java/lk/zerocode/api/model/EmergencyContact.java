@@ -1,5 +1,6 @@
 package lk.zerocode.api.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,5 +18,6 @@ public class EmergencyContact {
     private String contact;
 
     @ManyToOne
+    @JsonManagedReference
     private Employee employee;
 }
