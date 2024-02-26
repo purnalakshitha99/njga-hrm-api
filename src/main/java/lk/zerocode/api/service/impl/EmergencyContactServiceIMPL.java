@@ -2,10 +2,11 @@ package lk.zerocode.api.service.impl;
 
 import lk.zerocode.api.controller.request.EmergencyContactRequest;
 import lk.zerocode.api.controller.response.EmergencyResponse;
+import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.EmergencyContact;
 import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.repository.EmergencyContactRepository;
-import lk.zerocode.api.repository.TestEmployeeRepo;
+import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.service.EmergencyContactService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,12 @@ public class EmergencyContactServiceIMPL implements EmergencyContactService {
     private EmergencyContactRepository emergencyContactRepository;
 
     @Autowired
-    private TestEmployeeRepo testEmployeeRepo;
+    private EmployeeRepository employeeRepository;
 
     @Override
     public List<EmergencyResponse> addEmergencyContact(Long empId, List<EmergencyContactRequest> emergencyRequests) {
 
-        Optional<Employee> employeeOptional = testEmployeeRepo.findById(empId);
+        Optional<Employee> employeeOptional = employeeRepository.findById(empId);
 
         if (!employeeOptional.isPresent()) {
             return null;
@@ -60,36 +61,24 @@ public class EmergencyContactServiceIMPL implements EmergencyContactService {
         return responses;
     }
 
+    public List<EmergencyResponse> getEmergencyContactByEmployeeId(Long empId) {
+
+        return emergencyContactRepository.findEmergencyContactByEmployeeId(empId);
+    }
+
     @Override
-    public List<EmergencyResponse> updateEmergencyDetails(EmergencyContactRequest emergencyContactRequest, Long id) {
+    public String deleteEmergencyContactById(Long empId, Long id) throws EmployeeNotFoundException {
+        Optional<EmergencyContact> emergencyContactOptional = emergencyContactRepository.findById(empId);
 
-        Optional<Employee> employeeOptional = testEmployeeRepo.findById(id);
-
-        if (employeeOptional.isPresent()) {
-            return null;
+        if (!emergencyContactOptional.isPresent()) {
+            throw new EmployeeNotFoundException("Employee not found");
         }
 
-        Employee employee = employeeOptional.get();
-        List<EmergencyResponse> responses = new ArrayList<>();
+        EmergencyContact contact = emergencyContactOptional.get();
 
-        for (EmergencyContact emergencyContact : employee.getEmergencyContactList()) {
-            emergencyContact.setName(emergencyContactRequest.getName());
-            emergencyContact.setRelationship(emergencyContactRequest.getRelationship());
-            emergencyContact.setContact(emergencyContactRequest.getContact());
+        emergencyContactRepository.deleteById(id);
 
-            emergencyContactRepository.save(emergencyContact);
-
-            EmergencyResponse response = EmergencyResponse.builder()
-                    .id(emergencyContact.getId())
-                    .name(emergencyContact.getName())
-                    .relationship(emergencyContact.getRelationship())
-                    .contact(emergencyContact.getContact())
-                    .build();
-
-            responses.add(response);
-        }
-
-        return responses;
+        return "delete succesfull with employee id :" + empId + " with contact id :" + id;
     }
 
 

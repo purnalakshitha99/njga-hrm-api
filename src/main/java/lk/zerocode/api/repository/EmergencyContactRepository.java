@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface EmergencyContactRepository extends JpaRepository<EmergencyContact , Long> {
 
-    List<EmergencyResponse> findEmergencyContactByEmployeeId(Long id);
+    List<EmergencyResponse> findEmergencyContactByEmployeeId(Long empId);
 }

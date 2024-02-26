@@ -2,6 +2,7 @@ package lk.zerocode.api.controller;
 
 import lk.zerocode.api.controller.request.EmergencyContactRequest;
 import lk.zerocode.api.controller.response.EmergencyResponse;
+import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.EmergencyContact;
 import lk.zerocode.api.repository.EmergencyContactRepository;
 import lk.zerocode.api.service.impl.EmergencyContactServiceIMPL;
@@ -27,13 +28,12 @@ public class EmergencyContactController {
 
     @GetMapping("emergency-contacts/{emp-id}")
     public List<EmergencyResponse> findEmergencyContactByEmployeeId(@PathVariable("emp-id") Long id) {
-        return emergencyContactRepository.findEmergencyContactByEmployeeId(id);
+        return emergencyContactServiceIMPL.getEmergencyContactByEmployeeId(id);
     }
 
-    @PutMapping("/emergency-contacts/{emp-id}")
-    public List<EmergencyResponse> updateEmergencyContact(@PathVariable("emp-id") Long id , @RequestBody EmergencyContactRequest emergencyContactRequest){
+    @DeleteMapping("emergency-contacts/{emp-id}/{contact-id}")
+    public String deleteEmergencyContactById(@PathVariable("emp-id") Long empId, @PathVariable("contact-id") Long id) throws EmployeeNotFoundException {
 
-        return emergencyContactServiceIMPL.updateEmergencyDetails(emergencyContactRequest,id);
-
+        return emergencyContactServiceIMPL.deleteEmergencyContactById(empId,id);
     }
 }
