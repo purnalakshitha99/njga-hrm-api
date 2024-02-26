@@ -6,6 +6,8 @@ import lk.zerocode.api.service.EducationQualificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 public class EducationQualificationController {
@@ -19,5 +21,9 @@ public class EducationQualificationController {
     @DeleteMapping(value = "/qualifications/{qualification-id}/{employee-id}",headers ="X-API-VERSION=V1")
     public void deleteQualification(@PathVariable("qualification-id")Long id,@PathVariable("employee-id")Long employeeId ){
         educationQualificationService.delete(id,employeeId);
+    }
+    @GetMapping(value = "/employees/{employee-id}/qualifications",headers ="X-API-VERSION=V1")
+    public List<EducationQualificationResponse> getSpecificQualifications(@PathVariable("employee-id")Long id){
+        return educationQualificationService.getSpecific(id);
     }
 }
