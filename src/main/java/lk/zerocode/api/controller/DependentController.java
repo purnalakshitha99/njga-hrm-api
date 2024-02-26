@@ -29,4 +29,3 @@ public class DependentController {
         return dependentService.updateDependentDetail(id,dependentDetailRequest);
     }
 }
-
