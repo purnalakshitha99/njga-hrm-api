@@ -22,19 +22,19 @@ public class EmergencyContactController {
 
     EmergencyContactRepository emergencyContactRepository;
 
-    @PostMapping("/emergency-contacts/{emp-id}")
+    @PostMapping(value = "/employees/{emp-id}/emergency-contacts", headers = "version=v1")
     public List<EmergencyResponse> addEmergencyContact(@PathVariable("emp-id") Long empId, @RequestBody List<EmergencyContactRequest> emergencyContactRequest) {
 
 
         return emergencyContactServiceIMPL.addEmergencyContact(empId, emergencyContactRequest);
     }
 
-    @GetMapping("emergency-contacts/{emp-id}")
+    @GetMapping(value = "employees/{emp-id}/emergency-contacts",headers = "version=v1")
     public List<EmergencyResponse> findEmergencyContactByEmployeeId(@PathVariable("emp-id") Long id) throws EmployeeNotFoundException {
         return emergencyContactServiceIMPL.getEmergencyContactByEmployeeId(id);
     }
 
-    @DeleteMapping("emergency-contacts/{emp-id}/{contact-id}")
+    @DeleteMapping(value = "employees/{emp-id}/emergency-contacts/{contact-id}",headers = "version=v1")
     public String deleteEmergencyContactById(@PathVariable("emp-id") Long empId, @PathVariable("contact-id") Long id) throws EmployeeNotFoundException {
 
         return emergencyContactServiceIMPL.deleteEmergencyContactById(empId,id);

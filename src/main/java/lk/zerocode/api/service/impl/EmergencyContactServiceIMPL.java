@@ -69,13 +69,20 @@ public class EmergencyContactServiceIMPL implements EmergencyContactService {
 
     @Override
     public String deleteEmergencyContactById(Long empId, Long id) throws EmployeeNotFoundException {
-        Optional<EmergencyContact> emergencyContactOptional = emergencyContactRepository.findById(empId);
-        if (!emergencyContactOptional.isPresent()) {
-            throw new EmployeeNotFoundException("Employee not found");
+
+        Optional<Employee> employeeOptional = employeeRepository.findById(empId);
+        if (!employeeOptional.isPresent()) {
+            throw new EmployeeNotFoundException("Employee not found with id: " + empId);
         }
-        EmergencyContact contact = emergencyContactOptional.get();
+
+        Optional<EmergencyContact> contactOptional = emergencyContactRepository.findById(id);
+        if (!contactOptional.isPresent()) {
+            return null;
+        }
+
         emergencyContactRepository.deleteById(id);
-        return "delete succesfull with employee id :" + empId + " with contact id :" + id;
+        return "Delete successful for employee id: " + empId + " and contact id: " + id;
+
     }
 
 

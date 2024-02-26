@@ -11,4 +11,6 @@ public interface EmergencyContactRepository extends JpaRepository<EmergencyConta
 
     List<EmergencyResponse> findEmergencyContactByEmployeeId(Long empId);
 
+
+
 }
