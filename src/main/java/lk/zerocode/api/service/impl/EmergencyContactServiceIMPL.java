@@ -61,8 +61,9 @@ public class EmergencyContactServiceIMPL implements EmergencyContactService {
         return responses;
     }
 
-    public List<EmergencyResponse> getEmergencyContactByEmployeeId(Long empId) {
+    public List<EmergencyResponse> getEmergencyContactByEmployeeId(Long empId) throws EmployeeNotFoundException{
 
+        Optio
         return emergencyContactRepository.findEmergencyContactByEmployeeId(empId);
     }
 
