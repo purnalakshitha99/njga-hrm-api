@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -66,6 +67,47 @@ public class EducationQualificationServiceImpl implements EducationQualification
             }
         }
     }
+
+    @Override
+    public List<EducationQualificationResponse> getSpecific(Long id) {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+        if (optionalEmployee.isPresent()) {
+            Employee employee = optionalEmployee.get();
+            List<EducationQualification> allQualifications = educationQualificationRepository.findEducationQualificationsByEmployee(employee);
+
+            List<EducationQualificationResponse> qualificationResponseList = allQualifications.stream()
+                    .map(qualification -> EducationQualificationResponse.builder()
+                            .id(qualification.getId())
+                            .universityName(qualification.getUniversityName())
+                            .qualification(qualification.getQualification())
+                            .startDate(qualification.getStartDate())
+                            .endDate(qualification.getEndDate())
+                            .build())
+                    .collect(Collectors.toList());
+            return qualificationResponseList;
+        }
+        return null;
+    }
 }
 
 
+//    public AllBooksResponse allBooks(Long id) {
+//        Optional<Author> authorOpt = authorRepository.findById(id);
+//        if (authorOpt.isPresent()) {
+//            Author author = authorOpt.get();
+//            List<Book> allBooks = bookRepository.findBooksByAuthor(author);
+//
+//            List<BookResponse> bookResponseList = allBooks.stream()
+//                    .map(book -> BookResponse.builder()
+//                            .id(book.getId())
+//                            .name(book.getName())
+//                            .year(book.getYear())
+//                            .build())
+//                    .collect(Collectors.toList());
+//
+//            return AllBooksResponse.builder()
+//                    .bookResponseList(bookResponseList)
+//                    .build();
+//        }
+//        return null;
+//    }
