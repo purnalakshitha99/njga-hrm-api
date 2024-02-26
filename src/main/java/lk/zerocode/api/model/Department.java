@@ -5,13 +5,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
-
 @Data
-<<<<<<< HEAD
-=======
 @Entity
 @Table(name = "departments")
->>>>>>> main
 public class Department {
 
     @Id
