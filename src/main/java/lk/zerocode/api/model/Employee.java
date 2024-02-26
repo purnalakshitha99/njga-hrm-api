@@ -1,6 +1,7 @@
 package lk.zerocode.api.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -40,6 +41,7 @@ public class Employee {
     private List<DependentDetail> dependentDetailsList;
 
     @OneToMany(mappedBy = "employee")
+    @JsonBackReference
     private List<EmergencyContact> emergencyContactList;
 
 //    @ManyToOne
