@@ -1,4 +1,7 @@
 package lk.zerocode.api.repository;
 
-public interface WorkDetailRepository {
+import lk.zerocode.api.model.CurrentWorkDetail;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface WorkDetailRepository extends JpaRepository<CurrentWorkDetail,Long> {
 }
