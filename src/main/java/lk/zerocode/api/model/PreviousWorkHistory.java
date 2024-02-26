@@ -5,13 +5,16 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.Date;
+
+@Data
 @Entity
 @Table(name = "previous_works_histories")
-@Data
 public class PreviousWorkHistory {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String companyName;
     private String designation;
     private LocalDate startDate;
@@ -19,5 +22,4 @@ public class PreviousWorkHistory {
 
     @ManyToOne
     private Employee employee;
-
 }

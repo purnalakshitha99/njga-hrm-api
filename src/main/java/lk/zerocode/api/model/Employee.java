@@ -8,25 +8,28 @@ import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "employees")
-@Data
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String empId;
     private String firstName;
     private String lastName;
     private String nic;
-    private String gender;
     private LocalDate dob;
     private String email;
     private String address;
     private String contactNumber;
     private String workTelephone;
     private String imagePath;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @OneToMany(mappedBy = "employee")
     private List<PreviousWorkHistory> previousWorkHistories;
@@ -44,9 +47,6 @@ public class Employee {
     @JsonBackReference
     private List<EmergencyContact> emergencyContactList;
 
-//    @ManyToOne
-//    private Branch branch;
-
     @OneToMany(mappedBy = "employee")
     private List<FingerPrint> fingerPrintList;
 
@@ -61,13 +61,4 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee")
     private List<OtherLeave> otherLeavesList;
-
-
-
-
-
-
-
-
-
 }

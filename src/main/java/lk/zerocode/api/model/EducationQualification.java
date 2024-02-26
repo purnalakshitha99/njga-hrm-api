@@ -5,14 +5,16 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.Date;
+
+@Data
 @Entity
 @Table(name = "education_qualifications")
-@Data
-
 public class EducationQualification {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String universityName;
     private String qualification;
     private LocalDate startDate;
@@ -20,7 +22,4 @@ public class EducationQualification {
 
     @ManyToOne
     private Employee employee;
-
-
-
 }

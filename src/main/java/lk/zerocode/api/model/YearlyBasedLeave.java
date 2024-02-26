@@ -5,18 +5,18 @@ import lombok.Data;
 
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "yearly_based_leaves")
-@Data
-
 public class YearlyBasedLeave {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String type;
     private String category;
     private Integer noOfDays;
-
 
     @OneToMany(mappedBy = "yearBasedLeave")
     private List<FullDayLeave> fullDayLeavesList;
