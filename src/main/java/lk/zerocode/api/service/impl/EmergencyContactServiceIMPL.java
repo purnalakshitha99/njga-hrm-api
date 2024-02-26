@@ -8,6 +8,7 @@ import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.repository.EmergencyContactRepository;
 import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.service.EmergencyContactService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class EmergencyContactServiceIMPL implements EmergencyContactService {
 
-    @Autowired
     private EmergencyContactRepository emergencyContactRepository;
 
-    @Autowired
     private EmployeeRepository employeeRepository;
 
     @Override
@@ -45,8 +45,6 @@ public class EmergencyContactServiceIMPL implements EmergencyContactService {
             emergencyContact.setEmployee(employee);
 
             employee.getEmergencyContactList().add(emergencyContact);
-
-
             emergencyContactRepository.save(emergencyContact);
 
             EmergencyResponse response = EmergencyResponse.builder()
@@ -61,24 +59,22 @@ public class EmergencyContactServiceIMPL implements EmergencyContactService {
         return responses;
     }
 
-    public List<EmergencyResponse> getEmergencyContactByEmployeeId(Long empId) throws EmployeeNotFoundException{
-
-        Optio
+    public List<EmergencyResponse> getEmergencyContactByEmployeeId(Long empId) throws EmployeeNotFoundException {
+        Optional<Employee> employeeOptional = employeeRepository.findById(empId);
+        if (!employeeOptional.isPresent()) {
+            throw new EmployeeNotFoundException("Employee not fount with id :" + empId);
+        }
         return emergencyContactRepository.findEmergencyContactByEmployeeId(empId);
     }
 
     @Override
     public String deleteEmergencyContactById(Long empId, Long id) throws EmployeeNotFoundException {
         Optional<EmergencyContact> emergencyContactOptional = emergencyContactRepository.findById(empId);
-
         if (!emergencyContactOptional.isPresent()) {
             throw new EmployeeNotFoundException("Employee not found");
         }
-
         EmergencyContact contact = emergencyContactOptional.get();
-
         emergencyContactRepository.deleteById(id);
-
         return "delete succesfull with employee id :" + empId + " with contact id :" + id;
     }
 
