@@ -64,30 +64,34 @@ public class DependentDetailImpl implements DependentService {
                     .collect(Collectors.toList());
         }
     }
-
     @Override
-    public Optional<DependentDetailResponse> updateDependentDetail(Long id, DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException{
-
-        Optional<DependentDetail> optionalDependentDetail = dependentRepository.findById(id);
-
-        if(!optionalDependentDetail.isPresent()){
-            throw new EmployeeNotFoundException("Dependent Not Found!");
-        }
-        else {
-            return optionalDependentDetail
-                    .map(dependentDetailUpdated -> {
-                        dependentDetailUpdated.setDependentsName(dependentDetailRequest.getDependentName());
-                        dependentDetailUpdated.setDob(dependentDetailRequest.getDob());
-                        dependentDetailUpdated.setRelationship(dependentDetailRequest.getRelationship());
-                        dependentRepository.save(dependentDetailUpdated);
-
-                        DependentDetailResponse dependentDetailResponse = DependentDetailResponse.builder()
-                                .dependentName(dependentDetailUpdated.getDependentsName())
-                                .relation(dependentDetailUpdated.getRelationship())
-                                .dob(dependentDetailUpdated.getDob())
-                                .build();
-                        return dependentDetailResponse;
-                    });
-        }
+    public void deleteDependentById(Long id) {
+        dependentRepository.deleteById(id);
     }
+
+    //    @Override
+//    public Optional<DependentDetailResponse> updateDependentDetail(Long id, DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException{
+//
+//        Optional<DependentDetail> optionalDependentDetail = dependentRepository.findById(id);
+//
+//        if(!optionalDependentDetail.isPresent()){
+//            throw new EmployeeNotFoundException("Dependent Not Found!");
+//        }
+//        else {
+//            return optionalDependentDetail
+//                    .map(dependentDetailUpdated -> {
+//                        dependentDetailUpdated.setDependentsName(dependentDetailRequest.getDependentName());
+//                        dependentDetailUpdated.setDob(dependentDetailRequest.getDob());
+//                        dependentDetailUpdated.setRelationship(dependentDetailRequest.getRelationship());
+//                        dependentRepository.save(dependentDetailUpdated);
+//
+//                        DependentDetailResponse dependentDetailResponse = DependentDetailResponse.builder()
+//                                .dependentName(dependentDetailUpdated.getDependentsName())
+//                                .relation(dependentDetailUpdated.getRelationship())
+//                                .dob(dependentDetailUpdated.getDob())
+//                                .build();
+//                        return dependentDetailResponse;
+//                    });
+//        }
+//    }
 }
