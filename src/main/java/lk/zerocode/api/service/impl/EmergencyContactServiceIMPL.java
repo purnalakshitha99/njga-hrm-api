@@ -25,12 +25,12 @@ public class EmergencyContactServiceIMPL implements EmergencyContactService {
     private EmployeeRepository employeeRepository;
 
     @Override
-    public List<EmergencyResponse> addEmergencyContact(Long empId, List<EmergencyContactRequest> emergencyRequests) {
+    public List<EmergencyResponse> addEmergencyContact(Long empId, List<EmergencyContactRequest> emergencyRequests) throws EmployeeNotFoundException {
 
         Optional<Employee> employeeOptional = employeeRepository.findById(empId);
 
         if (!employeeOptional.isPresent()) {
-            return null;
+            throw new EmployeeNotFoundException("Employee not found with id :" + empId);
         }
         List<EmergencyResponse> responses = new ArrayList<>();
 
