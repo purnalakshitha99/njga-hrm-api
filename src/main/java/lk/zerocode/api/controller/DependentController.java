@@ -24,8 +24,12 @@ public class DependentController {
         return dependentService.getDependentByEmpId(id);
     }
 //    @PutMapping(value = "/dependents/{id}/dependent",headers = "version=v1")
-    @PutMapping("/dependents/{id}/dependent")
-    public Optional<DependentDetailResponse> updateDependentDetails(@PathVariable("id")Long id,@RequestBody DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException{
-        return dependentService.updateDependentDetail(id,dependentDetailRequest);
+//    @PutMapping("/dependents/{id}/dependent")
+//    public Optional<DependentDetailResponse> updateDependentDetails(@PathVariable("id")Long id,@RequestBody DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException{
+//        return dependentService.updateDependentDetail(id,dependentDetailRequest);
+//    }
+    @DeleteMapping("/dependents/{id}")
+    public void deleteDependent(@PathVariable ("id") Long id){
+        dependentService.deleteDependentById(id);
     }
 }
