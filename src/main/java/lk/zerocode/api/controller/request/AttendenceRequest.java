@@ -7,5 +7,5 @@ import java.time.LocalTime;
 @Data
 public class AttendenceRequest {
 
-    private Integer tId;
+    private String fingerPrintId;
 }
