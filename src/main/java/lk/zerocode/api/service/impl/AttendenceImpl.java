@@ -40,7 +40,9 @@ public class AttendenceImpl implements AttendenceService {
         Optional<FingerPrint> fingerPrintOpt = fingerPrintRepository.findByFingerPrintId(fId);
         FingerPrint fingerPrint = fingerPrintOpt.get();
 
-        Attendance attendance = new Attendance();
+        Optional<Attendance> attendanceOpt = attendenceRepository.findAttendanceByDateAndEmployee(LocalDate.now(),fingerPrint.getEmployee());
+        if (!attendanceOpt.isPresent()){
+            Attendance attendance = new Attendance();
 
             attendance.setDate(LocalDate.now());
             attendance.setActualCheckIn(LocalTime.now());
@@ -49,10 +51,13 @@ public class AttendenceImpl implements AttendenceService {
             attendance.setEmployee(fingerPrint.getEmployee());
 
             attendenceRepository.save(attendance);
+        }else {
+            throw new EmployeeNotFoundException("Attendance already marked!");
+        }
 
 
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("Basic Details Update successfully!");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Good Morning, " +fingerPrint.getEmployee().getFirstName());
     }
     @Override
     public ResponseEntity<String> addAttendenceCheckOut(AttendenceRequest attendenceRequest)throws EmployeeNotFoundException {
@@ -66,32 +71,19 @@ public class AttendenceImpl implements AttendenceService {
         FingerPrint fingerPrint = fingerPrintOpt.get();
 
         Optional<Attendance> attendanceOpt = attendenceRepository.findAttendanceByEmployee(fingerPrint.getEmployee());
+        if (attendanceOpt.get().getActualCheckOut() == null){
+            Attendance attendance = attendanceOpt.get();
+            attendance.setActualCheckOut(LocalTime.now());
 
-        Attendance attendance = attendanceOpt.get();
-        attendance.setActualCheckOut(LocalTime.now());
-
-        attendenceRepository.save(attendance);
-
-
-
-        return ResponseEntity.status(HttpStatus.CREATED).body("Basic Details Update successfully!");
-    }
-
-
-
-    @Override
-    public Test display(Long fingerId){
-        Optional<FingerPrint> fingerPrintOpt = fingerPrintRepository.findById(fingerId);
-        FingerPrint fingerPrint = fingerPrintOpt.get();
-        if (fingerPrintOpt.isPresent()){
-            return Test.builder()
-                    .id(fingerPrint.getId())
-                    .fingerPrintId(fingerPrint.getFingerPrintId())
-                    .employee(fingerPrint.getEmployee().getEmpId())
-                    .build();
+            attendenceRepository.save(attendance);
+        }else {
+            throw new EmployeeNotFoundException("Mu gihin yako");
         }
-        return null;
+
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Good Bye, "+fingerPrint.getEmployee().getFirstName());
     }
+
 
     @Override
     public void delete() {

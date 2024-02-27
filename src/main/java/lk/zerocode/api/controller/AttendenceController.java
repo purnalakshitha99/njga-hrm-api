@@ -25,11 +25,6 @@ public class AttendenceController {
         return attendenceService.addAttendenceCheckOut(attendenceRequest);
     }
 
-    @GetMapping("/test/{finger_id}")
-    public Test display(@PathVariable("finger_id") Long fingerId){
-        return attendenceService.display(fingerId);
-    }
-
     @DeleteMapping("/delete/att")
     public void delete(){
          attendenceService.delete();

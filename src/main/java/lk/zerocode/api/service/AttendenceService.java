@@ -12,7 +12,6 @@ public interface AttendenceService {
 
     ResponseEntity<String> addAttendenceCheckIn(AttendenceRequest attendenceRequest)throws EmployeeNotFoundException;
     ResponseEntity<String> addAttendenceCheckOut(AttendenceRequest attendenceRequest)throws EmployeeNotFoundException;
-    Test display(Long fingerId);
 
     void delete();
 }
