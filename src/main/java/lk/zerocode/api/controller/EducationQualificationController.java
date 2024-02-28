@@ -20,10 +20,10 @@ public class EducationQualificationController {
     throws EmployeeNotFoundException {
         return educationQualificationService.create(id,educationQualificationRequest);
     }
-    @DeleteMapping(value = "/qualifications/{qualification-id}/{employee-id}",headers ="X-API-VERSION=V1")
-    public void deleteQualification(@PathVariable("qualification-id")Long id,@PathVariable("employee-id")Long employeeId )
+    @DeleteMapping(value = "/employees/{employee-id}/qualifications/{qualification-id}",headers ="X-API-VERSION=V1")
+    public void deleteQualification(@PathVariable("employee-id")Long employeeId,@PathVariable("qualification-id")Long id )
     throws EmployeeNotFoundException{
-        educationQualificationService.delete(id,employeeId);
+        educationQualificationService.delete(employeeId,id);
     }
     @GetMapping(value = "/employees/{employee-id}/qualifications",headers ="X-API-VERSION=V1")
     public List<EducationQualificationResponse> getSpecificQualifications(@PathVariable("employee-id")Long id)
