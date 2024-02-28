@@ -41,6 +41,5 @@ public class OtherLeave {
     private MonthlyBasedLeave monthlyBasedLeaves;
 
     @ManyToOne
-
     private FingerPrint fingerPrint;
 }
