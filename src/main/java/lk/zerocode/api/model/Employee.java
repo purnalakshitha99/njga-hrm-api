@@ -61,4 +61,8 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee")
     private List<OtherLeave> otherLeavesList;
+
+
+
+
 }
