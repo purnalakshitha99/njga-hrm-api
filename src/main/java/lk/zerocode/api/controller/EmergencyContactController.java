@@ -2,38 +2,35 @@ package lk.zerocode.api.controller;
 
 import lk.zerocode.api.controller.request.EmergencyContactRequest;
 import lk.zerocode.api.controller.response.EmergencyResponse;
-import lk.zerocode.api.model.EmergencyContact;
+import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.repository.EmergencyContactRepository;
-import lk.zerocode.api.service.impl.EmergencyContactServiceIMPL;
-import org.springframework.beans.factory.annotation.Autowired;
+import lk.zerocode.api.service.EmergencyContactService;
+import lk.zerocode.api.service.impl.EmergencyContactServiceimpl;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 public class EmergencyContactController {
 
-    @Autowired
-    EmergencyContactServiceIMPL emergencyContactServiceIMPL;
+    EmergencyContactService emergencyContactService;
 
-    @Autowired
     EmergencyContactRepository emergencyContactRepository;
 
-    @PostMapping("/emergency-contacts/{emp-id}")
-    public List<EmergencyResponse> addEmergencyContact(@PathVariable("emp-id") Long empId, @RequestBody List<EmergencyContactRequest> emergencyContactRequest) {
-
-        return emergencyContactServiceIMPL.addEmergencyContact(empId, emergencyContactRequest);
+    @PostMapping(value = "/employees/{emp-id}/emergency-contacts", headers = "version=v1")
+    public List<EmergencyResponse> addEmergencyContact(@PathVariable("emp-id") Long empId, @RequestBody List<EmergencyContactRequest> emergencyContactRequest) throws EmployeeNotFoundException{
+        return emergencyContactService.addEmergencyContact(empId, emergencyContactRequest);
     }
 
-    @GetMapping("emergency-contacts/{emp-id}")
-    public List<EmergencyResponse> findEmergencyContactByEmployeeId(@PathVariable("emp-id") Long id) {
-        return emergencyContactRepository.findEmergencyContactByEmployeeId(id);
+    @GetMapping(value = "employees/{emp-id}/emergency-contacts",headers = "version=v1")
+    public List<EmergencyResponse> findEmergencyContactByEmployeeId(@PathVariable("emp-id") Long id) throws EmployeeNotFoundException {
+        return emergencyContactService.getEmergencyContactByEmployeeId(id);
     }
 
-    @PutMapping("/emergency-contacts/{emp-id}")
-    public List<EmergencyResponse> updateEmergencyContact(@PathVariable("emp-id") Long id , @RequestBody EmergencyContactRequest emergencyContactRequest){
-
-        return emergencyContactServiceIMPL.updateEmergencyDetails(emergencyContactRequest,id);
-
+    @DeleteMapping(value = "employees/{emp-id}/emergency-contacts/{contact-id}",headers = "version=v1")
+    public String deleteEmergencyContactById(@PathVariable("emp-id") Long empId, @PathVariable("contact-id") Long id) throws EmployeeNotFoundException {
+        return emergencyContactService.deleteEmergencyContactById(empId,id);
     }
 }

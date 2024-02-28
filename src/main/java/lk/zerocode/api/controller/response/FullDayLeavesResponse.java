@@ -5,6 +5,5 @@ import lombok.Data;
 
 @Data
 @Builder
-public class IdResponse {
-    private Long id;
-    private String message;}
+public class FullDayLeavesResponse {
+}
