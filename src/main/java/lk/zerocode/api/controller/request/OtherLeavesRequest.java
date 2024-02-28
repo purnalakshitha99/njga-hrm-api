@@ -1,20 +1,16 @@
-package lk.zerocode.api.model;
+package lk.zerocode.api.controller.request;
 
-import jakarta.persistence.*;
+import jakarta.persistence.ManyToOne;
+import lk.zerocode.api.model.Employee;
+import lk.zerocode.api.model.FingerPrint;
+import lk.zerocode.api.model.MonthlyBasedLeave;
+import lk.zerocode.api.model.Status;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
-
 @Data
-@Entity
-@Table(name = "other_leaves")
-public class OtherLeave {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class OtherLeavesRequest {
 
     private String name;
     private String department;
@@ -30,16 +26,8 @@ public class OtherLeave {
     private LocalTime actualCheckOut;
     private LocalTime requiredCheckIn;
     private LocalTime requiredCheckOut;
-
-    @Enumerated(EnumType.STRING)
     private Status status;
-
-    @ManyToOne
     private Employee employee;
-
-    @ManyToOne
     private MonthlyBasedLeave monthlyBasedLeaves;
-
-    @ManyToOne
     private FingerPrint fingerPrint;
 }
