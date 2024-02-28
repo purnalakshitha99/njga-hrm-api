@@ -5,6 +5,7 @@ import lk.zerocode.api.controller.response.Test;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.*;
 import lk.zerocode.api.repository.AttendenceRepository;
+import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.repository.FingerPrintRepository;
 import lk.zerocode.api.service.AttendenceService;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,8 @@ public class AttendenceImpl implements AttendenceService {
 
     private FingerPrintRepository fingerPrintRepository;
     private AttendenceRepository attendenceRepository;
+    private EmployeeRepository employeeRepository;
+
 
 
     @Override
@@ -36,6 +39,13 @@ public class AttendenceImpl implements AttendenceService {
 
         FingerPrint fingerPrint = fingerPrintRepository.findByFingerPrintId(attendenceRequest.getFingerPrintId())
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee fingerprint not found!"));
+
+        Employee employee = employeeRepository.findById(fingerPrint.getEmployee().getId()).orElseThrow(
+                () -> new EmployeeNotFoundException("employee not found!")
+        );
+
+
+
         Optional<Attendance> existingAttendance = attendenceRepository.findAttendanceByDateAndEmployee(today, fingerPrint.getEmployee());
 
         if (LocalTime.now().isAfter(requiredCheckIn) && LocalTime.now().isBefore(afterRequiredTime)) {
