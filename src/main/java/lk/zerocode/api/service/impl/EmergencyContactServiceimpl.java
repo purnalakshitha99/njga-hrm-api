@@ -2,12 +2,13 @@ package lk.zerocode.api.service.impl;
 
 import lk.zerocode.api.controller.request.EmergencyContactRequest;
 import lk.zerocode.api.controller.response.EmergencyResponse;
+import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.EmergencyContact;
 import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.repository.EmergencyContactRepository;
-import lk.zerocode.api.repository.TestEmployeeRepo;
+import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.service.EmergencyContactService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,21 +16,20 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class EmergencyContactServiceIMPL implements EmergencyContactService {
+@AllArgsConstructor
+public class EmergencyContactServiceimpl implements EmergencyContactService {
 
-    @Autowired
     private EmergencyContactRepository emergencyContactRepository;
 
-    @Autowired
-    private TestEmployeeRepo testEmployeeRepo;
+    private EmployeeRepository employeeRepository;
 
     @Override
-    public List<EmergencyResponse> addEmergencyContact(Long empId, List<EmergencyContactRequest> emergencyRequests) {
+    public List<EmergencyResponse> addEmergencyContact(Long empId, List<EmergencyContactRequest> emergencyRequests) throws EmployeeNotFoundException {
 
-        Optional<Employee> employeeOptional = testEmployeeRepo.findById(empId);
+        Optional<Employee> employeeOptional = employeeRepository.findById(empId);
 
         if (!employeeOptional.isPresent()) {
-            return null;
+            throw new EmployeeNotFoundException("Employee not found with id :" + empId);
         }
         List<EmergencyResponse> responses = new ArrayList<>();
 
@@ -44,8 +44,6 @@ public class EmergencyContactServiceIMPL implements EmergencyContactService {
             emergencyContact.setEmployee(employee);
 
             employee.getEmergencyContactList().add(emergencyContact);
-
-
             emergencyContactRepository.save(emergencyContact);
 
             EmergencyResponse response = EmergencyResponse.builder()
@@ -60,36 +58,30 @@ public class EmergencyContactServiceIMPL implements EmergencyContactService {
         return responses;
     }
 
+    public List<EmergencyResponse> getEmergencyContactByEmployeeId(Long empId) throws EmployeeNotFoundException {
+        Optional<Employee> employeeOptional = employeeRepository.findById(empId);
+        if (!employeeOptional.isPresent()) {
+            throw new EmployeeNotFoundException("Employee not fount with id :" + empId);
+        }
+        return emergencyContactRepository.findEmergencyContactByEmployeeId(empId);
+    }
+
     @Override
-    public List<EmergencyResponse> updateEmergencyDetails(EmergencyContactRequest emergencyContactRequest, Long id) {
+    public String deleteEmergencyContactById(Long empId, Long id) throws EmployeeNotFoundException {
 
-        Optional<Employee> employeeOptional = testEmployeeRepo.findById(id);
+        Optional<Employee> employeeOptional = employeeRepository.findById(empId);
+        if (!employeeOptional.isPresent()) {
+            throw new EmployeeNotFoundException("Employee not found with id: " + empId);
+        }
 
-        if (employeeOptional.isPresent()) {
+        Optional<EmergencyContact> contactOptional = emergencyContactRepository.findById(id);
+        if (!contactOptional.isPresent()) {
             return null;
         }
 
-        Employee employee = employeeOptional.get();
-        List<EmergencyResponse> responses = new ArrayList<>();
+        emergencyContactRepository.deleteById(id);
+        return "Delete successful for employee id: " + empId + " and contact id: " + id;
 
-        for (EmergencyContact emergencyContact : employee.getEmergencyContactList()) {
-            emergencyContact.setName(emergencyContactRequest.getName());
-            emergencyContact.setRelationship(emergencyContactRequest.getRelationship());
-            emergencyContact.setContact(emergencyContactRequest.getContact());
-
-            emergencyContactRepository.save(emergencyContact);
-
-            EmergencyResponse response = EmergencyResponse.builder()
-                    .id(emergencyContact.getId())
-                    .name(emergencyContact.getName())
-                    .relationship(emergencyContact.getRelationship())
-                    .contact(emergencyContact.getContact())
-                    .build();
-
-            responses.add(response);
-        }
-
-        return responses;
     }
 
 

@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -25,10 +26,20 @@ public class OtherLeave {
     private String approvedPersonName;
     private LocalDate approvedDate;
     private LocalTime approvedTime;
+    private LocalTime actualCheckIn;
+    private LocalTime actualCheckOut;
+    private LocalTime requiredCheckIn;
+    private LocalTime requiredCheckOut;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne
     private Employee employee;
 
     @ManyToOne
     private MonthlyBasedLeave monthlyBasedLeaves;
+
+    @OneToMany(mappedBy = "otherLeave")
+    private List<FingerPrint> fingerPrintList;
 }
