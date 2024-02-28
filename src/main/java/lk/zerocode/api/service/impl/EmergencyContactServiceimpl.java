@@ -9,7 +9,6 @@ import lk.zerocode.api.repository.EmergencyContactRepository;
 import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.service.EmergencyContactService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class EmergencyContactServiceIMPL implements EmergencyContactService {
+public class EmergencyContactServiceimpl implements EmergencyContactService {
 
     private EmergencyContactRepository emergencyContactRepository;
 

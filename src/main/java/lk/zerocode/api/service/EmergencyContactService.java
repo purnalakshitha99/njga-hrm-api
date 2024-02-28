@@ -12,4 +12,6 @@ public interface EmergencyContactService {
     List<EmergencyResponse> addEmergencyContact(Long empId , List<EmergencyContactRequest> emergencyRequest) throws EmployeeNotFoundException;
 
     String deleteEmergencyContactById(Long empId, Long id) throws EmployeeNotFoundException;
+
+    List<EmergencyResponse> getEmergencyContactByEmployeeId(Long empId) throws EmployeeNotFoundException;
 }
