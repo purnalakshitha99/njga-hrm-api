@@ -59,4 +59,12 @@ public class Employee {
 
     @OneToMany(mappedBy = "employee")
     private List<OtherLeave> otherLeavesList;
+
+
+//    public void removePreviousWorkHistory(PreviousWorkHistory previousWorkHistory) {
+//        // Implement the logic to remove the specified PreviousWorkHistory from the list
+//        // For example:
+//        this.previousWorkHistories.remove(previousWorkHistory);
+//    }
+
 }
