@@ -132,9 +132,9 @@ public class PreviousWorkHistoryServiceImpl implements PreviousWorkHistoryServic
         }
 
         Optional<PreviousWorkHistory> contactOptional = previousWorkHistoryRepository.findById(previousWorkHistoryId);
-        if (!contactOptional.isPresent()) {
-            return null;
-        }
+//        if (!contactOptional.isPresent()) {
+//            return null;
+//        }
 
         previousWorkHistoryRepository.deleteById(previousWorkHistoryId);
         return "Delete successful for employee id: " + empId + " and contact id: " + previousWorkHistoryId;
