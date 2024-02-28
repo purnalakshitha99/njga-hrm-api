@@ -5,7 +5,6 @@ import lk.zerocode.api.controller.response.EmergencyResponse;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.repository.EmergencyContactRepository;
 import lk.zerocode.api.service.EmergencyContactService;
-import lk.zerocode.api.service.impl.EmergencyContactServiceimpl;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

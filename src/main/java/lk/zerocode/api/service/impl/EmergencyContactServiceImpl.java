@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class EmergencyContactServiceimpl implements EmergencyContactService {
+public class EmergencyContactServiceImpl implements EmergencyContactService {
 
     private EmergencyContactRepository emergencyContactRepository;
 
