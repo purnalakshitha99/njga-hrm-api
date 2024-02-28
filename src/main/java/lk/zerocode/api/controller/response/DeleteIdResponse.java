@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @Builder
-public class IdResponse {
+public class DeleteIdResponse {
     private Long id;
-    private String message;}
+}

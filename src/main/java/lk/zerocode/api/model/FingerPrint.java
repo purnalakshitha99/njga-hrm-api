@@ -14,11 +14,12 @@ public class FingerPrint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "t_id")
     private String fingerPrintId;
 
     @ManyToOne
     private Employee employee;
 
-    @ManyToOne
-    private OtherLeave otherLeave;
+    @OneToMany(mappedBy = "fingerPrint")
+    private List<OtherLeave> otherLeaveList;
 }
