@@ -11,6 +11,6 @@ import java.util.List;
 public interface EducationQualificationService {
 
     EducationQualificationResponse create(Long id, EducationQualificationRequest educationQualificationRequest) throws EmployeeNotFoundException;
-    void delete(Long id, Long employeeId) throws EmployeeNotFoundException;
+    void delete(Long employeeId,Long id) throws EmployeeNotFoundException;
     List<EducationQualificationResponse> getSpecific(Long id) throws EmployeeNotFoundException;
 }

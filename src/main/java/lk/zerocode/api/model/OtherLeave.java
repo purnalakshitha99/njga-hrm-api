@@ -40,6 +40,7 @@ public class OtherLeave {
     @ManyToOne
     private MonthlyBasedLeave monthlyBasedLeaves;
 
-    @OneToMany(mappedBy = "otherLeave")
-    private List<FingerPrint> fingerPrintList;
+    @ManyToOne
+
+    private FingerPrint fingerPrint;
 }

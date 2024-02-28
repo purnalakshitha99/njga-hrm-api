@@ -28,6 +28,9 @@ public class FullDayLeave {
     private LocalDate approvedDate;
     private LocalTime approvedTime;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @ManyToOne
     private Employee employee;
 
