@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface DependentService{
     DependentDetailResponse saveDependentDetails(Long id, DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException;
     List<DependentDetailResponse> getDependentByEmpId(Long id)throws EmployeeNotFoundException;
-    Optional<DependentDetailResponse> updateDependentDetail(Long id, DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException;
+//    Optional<DependentDetailResponse> updateDependentDetail(Long id, DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException;
+    void deleteDependentById(Long id);
 }
