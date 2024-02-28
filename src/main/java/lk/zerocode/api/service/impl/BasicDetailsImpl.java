@@ -23,12 +23,11 @@ import java.util.stream.Collectors;
 public class BasicDetailsImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
-    private BranchesRepository branchesRepository;
 
     @Override
     public IdResponse saveBasicDetails(BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException {
 
-        Employee empOpt = employeeRepository.findEmployeeByEmpId(basicDetailsRequest.getEmp_id()).orElseThrow(
+         employeeRepository.findEmployeeByEmpId(basicDetailsRequest.getEmp_id()).orElseThrow(
                 () -> new EmployeeNotFoundException("Employee not Found!")
         );
 
