@@ -1,5 +1,8 @@
 package lk.zerocode.api.service.impl;
 
+import lk.zerocode.api.controller.request.CurrentWorkDetailRequest;
+import lk.zerocode.api.controller.response.IdResponse;
+import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.*;
 import lk.zerocode.api.repository.*;
 import lk.zerocode.api.service.CurrentWorkDetailService;
@@ -18,55 +21,45 @@ public class CurrentWorkDetailServiceImpl implements CurrentWorkDetailService {
     private final DepartmentRepository departmentRepository;
     private final EmpCategoryRepository empCategoryRepository;
 
-//    public void saveWorkDetail(Long empId, CurrentWorkDetailRequest currentWorkDetailRequest, BranchRequest branchRequest, DepartmentRequest departmentRequest, EmpCategoryRequest empCategoryRequest) {
-//
-//        String branchCode = branchRequest.getBCode();
-//
-//        Optional<Employee> optionalEmployee = employeeRepository.findById(empId);
-//        Optional<Branch> branchOptional = branchesRepository.findBranchByBranchCode(branchCode);
-//        Optional<Department> departmentOptional = departmentRepository.findDepartmentByDepId(departmentRequest.getDepId());
-//        Optional<EmpCategory> empCategoryOptional = empCategoryRepository.findEmpCategoriesByEmpCategory(empCategoryRequest.getEmpCategory());
-//
-//
-//        if (optionalEmployee.isPresent() && branchOptional.isPresent() && departmentOptional.isPresent() && empCategoryOptional.isPresent()){
-//
-//            Employee employee = optionalEmployee.get();
-//            Branch branch = branchOptional.get();
-//            Department department = departmentOptional.get();
-//            EmpCategory empCategory = empCategoryOptional.get();
-//
-//
-//            CurrentWorkDetail currentWorkDetail = new CurrentWorkDetail();
-//
-//
-//
-//
-//
-//            currentWorkDetail.setEmpCategory(empCategory);
-//            currentWorkDetail.setEmployee(employee);
-//            currentWorkDetail.setBranch(branch);
-//            currentWorkDetail.setDepartment(department);
-//            currentWorkDetail.setDesignation(currentWorkDetailRequest.getDesignation());
-//            currentWorkDetail.setWorkTelephone(currentWorkDetailRequest.getWorkTelephone());
-//            currentWorkDetail.setStartDate(currentWorkDetail.getStartDate());
-//
-//            currentWorkDetailRepository.save(currentWorkDetail);
-//        }
-//    }
 
 
-    public void addCurrent(Long empId,CurrentWorkDetail currentWorkDetail){
 
-       Optional<Employee> optionalEmployee = employeeRepository.findById(empId);
+    public void saveWorkDetail(Long empId, CurrentWorkDetailRequest currentWorkDetailRequest) throws EmployeeNotFoundException{
 
-       if (optionalEmployee.isPresent()){
+
+       Employee employee = employeeRepository.findById(empId).orElseThrow(
+               () -> new EmployeeNotFoundException("Employee not found")
+       );
+        System.out.println(currentWorkDetailRequest.getEmpCategoryId());
+        System.out.println(empId);
+        System.out.println(currentWorkDetailRequest.getBranchCode());
+
+       Optional<Branch> branchOpt = branchesRepository.findBranchByBranchCode(currentWorkDetailRequest.getBranchCode());
+
+       Optional<Department> departmentOpt = departmentRepository.findDepartmentByDepId(currentWorkDetailRequest.getDepId());
+       Optional<EmpCategory> empCategoryOpt = empCategoryRepository.findById(currentWorkDetailRequest.getEmpCategoryId());
+
+
+
+           Branch branch = branchOpt.get();
+           Department department = departmentOpt.get();
+           EmpCategory empCategory = empCategoryOpt.get();
+
+           CurrentWorkDetail currentWorkDetail = new CurrentWorkDetail();
+
+           currentWorkDetail.setEmployee(employee);
+           currentWorkDetail.setBranch(branch);
+           currentWorkDetail.setDepartment(department);
+           currentWorkDetail.setEmpCategory(empCategory);
+
+           currentWorkDetail.setWorkTelephone(currentWorkDetailRequest.getWorkTelephone());
+           currentWorkDetail.setDesignation(currentWorkDetailRequest.getDesignation());
+           currentWorkDetail.setStartDate(currentWorkDetailRequest.getStartDate());
 
            currentWorkDetailRepository.save(currentWorkDetail);
-
-       }
-
-
-
     }
+
+
+
 
 }

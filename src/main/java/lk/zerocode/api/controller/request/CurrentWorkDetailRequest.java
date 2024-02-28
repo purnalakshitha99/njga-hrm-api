@@ -20,14 +20,16 @@ public class CurrentWorkDetailRequest {
     private String workTelephone;
 
 
-    private Employee employee;
+    private Long empId;
 
 
-    private Long branch;
+    private String branchCode;
 
 
-    private Department department;
+    private String depId;
 
 
-    private EmpCategory empCategory;
+    private Long empCategoryId;
+
+
 }
