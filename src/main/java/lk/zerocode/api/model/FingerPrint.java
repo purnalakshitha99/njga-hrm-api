@@ -14,7 +14,7 @@ public class FingerPrint {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Integer tId;
+    private String fingerPrintId;
 
     @ManyToOne
     private Employee employee;
