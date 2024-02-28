@@ -29,48 +29,69 @@ public class AttendenceImpl implements AttendenceService {
     public ResponseEntity<String> addAttendenceCheckIn(AttendenceRequest attendenceRequest) throws EmployeeNotFoundException {
 
         LocalDate today = LocalDate.now();
-        LocalTime requiredCheckIn = LocalTime.of(14, 00);
+        LocalTime requiredCheckIn = LocalTime.of(14, 50);
         LocalTime requiredCheckOut = LocalTime.of(15, 00);
-        LocalTime afterRequiredTime = LocalTime.of(14, 30);
+        LocalTime afterRequiredTime = LocalTime.of(15, 20);
+        Duration lateTime = Duration.between(requiredCheckIn, LocalTime.now());
 
         FingerPrint fingerPrint = fingerPrintRepository.findByFingerPrintId(attendenceRequest.getFingerPrintId())
                 .orElseThrow(() -> new EmployeeNotFoundException("Employee fingerprint not found!"));
+        Optional<Attendance> existingAttendance = attendenceRepository.findAttendanceByDateAndEmployee(today, fingerPrint.getEmployee());
 
-        if (LocalTime.now().isAfter(requiredCheckIn)) {
+        if (LocalTime.now().isAfter(requiredCheckIn) && LocalTime.now().isBefore(afterRequiredTime)) {
 
-            Duration lateTime = Duration.between(requiredCheckIn, LocalTime.now());
+//                Optional<Attendance> existingAttendance = attendenceRepository.findAttendanceByDateAndEmployee(today, fingerPrint.getEmployee());
 
-            Optional<Attendance> existingAttendance = attendenceRepository.findAttendanceByDateAndEmployee(today, fingerPrint.getEmployee());
+                if (existingAttendance.isPresent()) {
+                    Attendance attendance = existingAttendance.get();
+                    if (attendance.getActualCheckOut() != null) {
+                        throw new EmployeeNotFoundException("Attendance already marked!");
+                    }
+                    if (existingAttendance.get().getRequiredCheckOut().isAfter(LocalTime.of(18,00))){
+                        return ResponseEntity.status(HttpStatus.CREATED).body("Oyata Yanna denna be, " + fingerPrint.getEmployee().getFirstName());
+                    }
+                    else {
+                        attendance.setActualCheckOut(LocalTime.now());
+                        attendance.setStatus(Status.APPROVED);
+                        attendenceRepository.save(attendance);
+                        return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye, " + fingerPrint.getEmployee().getFirstName());
+
+                    }
+
+                } else {
+                    Attendance attendanceLate = new Attendance();
+                    attendanceLate.setDate(LocalDate.now());
+                    attendanceLate.setActualCheckIn(LocalTime.now());
+                    attendanceLate.setRequiredCheckIn(requiredCheckIn);
+                    attendanceLate.setRequiredCheckOut(requiredCheckOut.plus(lateTime));
+                    attendanceLate.setEmployee(fingerPrint.getEmployee());
+                    attendanceLate.setStatus(Status.PENDING);
+                    attendenceRepository.save(attendanceLate);
+                    throw new EmployeeNotFoundException("Sorry, you are late, " + fingerPrint.getEmployee().getFirstName());
+                }
+
+        }
+
+        if (LocalTime.now().isAfter(afterRequiredTime)) {
             if (existingAttendance.isPresent()) {
                 Attendance attendance = existingAttendance.get();
                 if (attendance.getActualCheckOut() != null) {
                     throw new EmployeeNotFoundException("Attendance already marked!");
                 }
-                if (existingAttendance.get().getRequiredCheckOut().isAfter(LocalTime.of(18,00))){
-                    return ResponseEntity.status(HttpStatus.CREATED).body("Oyata Yanna denna be, " + fingerPrint.getEmployee().getFirstName());
-                }
-                else {
-                    attendance.setActualCheckOut(LocalTime.now());
-                    attendance.setStatus(Status.APPROVED);
-                    attendenceRepository.save(attendance);
-                    return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye, " + fingerPrint.getEmployee().getFirstName());
-
-                }
-
+                return ResponseEntity.status(HttpStatus.CREATED).body("You can't leave, Meet your head please , " + fingerPrint.getEmployee().getFirstName());
             } else {
-                Attendance attendanceLate = new Attendance();
-                attendanceLate.setDate(LocalDate.now());
-                attendanceLate.setActualCheckIn(LocalTime.now());
-                attendanceLate.setRequiredCheckIn(requiredCheckIn);
-                attendanceLate.setRequiredCheckOut(requiredCheckOut.plus(lateTime));
-                attendanceLate.setEmployee(fingerPrint.getEmployee());
-                attendanceLate.setStatus(Status.PENDING);
-                attendenceRepository.save(attendanceLate);
-                throw new EmployeeNotFoundException("Sorry, you are late, " + fingerPrint.getEmployee().getFirstName());
+                Attendance attendance = new Attendance();
+                attendance.setDate(today);
+                attendance.setActualCheckIn(LocalTime.now());
+                attendance.setRequiredCheckIn(requiredCheckIn);
+//            attendance.setRequiredCheckOut(requiredCheckOut);
+                attendance.setEmployee(fingerPrint.getEmployee());
+                attendance.setStatus(Status.PENDING);
+                attendenceRepository.save(attendance);
+                return ResponseEntity.status(HttpStatus.CREATED).body("Sorry, you are too late meet your head please," + fingerPrint.getEmployee().getFirstName());
             }
         }
 
-        Optional<Attendance> existingAttendance = attendenceRepository.findAttendanceByDateAndEmployee(today, fingerPrint.getEmployee());
 
         if (existingAttendance.isPresent()) {
             Attendance attendance = existingAttendance.get();
