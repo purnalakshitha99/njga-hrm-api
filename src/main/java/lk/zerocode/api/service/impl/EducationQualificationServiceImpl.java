@@ -1,8 +1,8 @@
 package lk.zerocode.api.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lk.zerocode.api.controller.request.EducationQualificationRequest;
 import lk.zerocode.api.controller.response.EducationQualificationResponse;
+import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.EducationQualification;
 import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.repository.EducationQualificationRepository;
@@ -11,7 +11,9 @@ import lk.zerocode.api.service.EducationQualificationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -20,10 +22,12 @@ public class EducationQualificationServiceImpl implements EducationQualification
     private EducationQualificationRepository educationQualificationRepository;
     private EmployeeRepository employeeRepository;
     @Override
-    public EducationQualificationResponse create(Long id, EducationQualificationRequest educationQualificationRequest) {
+    public EducationQualificationResponse create(Long id, EducationQualificationRequest educationQualificationRequest) throws EmployeeNotFoundException {
         Optional<Employee> optionalEmployee= employeeRepository.findById(id);
-        employeeRepository.findById(id).orElseThrow(()-> new EntityNotFoundException("designation not found"));
-        if(optionalEmployee.isPresent()){
+        if(!optionalEmployee.isPresent()){
+           throw new EmployeeNotFoundException("Employee not found!");
+        }
+        else {
             Employee employee= optionalEmployee.get();
             EducationQualification educationQualification=new EducationQualification();
             educationQualification.setUniversityName(educationQualificationRequest.getUniversityName());
@@ -42,43 +46,51 @@ public class EducationQualificationServiceImpl implements EducationQualification
                     .build();
             return educationQualificationResponse;
         }
+    }
+    @Override
+    public void delete(Long id, Long employeeId) throws  EmployeeNotFoundException{
+        Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
+        if(!optionalEmployee.isPresent()){
+            throw new EmployeeNotFoundException("Employee not found!");
+        }
+        else {
+            Employee employee=optionalEmployee.get();
+            List<EducationQualification> educationQualificationList=employee.getEducationQualificationList();
 
-        return null;
+            EducationQualification qualificationToDelete=educationQualificationList.stream()
+                    .filter(educationQualification -> educationQualification.getId().equals(id))
+                    .findFirst()
+                    .orElse(null);
+
+            if (qualificationToDelete !=null){
+                educationQualificationList.remove(qualificationToDelete);
+                employeeRepository.save(employee);
+                educationQualificationRepository.deleteById(id);
+                System.out.println("Education Qualification Delete Successfully");
+            }
+        }
+    }
+    @Override
+    public List<EducationQualificationResponse> getSpecific(Long id) throws EmployeeNotFoundException {
+        Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+        if(!optionalEmployee.isPresent()){
+            throw new EmployeeNotFoundException("Employee not found!");
+        }
+        else {
+            Employee employee = optionalEmployee.get();
+            List<EducationQualification> allQualifications = educationQualificationRepository.findEducationQualificationsByEmployee(employee);
+
+            List<EducationQualificationResponse> qualificationResponseList = allQualifications.stream()
+                    .map(qualification -> EducationQualificationResponse.builder()
+                            .id(qualification.getId())
+                            .universityName(qualification.getUniversityName())
+                            .qualification(qualification.getQualification())
+                            .startDate(qualification.getStartDate())
+                            .endDate(qualification.getEndDate())
+                            .build())
+                    .collect(Collectors.toList());
+            return qualificationResponseList;
+        }
     }
 }
 
-
-//    Optional<Designation> optionalDesignation=designationRepository.findById(designationId);
-//        designationRepository.findById(designationId).orElseThrow(()->
-//                new EntityNotFoundException("designation not found"));
-//
-//                if (optionalDesignation.isPresent()) {
-//                Designation designation = optionalDesignation.get();
-//                Employee employee=new Employee();
-//                employee.setFirstName(employeeRequest.getFirstName());
-//                employee.setLastName(employeeRequest.getLastName());
-//                employee.setDob(employeeRequest.getDob());
-//                employee.setAge(employeeRequest.getAge());
-//                employee.setGender(employeeRequest.getGender());
-//                employee.setNationality(employeeRequest.getNationality());
-//                employee.setAddress(employeeRequest.getAddress());
-//                employee.setMaritalStatus(employeeRequest.getMaritalStatus());
-//                employee.setEmail(employeeRequest.getEmail());
-//                employee.setContactNumber(employeeRequest.getContactNumber());
-//                employee.setDesignation(designation);
-//                employeeRepository.save(employee);
-//
-//                EmployeeResponse employeeResponse=new EmployeeResponse();
-//                employeeResponse.setFirstName(employee.getFirstName());
-//                employeeResponse.setLastName(employee.getLastName());
-//                employeeResponse.setDob(employee.getDob());
-//                employeeResponse.setAge(employee.getAge());
-//                employeeResponse.setGender(employee.getGender());
-//                employeeResponse.setNationality(employee.getNationality());
-//                employeeResponse.setAddress(employee.getAddress());
-//                employeeResponse.setMaritalStatus(employee.getMaritalStatus());
-//                employeeResponse.setEmail(employee.getEmail());
-//                employeeResponse.setContactNumber(employee.getContactNumber());
-//                return employeeResponse;
-//                }
-//                return null;

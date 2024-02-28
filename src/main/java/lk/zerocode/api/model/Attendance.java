@@ -19,7 +19,7 @@ public class Attendance {
     private LocalTime actualCheckOut;
     private LocalTime requiredCheckIn;
     private LocalTime requiredCheckOut;
-    private String dayType;
+    private String dayType;//morning/evining
 
     @Enumerated(EnumType.STRING)
     private Status status;
