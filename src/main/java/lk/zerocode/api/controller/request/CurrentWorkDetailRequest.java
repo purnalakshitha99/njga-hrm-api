@@ -29,7 +29,9 @@ public class CurrentWorkDetailRequest {
     private String depId;
 
 
-    private Long empCategoryId;
+    private String empCategory;
+
+    private String empCategoryType;
 
 
 }
