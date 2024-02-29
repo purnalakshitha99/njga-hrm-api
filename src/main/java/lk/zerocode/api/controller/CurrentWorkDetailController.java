@@ -1,6 +1,7 @@
 package lk.zerocode.api.controller;
 
 import lk.zerocode.api.controller.request.CurrentWorkDetailRequest;
+import lk.zerocode.api.controller.response.CurrentWorkDetailResponse;
 import lk.zerocode.api.controller.response.IdResponse;
 import lk.zerocode.api.exceptions.*;
 import lk.zerocode.api.model.CurrentWorkDetail;
@@ -31,6 +32,12 @@ public class CurrentWorkDetailController {
     public IdResponse deleteDetails(@PathVariable("emp_id")Long empId)throws EmployeeNotFoundException {
 
       return   currentWorkDetailService.deleteDetails(empId);
+    }
+
+    @GetMapping("/employees/{emp_id}/current_work_details")
+    public CurrentWorkDetailResponse getDetails(@PathVariable("emp_id")Long empId)throws EmployeeNotFoundException{
+
+        return currentWorkDetailService.getDetails(empId);
     }
 
 
