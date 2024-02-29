@@ -5,12 +5,10 @@ import lk.zerocode.api.controller.response.BasicDetailsResponse;
 import lk.zerocode.api.controller.response.IdResponse;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.Employee;
-import lk.zerocode.api.repository.BranchesRepository;
 import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.service.EmployeeService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -20,15 +18,14 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class BasicDetailsImpl implements EmployeeService {
+public class BasicDetailsServiceImpl implements EmployeeService {
 
     private EmployeeRepository employeeRepository;
-    private BranchesRepository branchesRepository;
 
     @Override
     public IdResponse saveBasicDetails(BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException {
 
-        Employee empOpt = employeeRepository.findEmployeeByEmpId(basicDetailsRequest.getEmp_id()).orElseThrow(
+         employeeRepository.findEmployeeByEmpId(basicDetailsRequest.getEmp_id()).orElseThrow(
                 () -> new EmployeeNotFoundException("Employee not Found!")
         );
 
@@ -130,6 +127,7 @@ public class BasicDetailsImpl implements EmployeeService {
                         .gender(employee.getGender())
                         .build())
                 .collect(Collectors.toList());
+
     }
 
     @Override
