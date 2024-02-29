@@ -11,17 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class AppControllerAdvicer {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({EmployeeNotFoundException.class,BranchNotFoundException.class,EmpCategoryNotFoundException.class,CurrentWorkDetailNotFoundException.class})
-   public ErrorResponse handleNFException(Exception exception){
-       ErrorResponse errorResponse = new ErrorResponse();
-       errorResponse.setMessage(exception.getMessage());
-
-       return errorResponse;
-   }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({EmployeeLateException.class})
-    public ErrorResponse handleELException(Exception exception){
+    @ExceptionHandler({AllNotFoundException.class})
+    public ErrorResponse handleNFException(Exception exception) {
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.setMessage(exception.getMessage());
 
