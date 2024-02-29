@@ -103,5 +103,10 @@ public class CurrentWorkDetailServiceImpl implements CurrentWorkDetailService {
                 .build();
     }
 
+    @Override
+    public void deleteAll() {
+    currentWorkDetailRepository.deleteAll();
+    }
+
 
 }

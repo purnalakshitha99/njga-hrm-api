@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
@@ -22,17 +23,14 @@ public class AttendenceServiceImpl implements AttendenceService {
     private FingerPrintRepository fingerPrintRepository;
     private AttendenceRepository attendenceRepository;
     private EmployeeRepository employeeRepository;
-    private CurrentWorkDetailRepository currentWorkDetailRepository;
-    private EmpCategoryRepository empCategoryRepository;
-
 
     @Override
     public ResponseEntity<String> addAttendenceCheckIn(AttendenceRequest attendenceRequest) throws EmployeeNotFoundException {
 
         LocalDate today = LocalDate.now();
-        LocalTime requiredCheckInSTD = LocalTime.of(12, 00);
-        LocalTime requiredCheckOutSTD = LocalTime.of(12, 05);
-        LocalTime afterRequiredTimeSTD = LocalTime.of(12, 20);
+        LocalTime requiredCheckInSTD = LocalTime.of(15, 50);
+        LocalTime requiredCheckOutSTD = LocalTime.of(17, 00);
+        LocalTime afterRequiredTimeSTD = LocalTime.of(16, 00);
         Duration lateTimeSTD = Duration.between(requiredCheckInSTD, LocalTime.now());
 
         LocalTime requiredCheckInPL = LocalTime.of(13, 0);
@@ -67,7 +65,7 @@ public class AttendenceServiceImpl implements AttendenceService {
 
                         throw new EmployeeNotFoundException("Attendance already marked!");
                     }
-                    if (LocalTime.now().isBefore(existingAttendance.get().getRequiredCheckOut())) {
+                    if (LocalTime.of(17,05).isBefore(existingAttendance.get().getRequiredCheckOut().minus(5,ChronoUnit.MINUTES))) {
 
                         return ResponseEntity.status(HttpStatus.CREATED).body("Oyata Yanna denna be, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
                     } else {
@@ -117,12 +115,15 @@ public class AttendenceServiceImpl implements AttendenceService {
                 if (attendance.getActualCheckOut() != null) {
                     throw new EmployeeNotFoundException("Attendance already marked!"+"("+ empCategory+")");
                 }
-                if (LocalTime.now().isBefore(existingAttendance.get().getRequiredCheckOut())){
-                    attendance.setActualCheckOut(LocalTime.now());
+                if (LocalTime.of(16,58).isBefore(existingAttendance.get().getRequiredCheckOut().minus(5,ChronoUnit.MINUTES))){
                     attendance.setStatus(Status.PENDING);
                     attendenceRepository.save(attendance);
                     throw new EmployeeNotFoundException("You are trying to leave early!"+"("+ empCategory+")");
                 }
+                attendance.setActualCheckOut(LocalTime.now());
+                attendance.setStatus(Status.APPROVED);
+                attendenceRepository.save(attendance);
+                return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
 
             } else {
                 Attendance attendance = new Attendance();
@@ -144,7 +145,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                     if (attendance.getActualCheckOut() != null) {
                         throw new EmployeeNotFoundException("Attendance already marked!"+"("+ empCategory+")");
                     }
-                    if (LocalTime.now().isBefore(existingAttendance.get().getRequiredCheckOut())) {
+                    if (LocalTime.now().isBefore(existingAttendance.get().getRequiredCheckOut().minus(5,ChronoUnit.MINUTES))) {
                         return ResponseEntity.status(HttpStatus.CREATED).body("Oyata Yanna denna be, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
                     } else {
                         attendance.setActualCheckOut(LocalTime.now());
@@ -183,7 +184,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                     attendance.setEmployee(fingerPrint.getEmployee());
                     attendance.setStatus(Status.PENDING);
                     attendenceRepository.save(attendance);
-                    return ResponseEntity.status(HttpStatus.CREATED).body("pl Sorry, you are too late meet your head please," + fingerPrint.getEmployee().getFirstName());
+                    return ResponseEntity.status(HttpStatus.CREATED).body("Sorry, you are too late meet your head please," +"("+ empCategory+")"+ fingerPrint.getEmployee().getFirstName());
                 }
             }
 
@@ -193,7 +194,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                 if (attendance.getActualCheckOut() != null) {
                     throw new EmployeeNotFoundException("Attendance already marked!"+"("+ empCategory+")");
                 }
-                if (LocalTime.now().isBefore(existingAttendance.get().getRequiredCheckOut())){
+                if (LocalTime.now().isBefore(existingAttendance.get().getRequiredCheckOut().minus(5,ChronoUnit.MINUTES))){
                     attendance.setStatus(Status.PENDING);
                     attendenceRepository.save(attendance);
                     throw new EmployeeNotFoundException("You are trying to leave early!"+"("+ empCategory+")");
