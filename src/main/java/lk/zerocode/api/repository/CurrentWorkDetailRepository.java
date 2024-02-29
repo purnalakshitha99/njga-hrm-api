@@ -9,13 +9,12 @@ import java.util.Optional;
 
 public interface CurrentWorkDetailRepository extends JpaRepository<CurrentWorkDetail,Long> {
 
-<<<<<<< HEAD
-=======
+
 //    Optional<CurrentWorkDetail> findCurrentWorkDetailsByEmployee(Employee employee);
 
     Optional<CurrentWorkDetail> deleteCurrentWorkDetailByEmployeeId(Long empId);
 
->>>>>>> main
+
 
 }
 

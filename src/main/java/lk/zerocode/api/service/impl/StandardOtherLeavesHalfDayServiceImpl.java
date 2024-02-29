@@ -2,11 +2,9 @@ package lk.zerocode.api.service.impl;
 
 import lk.zerocode.api.controller.request.OtherLeavesRequest;
 import lk.zerocode.api.controller.response.OtherLeavesResponse;
+import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.*;
-import lk.zerocode.api.repository.CurrentWorkDetailRepository;
-import lk.zerocode.api.repository.EmployeeRepository;
-import lk.zerocode.api.repository.MonthlyBasedLeavesRepository;
-import lk.zerocode.api.repository.OtherLeavesRepository;
+import lk.zerocode.api.repository.*;
 import lk.zerocode.api.service.StandardOtherLeavesHalfDayService;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.Response;
@@ -24,31 +22,27 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
     OtherLeavesRepository otherLeavesRepository;
 
-    CurrentWorkDetailRepository workDetailRepository;
+    CurrentWorkDetailRepository currentWorkDetailRepository;
 
     MonthlyBasedLeavesRepository monthlyBasedLeavesRepository;
 
+    EmpCategoryRepository empCategoryRepository;
+
 
     @Override
-    public List<OtherLeavesResponse> createStandardHalfDayLeaves(Long empId,OtherLeavesRequest otherLeavesRequest) {
+    public List<OtherLeavesResponse> createStandardHalfDayLeaves(Long empId,Long wId,OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException {
 
-        Optional<CurrentWorkDetail> currentWorkDetailOptional = workDetailRepository.findById(empId);
+        Optional<CurrentWorkDetail> currentWorkDetailOptional = currentWorkDetailRepository.findById(wId);
         Optional<Employee> employeeOptional = employeeRepository.findById(empId);
 
-
+        CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
 
         List<OtherLeavesResponse> responses = new ArrayList<>();
 
         if (!employeeOptional.isPresent() && currentWorkDetailOptional.isPresent()) {
-            return null;
+            throw new EmployeeNotFoundException("employee not found with id :" +empId);
         }
-//        } else if (currentWorkDetailOptional.get().getEmpCategory().getId().equals(4)) {
-//            CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
-
-        else if (currentWorkDetailOptional.get().getEmpCategory().getEmpCategory().equals("standard")) {
-
             OtherLeave otherLeave = new OtherLeave();
-            CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
             Employee employee = employeeOptional.get();
 
             otherLeave.setName(employee.getFirstName());
@@ -59,8 +53,6 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
             otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
             otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
             otherLeave.setEmployee(currentWorkDetail.getEmployee());
-
-
 
             otherLeavesRepository.save(otherLeave);
 
@@ -76,18 +68,6 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
             responses.add(response);
 
-
-        }
-
-
-
-
-
         return responses;
-
-
-
-
-
     }
 }

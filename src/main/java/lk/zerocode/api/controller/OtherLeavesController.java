@@ -2,6 +2,7 @@ package lk.zerocode.api.controller;
 
 import lk.zerocode.api.controller.request.OtherLeavesRequest;
 import lk.zerocode.api.controller.response.OtherLeavesResponse;
+import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.service.OtherLeavesService;
 import lk.zerocode.api.service.StandardOtherLeavesHalfDayService;
 import lombok.AllArgsConstructor;
@@ -18,10 +19,9 @@ public class OtherLeavesController {
 
     StandardOtherLeavesHalfDayService standardOtherLeavesHalfDayService;
 
-    @PostMapping("/currentworks/{emp-id}/otherleaves")
-    public List<OtherLeavesResponse> createStandardOtherLeave(@PathVariable("emp-id") Long empId,
-                                                              @RequestBody OtherLeavesRequest otherLeavesRequest){
-        return standardOtherLeavesHalfDayService.createStandardHalfDayLeaves(empId,otherLeavesRequest);
+    @PostMapping("employees/{emp-id}/currentworks/{work-id}/otherleaves")
+    public List<OtherLeavesResponse> createStandardOtherLeave(@PathVariable("emp-id") Long empId, @PathVariable("work-id") Long wId,@RequestBody OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException {
+        return standardOtherLeavesHalfDayService.createStandardHalfDayLeaves(empId,wId,otherLeavesRequest);
     }
 
 }
