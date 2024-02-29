@@ -67,7 +67,7 @@ public class AttendenceServiceImpl implements AttendenceService {
 
                         throw new EmployeeNotFoundException("Attendance already marked!");
                     }
-                    if (LocalTime.of(12,20).isBefore(existingAttendance.get().getRequiredCheckOut())) {
+                    if (LocalTime.now().isBefore(existingAttendance.get().getRequiredCheckOut())) {
 
                         return ResponseEntity.status(HttpStatus.CREATED).body("Oyata Yanna denna be, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
                     } else {
@@ -144,7 +144,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                     if (attendance.getActualCheckOut() != null) {
                         throw new EmployeeNotFoundException("Attendance already marked!"+"("+ empCategory+")");
                     }
-                    if (LocalTime.of(12,20).isBefore(existingAttendance.get().getRequiredCheckOut())) {
+                    if (LocalTime.now().isBefore(existingAttendance.get().getRequiredCheckOut())) {
                         return ResponseEntity.status(HttpStatus.CREATED).body("Oyata Yanna denna be, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
                     } else {
                         attendance.setActualCheckOut(LocalTime.now());
