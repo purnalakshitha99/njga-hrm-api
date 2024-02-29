@@ -40,5 +40,10 @@ public class CurrentWorkDetailController {
         return currentWorkDetailService.getDetails(empId);
     }
 
+    @DeleteMapping("/work/delete")
+    public void delete(){
+        currentWorkDetailService.deleteAll();
+    }
+
 
 }
