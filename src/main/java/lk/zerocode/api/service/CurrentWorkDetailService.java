@@ -16,4 +16,6 @@ public interface CurrentWorkDetailService {
     IdResponse deleteDetails(Long empId)throws EmployeeNotFoundException;
 
     CurrentWorkDetailResponse getDetails(Long empId)throws EmployeeNotFoundException;
+
+    void deleteAll();
 }
