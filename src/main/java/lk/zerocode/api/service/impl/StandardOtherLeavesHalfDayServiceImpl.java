@@ -2,12 +2,10 @@ package lk.zerocode.api.service.impl;
 
 import lk.zerocode.api.controller.request.OtherLeavesRequest;
 import lk.zerocode.api.controller.response.OtherLeavesResponse;
-import lk.zerocode.api.model.CurrentWorkDetail;
-import lk.zerocode.api.model.Department;
-import lk.zerocode.api.model.Employee;
-import lk.zerocode.api.model.OtherLeave;
+import lk.zerocode.api.model.*;
 import lk.zerocode.api.repository.CurrentWorkDetailRepository;
 import lk.zerocode.api.repository.EmployeeRepository;
+import lk.zerocode.api.repository.MonthlyBasedLeavesRepository;
 import lk.zerocode.api.repository.OtherLeavesRepository;
 import lk.zerocode.api.service.StandardOtherLeavesHalfDayService;
 import lombok.AllArgsConstructor;
@@ -28,38 +26,41 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
     CurrentWorkDetailRepository workDetailRepository;
 
-    @Override
-    public List<OtherLeavesResponse> createStandardHalfDayLeaves(Long empId, List<OtherLeavesRequest> otherLeavesRequests) {
+    MonthlyBasedLeavesRepository monthlyBasedLeavesRepository;
 
+
+    @Override
+    public List<OtherLeavesResponse> createStandardHalfDayLeaves(Long empId,OtherLeavesRequest otherLeavesRequest) {
+
+        Optional<CurrentWorkDetail> currentWorkDetailOptional = workDetailRepository.findById(empId);
         Optional<Employee> employeeOptional = employeeRepository.findById(empId);
+
+
 
         List<OtherLeavesResponse> responses = new ArrayList<>();
 
-        Employee employee = employeeOptional.get();
-
-        if (!employeeOptional.isPresent()) {
+        if (!employeeOptional.isPresent() && currentWorkDetailOptional.isPresent()) {
             return null;
         }
+//        } else if (currentWorkDetailOptional.get().getEmpCategory().getId().equals(4)) {
+//            CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
 
-        for (OtherLeavesRequest otherLeavesRequest : otherLeavesRequests){
+        else if (currentWorkDetailOptional.get().getEmpCategory().getEmpCategory().equals("standard")) {
+
             OtherLeave otherLeave = new OtherLeave();
-            otherLeave.setName(otherLeavesRequest.getName());
+            CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
+            Employee employee = employeeOptional.get();
+
+            otherLeave.setName(employee.getFirstName());
             otherLeave.setDepartment(otherLeavesRequest.getDepartment());
             otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
             otherLeave.setDayType(otherLeavesRequest.getDayType());
             otherLeave.setReason(otherLeavesRequest.getReason());
             otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
             otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
-            otherLeave.setApprovedPersonName(otherLeavesRequest.getApprovedPersonName());
-            otherLeave.setApprovedDate(otherLeavesRequest.getApprovedDate());
-            otherLeave.setApprovedTime(otherLeavesRequest.getApprovedTime());
-            otherLeave.setActualCheckIn(otherLeavesRequest.getActualCheckIn());
-            otherLeave.setActualCheckOut(otherLeavesRequest.getActualCheckOut());
-            otherLeave.setRequiredCheckIn(otherLeavesRequest.getRequiredCheckIn());
-            otherLeave.setRequiredCheckOut(otherLeavesRequest.getRequiredCheckOut());
-            otherLeave.setStatus(otherLeavesRequest.getStatus());
-            otherLeave.setEmployee(employee);
-            otherLeave.setFingerPrint(otherLeavesRequest.getFingerPrint());
+            otherLeave.setEmployee(currentWorkDetail.getEmployee());
+
+
 
             otherLeavesRepository.save(otherLeave);
 
@@ -68,18 +69,9 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
                     .department(otherLeave.getDepartment())
                     .leaveType(otherLeave.getLeaveType())
                     .dayType(otherLeave.getDayType())
-                    .reason(otherLeave.getReason())
+                    .reason(otherLeavesRequest.getReason())
                     .financialYear(otherLeave.getFinancialYear())
                     .applyDate(otherLeave.getApplyDate())
-                    .approvedPersonName(otherLeave.getApprovedPersonName())
-                    .approvedDate(otherLeave.getApprovedDate())
-                    .approvedTime(otherLeave.getApprovedTime())
-                    .actualCheckIn(otherLeave.getActualCheckIn())
-                    .actualCheckOut(otherLeave.getActualCheckOut())
-                    .requiredCheckIn(otherLeave.getRequiredCheckIn())
-                    .requiredCheckOut(otherLeave.getRequiredCheckOut())
-                    .status(otherLeave.getStatus())
-                    .employee(otherLeave.getEmployee())
                     .build();
 
             responses.add(response);
@@ -87,8 +79,15 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
         }
 
+
+
+
+
         return responses;
+
+
+
+
+
     }
-
-
 }

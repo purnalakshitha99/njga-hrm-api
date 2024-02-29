@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface StandardOtherLeavesHalfDayService {
 
-    List<OtherLeavesResponse> createStandardHalfDayLeaves(Long empId , List<OtherLeavesRequest> otherLeavesRequests);
+    List<OtherLeavesResponse> createStandardHalfDayLeaves(Long empId, OtherLeavesRequest otherLeavesRequest);
 }

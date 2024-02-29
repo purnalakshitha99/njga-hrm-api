@@ -14,8 +14,8 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
 
     EmployeeRepository employeeRepository;
 
-    @Override
-    public List<OtherLeavesResponse> createStandardOtherLeaves(Long empId, OtherLeavesRequest otherLeavesRequest) {
-        return null;
-    }
+//    @Override
+//    public List<OtherLeavesResponse> createStandardOtherLeaves(Long empId, OtherLeavesRequest otherLeavesRequest) {
+//        return null;
+//    }
 }

@@ -3,6 +3,7 @@ package lk.zerocode.api.controller;
 import lk.zerocode.api.controller.request.OtherLeavesRequest;
 import lk.zerocode.api.controller.response.OtherLeavesResponse;
 import lk.zerocode.api.service.OtherLeavesService;
+import lk.zerocode.api.service.StandardOtherLeavesHalfDayService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,11 +16,12 @@ import java.util.List;
 @AllArgsConstructor
 public class OtherLeavesController {
 
-    OtherLeavesService otherLeavesService;
+    StandardOtherLeavesHalfDayService standardOtherLeavesHalfDayService;
 
-//    @PostMapping(value = "/employee/{emp-id}/otherleaves" , headers = "version=v1")
-//    public List<OtherLeavesResponse> createStandardOtherLeave(@PathVariable("emp-id") Long empId, @RequestBody List<OtherLeavesRequest> otherLeavesRequests){
-//        return otherLeavesService.createStandardOtherLeaves(empId,otherLeavesRequests);
-//    }
+    @PostMapping("/currentworks/{emp-id}/otherleaves")
+    public List<OtherLeavesResponse> createStandardOtherLeave(@PathVariable("emp-id") Long empId,
+                                                              @RequestBody OtherLeavesRequest otherLeavesRequest){
+        return standardOtherLeavesHalfDayService.createStandardHalfDayLeaves(empId,otherLeavesRequest);
+    }
 
 }
