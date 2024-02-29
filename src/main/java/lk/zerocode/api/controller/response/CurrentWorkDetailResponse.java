@@ -1,17 +1,13 @@
-package lk.zerocode.api.controller.request;
+package lk.zerocode.api.controller.response;
 
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import lk.zerocode.api.model.Branch;
-import lk.zerocode.api.model.Department;
-import lk.zerocode.api.model.EmpCategory;
-import lk.zerocode.api.model.Employee;
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
-public class CurrentWorkDetailRequest {
+@Builder
+public class CurrentWorkDetailResponse {
 
     private Long id;
 
@@ -32,6 +28,4 @@ public class CurrentWorkDetailRequest {
     private String empCategory;
 
     private String empCategoryType;
-
-
 }

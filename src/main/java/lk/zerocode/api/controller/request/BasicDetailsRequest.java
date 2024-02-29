@@ -11,7 +11,6 @@ import java.time.LocalDate;
 public class BasicDetailsRequest {
 
     private Long id;
-    private String emp_id;
     private String first_name;
     private String last_name;
     private LocalDate dob;
