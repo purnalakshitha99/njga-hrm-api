@@ -1,4 +1,13 @@
 package lk.zerocode.api.service.impl;
 
-public class StandardOtherLeavesGatePassServiceImpl {
+
+import lk.zerocode.api.service.StandardOtherLeavesGatePassService;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+@AllArgsConstructor
+public class StandardOtherLeavesGatePassServiceImpl implements StandardOtherLeavesGatePassService {
+
+
 }
