@@ -3,6 +3,7 @@ package lk.zerocode.api.service.impl;
 import lk.zerocode.api.controller.request.DependentDetailRequest;
 import lk.zerocode.api.controller.response.DependentDetailMsgResponse;
 import lk.zerocode.api.controller.response.DependentDetailResponse;
+import lk.zerocode.api.exceptions.DependentNotFoundException;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.DependentDetail;
 import lk.zerocode.api.model.Employee;
@@ -10,7 +11,9 @@ import lk.zerocode.api.repository.DependentRepository;
 import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.service.DependentService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +47,7 @@ public class DependentDetailImpl implements DependentService {
     }
 
     @Override
-    public List<DependentDetailResponse> getDependentByEmpId(Long id) throws EmployeeNotFoundException {
+    public List<DependentDetailResponse> getDependentByEmpId(Long id) throws EmployeeNotFoundException, DependentNotFoundException {
 
         Optional<Employee> optionalEmployee = employeeRepository.findById(id);
         if(!optionalEmployee.isPresent()){
@@ -55,7 +58,7 @@ public class DependentDetailImpl implements DependentService {
             List<DependentDetail> dependentDetail = dependentRepository.findDependentDetailByEmployee(employee);
 
             if(dependentDetail.isEmpty()){
-                throw new EmployeeNotFoundException("Dependent Not found with Employee Id "+id);
+                throw new DependentNotFoundException("Dependent Not found with Employee Id "+id);
             }
             return dependentDetail.stream()
                     .map(dependentDetails -> DependentDetailResponse.builder()
@@ -68,7 +71,7 @@ public class DependentDetailImpl implements DependentService {
     }
 
     @Override
-    public DependentDetailMsgResponse deleteDependentById(Long empId, Long dependentId)throws EmployeeNotFoundException {
+    public DependentDetailMsgResponse deleteDependentById(Long empId, Long dependentId) throws EmployeeNotFoundException, DependentNotFoundException {
 
         Optional<Employee> employeeOptional = employeeRepository.findById(empId);
 
@@ -80,7 +83,7 @@ public class DependentDetailImpl implements DependentService {
             Optional<DependentDetail> dependentDetailOptional = dependentRepository.findDependentDetailsByEmployeeAndId(employee,dependentId);
 
             if(!dependentDetailOptional.isPresent()){
-                throw new EmployeeNotFoundException("Dependent not found with id "+dependentId);
+                throw new DependentNotFoundException("Dependent not found with id "+dependentId);
             }
             DependentDetail dependentDetail=dependentDetailOptional.get();
             dependentRepository.deleteById(dependentId);
