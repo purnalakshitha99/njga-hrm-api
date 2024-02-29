@@ -2,10 +2,7 @@ package lk.zerocode.api.controller;
 
 import lk.zerocode.api.controller.request.CurrentWorkDetailRequest;
 import lk.zerocode.api.controller.response.IdResponse;
-import lk.zerocode.api.exceptions.BranchNotFoundException;
-import lk.zerocode.api.exceptions.DepartmentNotFoundException;
-import lk.zerocode.api.exceptions.EmpCategoryNotFoundException;
-import lk.zerocode.api.exceptions.EmployeeNotFoundException;
+import lk.zerocode.api.exceptions.*;
 import lk.zerocode.api.model.CurrentWorkDetail;
 import lk.zerocode.api.service.CurrentWorkDetailService;
 import lombok.AllArgsConstructor;
@@ -29,6 +26,11 @@ public class CurrentWorkDetailController {
         System.out.println("depID"+currentWorkDetailRequest.getDepId());
 
         currentWorkDetailService.saveWorkDetail(empId,currentWorkDetailRequest);
+    }
+    @DeleteMapping("/employees/{emp_id}/current_work_details")
+    public IdResponse deleteDetails(@PathVariable("emp_id")Long empId)throws EmployeeNotFoundException {
+
+      return   currentWorkDetailService.deleteDetails(empId);
     }
 
 
