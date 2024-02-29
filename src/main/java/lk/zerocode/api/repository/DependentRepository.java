@@ -9,4 +9,5 @@ import java.util.Optional;
 
 public interface DependentRepository extends JpaRepository<DependentDetail,Long> {
     List<DependentDetail> findDependentDetailByEmployee(Employee employee);
+    Optional<DependentDetail> findDependentDetailsByEmployeeAndId(Employee employee,Long id);
 }
