@@ -2,6 +2,9 @@ package lk.zerocode.api.service.impl;
 
 import lk.zerocode.api.controller.request.CurrentWorkDetailRequest;
 import lk.zerocode.api.controller.response.IdResponse;
+import lk.zerocode.api.exceptions.BranchNotFoundException;
+import lk.zerocode.api.exceptions.DepartmentNotFoundException;
+import lk.zerocode.api.exceptions.EmpCategoryNotFoundException;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.*;
 import lk.zerocode.api.repository.*;
@@ -24,26 +27,34 @@ public class CurrentWorkDetailServiceImpl implements CurrentWorkDetailService {
 
 
 
-    public void saveWorkDetail(Long empId, CurrentWorkDetailRequest currentWorkDetailRequest) throws EmployeeNotFoundException{
+    public void saveWorkDetail(Long empId, CurrentWorkDetailRequest currentWorkDetailRequest) throws EmployeeNotFoundException,BranchNotFoundException ,DepartmentNotFoundException,EmpCategoryNotFoundException{
 
 
        Employee employee = employeeRepository.findById(empId).orElseThrow(
                () -> new EmployeeNotFoundException("Employee not found")
        );
-        System.out.println(currentWorkDetailRequest.getEmpCategoryId());
+        System.out.println(currentWorkDetailRequest.getEmpCategory());
+        System.out.println(currentWorkDetailRequest.getEmpCategoryType());
         System.out.println(empId);
         System.out.println(currentWorkDetailRequest.getBranchCode());
 
-       Optional<Branch> branchOpt = branchesRepository.findBranchByBranchCode(currentWorkDetailRequest.getBranchCode());
+//       Optional<Branch> branchOpt = branchesRepository.findBranchByBranchCode(currentWorkDetailRequest.getBranchCode());
 
-       Optional<Department> departmentOpt = departmentRepository.findDepartmentByDepId(currentWorkDetailRequest.getDepId());
-       Optional<EmpCategory> empCategoryOpt = empCategoryRepository.findById(currentWorkDetailRequest.getEmpCategoryId());
+        Branch branch = branchesRepository.findBranchByBranchCode(currentWorkDetailRequest.getBranchCode()).orElseThrow(
+                () -> new BranchNotFoundException("that branch not found")
+        );
 
+//       Optional<Department> departmentOpt = departmentRepository.findDepartmentByDepId(currentWorkDetailRequest.getDepId());
 
+        Department department = departmentRepository.findDepartmentByDepId(currentWorkDetailRequest.getDepId()).orElseThrow(
+                ()-> new DepartmentNotFoundException("that department not in the database")
+        );
+//       Optional<EmpCategory> empCategoryOpt = empCategoryRepository.findById(currentWorkDetailRequest.getEmpCategoryId());
 
-           Branch branch = branchOpt.get();
-           Department department = departmentOpt.get();
-           EmpCategory empCategory = empCategoryOpt.get();
+        EmpCategory empCategory = empCategoryRepository.findEmpCategoriesByEmpCategoryAndEmpType(currentWorkDetailRequest.getEmpCategory(),currentWorkDetailRequest.getEmpCategoryType()).orElseThrow(
+                ()-> new EmpCategoryNotFoundException("that employee category not having database")
+        );
+
 
            CurrentWorkDetail currentWorkDetail = new CurrentWorkDetail();
 

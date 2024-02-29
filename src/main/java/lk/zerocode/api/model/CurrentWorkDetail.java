@@ -28,4 +28,5 @@ public class CurrentWorkDetail {
 
     @ManyToOne
     private EmpCategory empCategory;
+
 }
