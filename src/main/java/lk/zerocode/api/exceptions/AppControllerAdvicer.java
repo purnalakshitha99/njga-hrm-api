@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class AppControllerAdvicer {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({EmployeeNotFoundException.class})
+    @ExceptionHandler({EmployeeNotFoundException.class,BranchNotFoundException.class,EmpCategoryNotFoundException.class})
    public ErrorResponse handleNFException(Exception exception){
        ErrorResponse errorResponse = new ErrorResponse();
        errorResponse.setMessage(exception.getMessage());
@@ -29,4 +29,6 @@ public class AppControllerAdvicer {
 
         return errorResponse;
     }
+
+
 }
