@@ -12,12 +12,12 @@ public class AppControllerAdvicer {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({AllNotFoundException.class})
-   public ErrorResponse handleNFException(Exception exception){
-       ErrorResponse errorResponse = new ErrorResponse();
-       errorResponse.setMessage(exception.getMessage());
+    public ErrorResponse handleNFException(Exception exception) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setMessage(exception.getMessage());
 
-       return errorResponse;
-   }
+        return errorResponse;
+    }
 
 
 }
