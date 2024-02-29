@@ -20,10 +20,6 @@ public class AttendenceController {
         return attendenceService.addAttendenceCheckIn(attendenceRequest);
     }
 
-    @PutMapping("/attendence")
-    public ResponseEntity<String >update(@RequestBody AttendenceRequest attendenceRequest) throws EmployeeNotFoundException{
-        return attendenceService.addAttendenceCheckOut(attendenceRequest);
-    }
 
     @DeleteMapping("/delete/att")
     public void delete(){
