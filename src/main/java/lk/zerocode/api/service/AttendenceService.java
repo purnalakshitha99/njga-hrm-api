@@ -11,7 +11,6 @@ import org.springframework.web.servlet.function.EntityResponse;
 public interface AttendenceService {
 
     ResponseEntity<String> addAttendenceCheckIn(AttendenceRequest attendenceRequest)throws EmployeeNotFoundException;
-    ResponseEntity<String> addAttendenceCheckOut(AttendenceRequest attendenceRequest)throws EmployeeNotFoundException;
 
     void delete();
 }
