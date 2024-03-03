@@ -83,6 +83,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                     attendanceLate.setRequiredCheckIn(requiredCheckInSTD);
                     attendanceLate.setRequiredCheckOut(requiredCheckOutSTD.plus(lateTimeSTD));
                     attendanceLate.setEmployee(fingerPrint.getEmployee());
+                    attendanceLate.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                     attendanceLate.setStatus(Status.PENDING);
                     attendenceRepository.save(attendanceLate);
                     throw new EmployeeNotFoundException("Sorry, you are late, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
@@ -96,13 +97,14 @@ public class AttendenceServiceImpl implements AttendenceService {
                     if (attendance.getActualCheckOut() != null) {
                         throw new EmployeeNotFoundException("Attendance already marked!"+"("+ empCategory+")");
                     }
-                    return ResponseEntity.status(HttpStatus.CREATED).body("standard You can't leave, Meet your head please , "+"("+ empCategory+")"  + fingerPrint.getEmployee().getFirstName());
+                    return ResponseEntity.status(HttpStatus.CREATED).body("You can't leave, Meet your head please , "+"("+ empCategory+")"  + fingerPrint.getEmployee().getFirstName());
                 } else {
                     Attendance attendance = new Attendance();
                     attendance.setDate(today);
                     attendance.setActualCheckIn(LocalTime.now());
                     attendance.setRequiredCheckIn(requiredCheckInSTD);
                     attendance.setEmployee(fingerPrint.getEmployee());
+                    attendance.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                     attendance.setStatus(Status.PENDING);
                     attendenceRepository.save(attendance);
                     return ResponseEntity.status(HttpStatus.CREATED).body("Sorry, you are too late meet your head please,"+"("+empCategory+")" + fingerPrint.getEmployee().getFirstName());
@@ -132,6 +134,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                 attendance.setRequiredCheckIn(requiredCheckInSTD);
                 attendance.setRequiredCheckOut(requiredCheckOutSTD);
                 attendance.setEmployee(fingerPrint.getEmployee());
+                attendance.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                 attendance.setStatus(Status.APPROVED);
                 attendenceRepository.save(attendance);
                 return ResponseEntity.status(HttpStatus.CREATED).body("Good Morning, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
@@ -162,6 +165,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                     attendanceLate.setRequiredCheckIn(requiredCheckInPL);
                     attendanceLate.setRequiredCheckOut(requiredCheckOutPL.plus(lateTimePL));
                     attendanceLate.setEmployee(fingerPrint.getEmployee());
+                    attendanceLate.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                     attendanceLate.setStatus(Status.PENDING);
                     attendenceRepository.save(attendanceLate);
                     throw new EmployeeNotFoundException("Sorry, you are late, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
@@ -182,6 +186,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                     attendance.setActualCheckIn(LocalTime.now());
                     attendance.setRequiredCheckIn(requiredCheckInPL);
                     attendance.setEmployee(fingerPrint.getEmployee());
+                    attendance.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                     attendance.setStatus(Status.PENDING);
                     attendenceRepository.save(attendance);
                     return ResponseEntity.status(HttpStatus.CREATED).body("Sorry, you are too late meet your head please," +"("+ empCategory+")"+ fingerPrint.getEmployee().getFirstName());
@@ -208,6 +213,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                 attendance.setRequiredCheckIn(requiredCheckInPL);
                 attendance.setRequiredCheckOut(requiredCheckOutPL);
                 attendance.setEmployee(fingerPrint.getEmployee());
+                attendance.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                 attendance.setStatus(Status.APPROVED);
                 attendenceRepository.save(attendance);
                 return ResponseEntity.status(HttpStatus.CREATED).body("Good Morning, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());

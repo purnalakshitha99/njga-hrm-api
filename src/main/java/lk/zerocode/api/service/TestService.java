@@ -7,4 +7,6 @@ import org.springframework.stereotype.Service;
 public interface TestService {
 
     void testTime(Testrq testrq);
+
+    void getDayByMonth();
 }
