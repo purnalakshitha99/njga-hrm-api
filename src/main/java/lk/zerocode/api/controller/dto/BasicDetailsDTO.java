@@ -12,6 +12,7 @@ import java.time.LocalDate;
 public class BasicDetailsDTO {
 
 
+
     private Long id;
     private String first_name;
     private String last_name;
