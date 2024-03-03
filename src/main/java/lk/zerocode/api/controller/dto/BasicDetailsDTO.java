@@ -14,7 +14,7 @@ public class BasicDetailsDTO {
     private String first_name;
     private String last_name;
     private LocalDate dob;
-    private String address;
+//    private String address;
     private String contact_number;
     private String email;
     private String image_path;
