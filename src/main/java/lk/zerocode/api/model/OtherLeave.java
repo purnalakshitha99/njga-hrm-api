@@ -21,14 +21,30 @@ public class OtherLeave {
     private String leaveType;
     private String dayType;
     private String reason;
+
+    @Column(name = "f_year")
     private LocalDate financialYear;
     private LocalDate applyDate;
+
+    @Column(name = "ap_p_name")
     private String approvedPersonName;
+
+    @Column(name = "ap_date")
     private LocalDate approvedDate;
+
+    @Column(name = "ap_time")
     private LocalTime approvedTime;
+
+    @Column(name = "a_checkin")
     private LocalTime actualCheckIn;
+
+    @Column(name = "a_checkout")
     private LocalTime actualCheckOut;
+
+    @Column(name = "r_checkin")
     private LocalTime requiredCheckIn;
+
+    @Column(name = "r_checkout")
     private LocalTime requiredCheckOut;
 
     private LocalTime wantedTime;
