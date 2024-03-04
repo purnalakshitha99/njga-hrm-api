@@ -37,12 +37,18 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
         CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
 
+        EmpCategory empCategory = currentWorkDetail.getEmpCategory();
+
         List<OtherLeavesResponse> responses = new ArrayList<>();
 
         if (!employeeOptional.isPresent() && currentWorkDetailOptional.isPresent()) {
             throw new EmployeeNotFoundException("employee not found with id :" +empId);
+        } else if (empCategory == null || !"standard".equals(empCategory.getEmpCategory())) {
+            throw new IllegalArgumentException("Employee does not belong to the standard category.");
+
         }
-            OtherLeave otherLeave = new OtherLeave();
+
+        OtherLeave otherLeave = new OtherLeave();
             Employee employee = employeeOptional.get();
 
             otherLeave.setName(employee.getFirstName());
