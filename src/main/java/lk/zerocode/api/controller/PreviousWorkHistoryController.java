@@ -1,8 +1,10 @@
 package lk.zerocode.api.controller;
 
 
+import lk.zerocode.api.controller.request.EmergencyContactRequest;
 import lk.zerocode.api.controller.request.PreviousWorkHistoryRequest;
 
+import lk.zerocode.api.controller.response.EmergencyResponse;
 import lk.zerocode.api.controller.response.PreviousWorkHistoryIdResponse;
 import lk.zerocode.api.controller.response.PreviousWorkHistoryResponse;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
@@ -18,10 +20,13 @@ import java.util.List;
 public class PreviousWorkHistoryController {
     private PreviousWorkHistoryService previousWorkHistoryService;
 
-    @PostMapping(value="/employees/{eid}/previousWorkHistories",headers="version=v1")
-    public PreviousWorkHistoryIdResponse addPreviousWorkHistory(@PathVariable("eid") Long eid, @RequestBody PreviousWorkHistoryRequest previousWorkHistoryRequest)throws EmployeeNotFoundException {
-        return previousWorkHistoryService.savePreviousWorkHistoryDetails(eid,previousWorkHistoryRequest);
+
+    @PostMapping(value ="employees/{eid}/previous-work-histories",headers="version=v1")
+    public List<PreviousWorkHistoryResponse> createPreviousWorkHistoty(@PathVariable Long eid, @RequestBody List<PreviousWorkHistoryRequest> previousWorkHistoryRequests)throws EmployeeNotFoundException{
+        return previousWorkHistoryService.createPreviousWorkHistoryDetails(eid,previousWorkHistoryRequests);
     }
+
+
 
 
     @GetMapping(value = "employees/{eid}/previousWorkHistories",headers="version=v1")
