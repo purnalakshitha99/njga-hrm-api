@@ -30,4 +30,7 @@ public class OtherLeavesRequest {
     private Employee employee;
     private MonthlyBasedLeave monthlyBasedLeaves;
     private FingerPrint fingerPrint;
+
+    private LocalTime wontedTime;
+    private LocalDate wantedDate;
 }

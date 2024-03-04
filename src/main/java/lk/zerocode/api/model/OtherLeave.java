@@ -31,6 +31,9 @@ public class OtherLeave {
     private LocalTime requiredCheckIn;
     private LocalTime requiredCheckOut;
 
+    private LocalTime wantedTime;
+    private LocalDate wantedDate;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 
