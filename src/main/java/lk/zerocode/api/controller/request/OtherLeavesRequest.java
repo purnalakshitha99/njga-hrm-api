@@ -12,7 +12,7 @@ import java.time.LocalTime;
 @Data
 public class OtherLeavesRequest {
 
-    private String name;
+
     private String department;
     private String leaveType;
     private String dayType;
@@ -27,9 +27,8 @@ public class OtherLeavesRequest {
     private LocalTime requiredCheckIn;
     private LocalTime requiredCheckOut;
     private Status status;
-    private Employee employee;
-    private MonthlyBasedLeave monthlyBasedLeaves;
-    private FingerPrint fingerPrint;
+//    private MonthlyBasedLeave monthlyBasedLeaves;
+//    private FingerPrint fingerPrint;
 
     private LocalTime wontedTime;
     private LocalDate wantedDate;
