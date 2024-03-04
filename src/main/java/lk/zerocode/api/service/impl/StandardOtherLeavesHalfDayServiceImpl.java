@@ -46,8 +46,6 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
         ) {
 
          throw new EmployeeNotFoundException("employee not found with id :" +empId);
-        } else if (empCategory != null || "pl".equals(empCategory.getEmpCategory())) {
-
         }
 
         OtherLeave otherLeave = new OtherLeave();
@@ -61,6 +59,9 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
             otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
             otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
             otherLeave.setEmployee(currentWorkDetail.getEmployee());
+            otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
+            otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
+            otherLeave.setStatus(Status.PENDING);
 
             otherLeavesRepository.save(otherLeave);
 
@@ -75,7 +76,6 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
                     .build();
 
             responses.add(response);
-
         return responses;
     }
 }
