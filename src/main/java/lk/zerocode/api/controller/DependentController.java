@@ -1,6 +1,7 @@
 package lk.zerocode.api.controller;
 
 import lk.zerocode.api.controller.request.DependentDetailRequest;
+import lk.zerocode.api.controller.response.DependentDetailMsgResponse;
 import lk.zerocode.api.controller.response.DependentDetailResponse;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.service.DependentService;
@@ -16,7 +17,7 @@ import java.util.Optional;
 public class DependentController {
     private DependentService dependentService;
     @PostMapping(value = "/employees/{id}/dependent",headers = "version=v1")
-    public DependentDetailResponse addDependentDetails(@PathVariable ("id") Long id, @RequestBody DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException {
+    public DependentDetailMsgResponse addDependentDetails(@PathVariable ("id") Long id, @RequestBody DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException {
         return dependentService.saveDependentDetails(id,dependentDetailRequest);
     }
     @GetMapping(value = "/employees/{id}/dependents",headers = "version=v1")
@@ -28,8 +29,8 @@ public class DependentController {
 //    public Optional<DependentDetailResponse> updateDependentDetails(@PathVariable("id")Long id,@RequestBody DependentDetailRequest dependentDetailRequest)throws EmployeeNotFoundException{
 //        return dependentService.updateDependentDetail(id,dependentDetailRequest);
 //    }
-    @DeleteMapping("/dependents/{id}")
-    public void deleteDependent(@PathVariable ("id") Long id){
-        dependentService.deleteDependentById(id);
+    @DeleteMapping("/employees/{emp_id}/dependents/{dependent_id}")
+    public DependentDetailMsgResponse deleteDependent(@PathVariable ("emp_id") Long emp_id, @PathVariable("dependent_id") Long dependent_id) throws EmployeeNotFoundException{
+        return dependentService.deleteDependentById(emp_id,dependent_id);
     }
 }

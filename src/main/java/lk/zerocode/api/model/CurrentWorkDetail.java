@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "current_work_details")
 public class CurrentWorkDetail {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,6 +17,7 @@ public class CurrentWorkDetail {
     private String designation;
     private LocalDate startDate;
     private String workTelephone;
+    private String empCode;
 
     @OneToOne
     private Employee employee;
@@ -28,5 +30,4 @@ public class CurrentWorkDetail {
 
     @ManyToOne
     private EmpCategory empCategory;
-
 }
