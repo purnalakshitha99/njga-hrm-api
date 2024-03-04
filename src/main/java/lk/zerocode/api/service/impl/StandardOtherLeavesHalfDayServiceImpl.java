@@ -30,10 +30,11 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
 
     @Override
-    public List<OtherLeavesResponse> createStandardHalfDayLeaves(Long empId,Long wId,OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException {
+    public List<OtherLeavesResponse> createStandardHalfDayLeaves(Long empId,OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException {
 
-        Optional<CurrentWorkDetail> currentWorkDetailOptional = currentWorkDetailRepository.findById(wId);
         Optional<Employee> employeeOptional = employeeRepository.findById(empId);
+
+        Optional<CurrentWorkDetail> currentWorkDetailOptional = currentWorkDetailRepository.findById(empId);
 
         CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
 
@@ -41,11 +42,10 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
         List<OtherLeavesResponse> responses = new ArrayList<>();
 
-        if (!employeeOptional.isPresent() && currentWorkDetailOptional.isPresent()) {
-            throw new EmployeeNotFoundException("employee not found with id :" +empId);
-        } else if (empCategory == null || !"standard".equals(empCategory.getEmpCategory())) {
-            throw new IllegalArgumentException("Employee does not belong to the standard category.");
+        if (!currentWorkDetailOptional.isPresent() && empCategory == null || !"standard".equals(empCategory.getEmpCategory())
+        ) {
 
+         throw new EmployeeNotFoundException("employee not found with id :" +empId);
         }
 
         OtherLeave otherLeave = new OtherLeave();
@@ -59,6 +59,9 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
             otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
             otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
             otherLeave.setEmployee(currentWorkDetail.getEmployee());
+            otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
+            otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
+            otherLeave.setStatus(Status.PENDING);
 
             otherLeavesRepository.save(otherLeave);
 
@@ -73,7 +76,6 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
                     .build();
 
             responses.add(response);
-
         return responses;
     }
 }

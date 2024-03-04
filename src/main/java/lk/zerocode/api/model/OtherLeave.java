@@ -47,6 +47,12 @@ public class OtherLeave {
     @Column(name = "r_checkout")
     private LocalTime requiredCheckOut;
 
+    @Column(name = "w_time")
+    private LocalTime wantedTime;
+
+    @Column(name = "w_date")
+    private LocalDate wantedDate;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 
