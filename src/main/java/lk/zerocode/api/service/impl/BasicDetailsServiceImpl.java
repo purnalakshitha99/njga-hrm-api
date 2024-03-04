@@ -23,14 +23,14 @@ public class BasicDetailsServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
 
     @Override
-    public IdResponse saveBasicDetails(BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException {
+    public IdResponse saveBasicDetails(Long id, BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException {
 
-         employeeRepository.findEmployeeByEmpId(basicDetailsRequest.getEmp_id()).orElseThrow(
+         employeeRepository.findById(id).orElseThrow(
                 () -> new EmployeeNotFoundException("Employee not Found!")
         );
 
             Employee employee = new Employee();
-            employee.setEmpId(basicDetailsRequest.getEmp_id());
+//            employee.setEmpId(basicDetailsRequest.getEmp_id());
             employee.setFirstName(basicDetailsRequest.getFirst_name());
             employee.setLastName(basicDetailsRequest.getLast_name());
             employee.setDob(basicDetailsRequest.getDob());
@@ -49,35 +49,35 @@ public class BasicDetailsServiceImpl implements EmployeeService {
                     .build();
             return basicDetailsResponse;
         }
-    
 
-    @Override
-    public BasicDetailsResponse getByEmpId(String id) throws EmployeeNotFoundException {
 
-        employeeRepository.findEmployeeByEmpId(id).orElseThrow(
-                () -> new EmployeeNotFoundException("Employee Not Found!")
-        );
-        Optional<Employee> empOpt = employeeRepository.findEmployeeByEmpId(id);
-
-        if (!empOpt.isPresent()) {
-            throw new EmployeeNotFoundException("Employee Not Found!");
-        } else {
-            Employee employee = empOpt.get();
-            return BasicDetailsResponse.builder()
-                    .emp_id(employee.getEmpId())
-                    .first_name(employee.getFirstName())
-                    .last_name(employee.getLastName())
-                    .dob(employee.getDob())
-                    .address(employee.getAddress())
-                    .contact_number(employee.getContactNumber())
-                    .email(employee.getEmail())
-                    .image_path(employee.getImagePath())
-                    .nic(employee.getNic())
-                    .work_telephone(employee.getWorkTelephone())
-                    .gender(employee.getGender())
-                    .build();
-        }
-    }
+//    @Override
+//    public BasicDetailsResponse getByEmpId(String id) throws EmployeeNotFoundException {
+//
+//        employeeRepository.findEmployeeByEmpId(id).orElseThrow(
+//                () -> new EmployeeNotFoundException("Employee Not Found!")
+//        );
+//        Optional<Employee> empOpt = employeeRepository.findEmployeeByEmpId(id);
+//
+//        if (!empOpt.isPresent()) {
+//            throw new EmployeeNotFoundException("Employee Not Found!");
+//        } else {
+//            Employee employee = empOpt.get();
+//            return BasicDetailsResponse.builder()
+////                    .emp_id(employee.getEmpId())
+//                    .first_name(employee.getFirstName())
+//                    .last_name(employee.getLastName())
+//                    .dob(employee.getDob())
+//                    .address(employee.getAddress())
+//                    .contact_number(employee.getContactNumber())
+//                    .email(employee.getEmail())
+//                    .image_path(employee.getImagePath())
+//                    .nic(employee.getNic())
+//                    .work_telephone(employee.getWorkTelephone())
+//                    .gender(employee.getGender())
+//                    .build();
+//        }
+//    }
 
     @Override
     public BasicDetailsResponse getByEmpEmail(String email) throws EmployeeNotFoundException {
@@ -92,7 +92,7 @@ public class BasicDetailsServiceImpl implements EmployeeService {
         } else {
             Employee employee = empOpt.get();
             return BasicDetailsResponse.builder()
-                    .emp_id(employee.getEmpId())
+//                    .emp_id(employee.getEmpId())
                     .first_name(employee.getFirstName())
                     .last_name(employee.getLastName())
                     .dob(employee.getDob())
@@ -114,7 +114,7 @@ public class BasicDetailsServiceImpl implements EmployeeService {
 
         return employees.stream()
                 .map(employee -> BasicDetailsResponse.builder()
-                        .emp_id(employee.getEmpId())
+//                        .emp_id(employee.getEmpId())
                         .first_name(employee.getFirstName())
                         .last_name(employee.getLastName())
                         .dob(employee.getDob())
@@ -131,15 +131,15 @@ public class BasicDetailsServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<String> updateBasicDetails(String id, BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException {
+    public ResponseEntity<String> updateBasicDetails(Long id, BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException {
 
-        Optional<Employee> optEmp = employeeRepository.findEmployeeByEmpId(id);
+        Optional<Employee> optEmp = employeeRepository.findById(id);
 
         if (!optEmp.isPresent()) {
             throw new EmployeeNotFoundException("Employee Not Found!");
         } else {
             Employee updatedEmployee = optEmp.get();
-            updatedEmployee.setEmpId(basicDetailsRequest.getEmp_id());
+//            updatedEmployee.setEmpId(basicDetailsRequest.getEmp_id());
             updatedEmployee.setFirstName(basicDetailsRequest.getFirst_name());
             updatedEmployee.setLastName(basicDetailsRequest.getLast_name());
             updatedEmployee.setDob(basicDetailsRequest.getDob());

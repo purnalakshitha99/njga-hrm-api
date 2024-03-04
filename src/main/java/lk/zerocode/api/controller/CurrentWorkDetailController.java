@@ -15,8 +15,6 @@ public class CurrentWorkDetailController {
 
     private CurrentWorkDetailService currentWorkDetailService;
 
-
-
     @PostMapping("/employees/{emp_id}/current_work_details")
     public void saveWorkDetail(@PathVariable("emp_id")Long empId,@RequestBody CurrentWorkDetailRequest currentWorkDetailRequest)throws EmployeeNotFoundException, BranchNotFoundException, DepartmentNotFoundException, EmpCategoryNotFoundException {
 
@@ -24,7 +22,9 @@ public class CurrentWorkDetailController {
         System.out.println("category"+currentWorkDetailRequest.getEmpCategory());
         System.out.println("type"+currentWorkDetailRequest.getEmpCategoryType());
         System.out.println("emp"+empId);
+        System.out.println("empcode"+currentWorkDetailRequest.getEmpCode());
         System.out.println("depID"+currentWorkDetailRequest.getDepId());
+        System.out.println("==========================");
 
         currentWorkDetailService.saveWorkDetail(empId,currentWorkDetailRequest);
     }
@@ -38,6 +38,11 @@ public class CurrentWorkDetailController {
     public CurrentWorkDetailResponse getDetails(@PathVariable("emp_id")Long empId)throws EmployeeNotFoundException{
 
         return currentWorkDetailService.getDetails(empId);
+    }
+
+    @DeleteMapping("/work/delete")
+    public void delete(){
+        currentWorkDetailService.deleteAll();
     }
 
 

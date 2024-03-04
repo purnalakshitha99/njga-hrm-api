@@ -17,14 +17,14 @@ import java.util.List;
 public class BasicDetailsController {
 
     private EmployeeService employeeService;
-    @PostMapping("/employee")
-    public IdResponse addEmployeeDetails(@RequestBody BasicDetailsRequest basicDetailsRequest)throws EmployeeNotFoundException {
-        return employeeService.saveBasicDetails(basicDetailsRequest);
+    @PostMapping("/employee/{empId}")
+    public IdResponse addEmployeeDetails(@PathVariable("empId") Long id, @RequestBody BasicDetailsRequest basicDetailsRequest)throws EmployeeNotFoundException {
+        return employeeService.saveBasicDetails(id,basicDetailsRequest);
     }
-    @GetMapping("/employee/{emp_id}")
-    public BasicDetailsResponse getEmployeeByEmpId(@PathVariable("emp_id") String id) throws EmployeeNotFoundException{
-        return employeeService.getByEmpId(id);
-    }
+//    @GetMapping("/employee/{emp_id}")
+//    public BasicDetailsResponse getEmployeeByEmpId(@PathVariable("emp_id") Long id) throws EmployeeNotFoundException{
+//        return employeeService.getByEmpId(id);
+//    }
     @GetMapping("/employee2/{emp_email}")
     public BasicDetailsResponse getEmployeeByEmail(@PathVariable("emp_email") String email) throws EmployeeNotFoundException{
         return employeeService.getByEmpEmail(email);
@@ -35,8 +35,8 @@ public class BasicDetailsController {
         return employeeService.getAll();
     }
 
-    @PutMapping("/employee/{emp_id}")
-    public ResponseEntity<String> update(@PathVariable ("emp_id") String id, @RequestBody BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException{
+    @PutMapping("/employee/{empId}")
+    public ResponseEntity<String> update(@PathVariable ("empId") Long id, @RequestBody BasicDetailsRequest basicDetailsRequest) throws EmployeeNotFoundException{
         return employeeService.updateBasicDetails(id, basicDetailsRequest);
     }
 }

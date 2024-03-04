@@ -11,8 +11,9 @@ import java.util.Optional;
 
 public interface EmployeeRepository extends JpaRepository<Employee,Long> {
 
-    Optional<Employee> findEmployeeByEmpId(String id);
+//    Optional<Employee> findEmployeeByEmpId(String id);
     Optional<Employee> findEmployeeByEmail(String email);
+    Optional<Employee> findEmployeeById(Long emp_id);
 
 
     // Custom query method to retrieve previous work history by employee

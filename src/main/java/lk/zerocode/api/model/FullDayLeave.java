@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Year;
 
 @Data
 @Entity
@@ -22,7 +23,7 @@ public class FullDayLeave {
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer noOfDays;
-    private LocalDate financialYear;
+    private Year financialYear;
     private LocalDate applyDate;
     private String approvedPersonName;
     private LocalDate approvedDate;

@@ -23,32 +23,24 @@ public class CurrentWorkDetailServiceImpl implements CurrentWorkDetailService {
     private final DepartmentRepository departmentRepository;
     private final EmpCategoryRepository empCategoryRepository;
 
-
-
-
     public void saveWorkDetail(Long empId, CurrentWorkDetailRequest currentWorkDetailRequest) throws EmployeeNotFoundException,BranchNotFoundException ,DepartmentNotFoundException,EmpCategoryNotFoundException{
-
 
        Employee employee = employeeRepository.findById(empId).orElseThrow(
                () -> new EmployeeNotFoundException("Employee not found")
        );
-        System.out.println(currentWorkDetailRequest.getEmpCategory());
-        System.out.println(currentWorkDetailRequest.getEmpCategoryType());
-        System.out.println(empId);
-        System.out.println(currentWorkDetailRequest.getBranchCode());
-
-//       Optional<Branch> branchOpt = branchesRepository.findBranchByBranchCode(currentWorkDetailRequest.getBranchCode());
+        System.out.println("category "+currentWorkDetailRequest.getEmpCategory());
+        System.out.println("category type "+currentWorkDetailRequest.getEmpCategoryType());
+        System.out.println("emp id "+empId);
+        System.out.println("branch code "+currentWorkDetailRequest.getBranchCode());
+        System.out.println("employee code "+currentWorkDetailRequest.getEmpCode());
 
         Branch branch = branchesRepository.findBranchByBranchCode(currentWorkDetailRequest.getBranchCode()).orElseThrow(
                 () -> new BranchNotFoundException("that branch not found")
         );
 
-//       Optional<Department> departmentOpt = departmentRepository.findDepartmentByDepId(currentWorkDetailRequest.getDepId());
-
         Department department = departmentRepository.findDepartmentByDepId(currentWorkDetailRequest.getDepId()).orElseThrow(
                 ()-> new DepartmentNotFoundException("that department not in the database")
         );
-//       Optional<EmpCategory> empCategoryOpt = empCategoryRepository.findById(currentWorkDetailRequest.getEmpCategoryId());
 
         EmpCategory empCategory = empCategoryRepository.findEmpCategoriesByEmpCategoryAndEmpType(currentWorkDetailRequest.getEmpCategory(),currentWorkDetailRequest.getEmpCategoryType()).orElseThrow(
                 ()-> new EmpCategoryNotFoundException("that employee category not having database")
@@ -65,6 +57,7 @@ public class CurrentWorkDetailServiceImpl implements CurrentWorkDetailService {
            currentWorkDetail.setWorkTelephone(currentWorkDetailRequest.getWorkTelephone());
            currentWorkDetail.setDesignation(currentWorkDetailRequest.getDesignation());
            currentWorkDetail.setStartDate(currentWorkDetailRequest.getStartDate());
+           currentWorkDetail.setEmpCode(currentWorkDetailRequest.getEmpCode());
 
            currentWorkDetailRepository.save(currentWorkDetail);
     }
@@ -79,7 +72,6 @@ public class CurrentWorkDetailServiceImpl implements CurrentWorkDetailService {
         currentWorkDetailRepository.delete(currentWorkDetail);
 
         return IdResponse.builder().id(empId).message("deleted").build();
-
     }
 
     @Override
@@ -100,7 +92,13 @@ public class CurrentWorkDetailServiceImpl implements CurrentWorkDetailService {
                 .depId(currentWorkDetail.getDepartment().getDepId())
                 .empCategory(currentWorkDetail.getEmpCategory().getEmpCategory())
                 .empCategoryType(currentWorkDetail.getEmpCategory().getEmpType())
+                .empCode(currentWorkDetail.getEmpCode())
                 .build();
+    }
+
+    @Override
+    public void deleteAll() {
+    currentWorkDetailRepository.deleteAll();
     }
 
 
