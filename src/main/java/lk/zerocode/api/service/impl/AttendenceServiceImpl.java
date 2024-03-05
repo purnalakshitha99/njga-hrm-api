@@ -6,6 +6,7 @@ import lk.zerocode.api.model.*;
 import lk.zerocode.api.repository.*;
 import lk.zerocode.api.service.AttendenceService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,20 +24,25 @@ public class AttendenceServiceImpl implements AttendenceService {
     private FingerPrintRepository fingerPrintRepository;
     private AttendenceRepository attendenceRepository;
     private EmployeeRepository employeeRepository;
+    private ModelMapper modelMapper;
 
     @Override
     public ResponseEntity<String> addAttendenceCheckIn(AttendenceRequest attendenceRequest) throws EmployeeNotFoundException {
 
         LocalDate today = LocalDate.now();
-        LocalTime requiredCheckInSTD = LocalTime.of(15, 50);
-        LocalTime requiredCheckOutSTD = LocalTime.of(17, 00);
-        LocalTime afterRequiredTimeSTD = LocalTime.of(16, 00);
+        LocalTime requiredCheckInSTD = LocalTime.of(13, 0);
+        LocalTime requiredCheckOutSTD = LocalTime.of(14, 30);
+        LocalTime afterRequiredTimeSTD = LocalTime.of(13, 30);
+        LocalTime beforeCheckinSTD = LocalTime.of(14,00);
         Duration lateTimeSTD = Duration.between(requiredCheckInSTD, LocalTime.now());
 
-        LocalTime requiredCheckInPL = LocalTime.of(13, 0);
-        LocalTime requiredCheckOutPL = LocalTime.of(16, 00);
-        LocalTime afterRequiredTimePL = LocalTime.of(13, 45);
-        Duration lateTimePL = Duration.between(requiredCheckInSTD, LocalTime.now());
+        LocalTime requiredCheckInPL = LocalTime.of(13, 40);
+        LocalTime requiredCheckOutPL = LocalTime.of(15, 30);
+        LocalTime afterRequiredTimePL = LocalTime.of(14, 0);
+        LocalTime beforeCheckinPL = LocalTime.of(15,15);
+        Duration lateTimePL = Duration.between(requiredCheckInPL, LocalTime.now());
+
+        FingerPrint getFingerprint = modelMapper.map(attendenceRequest, FingerPrint.class);
 
         String fId = attendenceRequest.getFingerPrintId();
 
@@ -65,7 +71,7 @@ public class AttendenceServiceImpl implements AttendenceService {
 
                         throw new EmployeeNotFoundException("Attendance already marked!");
                     }
-                    if (LocalTime.of(17,05).isBefore(existingAttendance.get().getRequiredCheckOut().minus(5,ChronoUnit.MINUTES))) {
+                    if (LocalTime.of(14, 10).isBefore(existingAttendance.get().getRequiredCheckOut().minus(5,ChronoUnit.MINUTES))) {
 
                         return ResponseEntity.status(HttpStatus.CREATED).body("Oyata Yanna denna be, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
                     } else {
@@ -73,7 +79,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                             attendance.setActualCheckOut(LocalTime.now());
                             attendance.setStatus(Status.APPROVED);
                             attendenceRepository.save(attendance);
-                            return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
+                            return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye 1, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
                     }
 
                 } else {
@@ -83,6 +89,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                     attendanceLate.setRequiredCheckIn(requiredCheckInSTD);
                     attendanceLate.setRequiredCheckOut(requiredCheckOutSTD.plus(lateTimeSTD));
                     attendanceLate.setEmployee(fingerPrint.getEmployee());
+                    attendanceLate.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                     attendanceLate.setStatus(Status.PENDING);
                     attendenceRepository.save(attendanceLate);
                     throw new EmployeeNotFoundException("Sorry, you are late, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
@@ -96,13 +103,14 @@ public class AttendenceServiceImpl implements AttendenceService {
                     if (attendance.getActualCheckOut() != null) {
                         throw new EmployeeNotFoundException("Attendance already marked!"+"("+ empCategory+")");
                     }
-                    return ResponseEntity.status(HttpStatus.CREATED).body("standard You can't leave, Meet your head please , "+"("+ empCategory+")"  + fingerPrint.getEmployee().getFirstName());
+                    return ResponseEntity.status(HttpStatus.CREATED).body("You can't leave, Meet your head please , "+"("+ empCategory+")"  + fingerPrint.getEmployee().getFirstName());
                 } else {
                     Attendance attendance = new Attendance();
                     attendance.setDate(today);
                     attendance.setActualCheckIn(LocalTime.now());
                     attendance.setRequiredCheckIn(requiredCheckInSTD);
                     attendance.setEmployee(fingerPrint.getEmployee());
+                    attendance.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                     attendance.setStatus(Status.PENDING);
                     attendenceRepository.save(attendance);
                     return ResponseEntity.status(HttpStatus.CREATED).body("Sorry, you are too late meet your head please,"+"("+empCategory+")" + fingerPrint.getEmployee().getFirstName());
@@ -115,15 +123,17 @@ public class AttendenceServiceImpl implements AttendenceService {
                 if (attendance.getActualCheckOut() != null) {
                     throw new EmployeeNotFoundException("Attendance already marked!"+"("+ empCategory+")");
                 }
-                if (LocalTime.of(16,58).isBefore(existingAttendance.get().getRequiredCheckOut().minus(5,ChronoUnit.MINUTES))){
-                    attendance.setStatus(Status.PENDING);
+
+                if (existingAttendance.get().getActualCheckIn().isBefore(requiredCheckInSTD) && LocalTime.of(13,06).isAfter(beforeCheckinSTD)){
+                    attendance.setActualCheckOut(LocalTime.now());
+                    attendance.setStatus(Status.APPROVED);
                     attendenceRepository.save(attendance);
+                    return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye2, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
+                }else {
                     throw new EmployeeNotFoundException("You are trying to leave early!"+"("+ empCategory+")");
                 }
-                attendance.setActualCheckOut(LocalTime.now());
-                attendance.setStatus(Status.APPROVED);
-                attendenceRepository.save(attendance);
-                return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
+
+
 
             } else {
                 Attendance attendance = new Attendance();
@@ -132,9 +142,10 @@ public class AttendenceServiceImpl implements AttendenceService {
                 attendance.setRequiredCheckIn(requiredCheckInSTD);
                 attendance.setRequiredCheckOut(requiredCheckOutSTD);
                 attendance.setEmployee(fingerPrint.getEmployee());
+                attendance.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                 attendance.setStatus(Status.APPROVED);
                 attendenceRepository.save(attendance);
-                return ResponseEntity.status(HttpStatus.CREATED).body("Good Morning, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
+                return ResponseEntity.status(HttpStatus.CREATED).body("Good Morning 8, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
             }
         } else if (empCategory.equals("pl")) {
 
@@ -145,7 +156,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                     if (attendance.getActualCheckOut() != null) {
                         throw new EmployeeNotFoundException("Attendance already marked!"+"("+ empCategory+")");
                     }
-                    if (LocalTime.now().isBefore(existingAttendance.get().getRequiredCheckOut().minus(5,ChronoUnit.MINUTES))) {
+                    if (LocalTime.of(14,35).isBefore(existingAttendance.get().getRequiredCheckOut().minus(5,ChronoUnit.MINUTES))) {
                         return ResponseEntity.status(HttpStatus.CREATED).body("Oyata Yanna denna be, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
                     } else {
                         attendance.setActualCheckOut(LocalTime.now());
@@ -162,6 +173,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                     attendanceLate.setRequiredCheckIn(requiredCheckInPL);
                     attendanceLate.setRequiredCheckOut(requiredCheckOutPL.plus(lateTimePL));
                     attendanceLate.setEmployee(fingerPrint.getEmployee());
+                    attendanceLate.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                     attendanceLate.setStatus(Status.PENDING);
                     attendenceRepository.save(attendanceLate);
                     throw new EmployeeNotFoundException("Sorry, you are late, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
@@ -182,6 +194,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                     attendance.setActualCheckIn(LocalTime.now());
                     attendance.setRequiredCheckIn(requiredCheckInPL);
                     attendance.setEmployee(fingerPrint.getEmployee());
+                    attendance.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                     attendance.setStatus(Status.PENDING);
                     attendenceRepository.save(attendance);
                     return ResponseEntity.status(HttpStatus.CREATED).body("Sorry, you are too late meet your head please," +"("+ empCategory+")"+ fingerPrint.getEmployee().getFirstName());
@@ -194,13 +207,15 @@ public class AttendenceServiceImpl implements AttendenceService {
                 if (attendance.getActualCheckOut() != null) {
                     throw new EmployeeNotFoundException("Attendance already marked!"+"("+ empCategory+")");
                 }
-                if (LocalTime.now().isBefore(existingAttendance.get().getRequiredCheckOut().minus(5,ChronoUnit.MINUTES))){
-                    attendance.setStatus(Status.PENDING);
+                if (existingAttendance.get().getActualCheckIn().isBefore(requiredCheckInPL) && LocalTime.of(15,35).isAfter(beforeCheckinPL)){
+                    attendance.setActualCheckOut(LocalTime.now());
+                    attendance.setStatus(Status.APPROVED);
                     attendenceRepository.save(attendance);
+                    return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye2, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
+                }else {
                     throw new EmployeeNotFoundException("You are trying to leave early!"+"("+ empCategory+")");
                 }
 
-                return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
             } else {
                 Attendance attendance = new Attendance();
                 attendance.setDate(today);
@@ -208,6 +223,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                 attendance.setRequiredCheckIn(requiredCheckInPL);
                 attendance.setRequiredCheckOut(requiredCheckOutPL);
                 attendance.setEmployee(fingerPrint.getEmployee());
+                attendance.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                 attendance.setStatus(Status.APPROVED);
                 attendenceRepository.save(attendance);
                 return ResponseEntity.status(HttpStatus.CREATED).body("Good Morning, "+"("+ empCategory+")" + fingerPrint.getEmployee().getFirstName());
