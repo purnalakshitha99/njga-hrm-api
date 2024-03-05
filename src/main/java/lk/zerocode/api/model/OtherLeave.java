@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.Year;
 import java.util.List;
 
 @Data
@@ -23,8 +25,13 @@ public class OtherLeave {
     private String reason;
 
     @Column(name = "f_year")
-    private LocalDate financialYear;
+    private Year financialYear;
+
+    @Column(name = "f_month")
+    private Month financialMonth;
+
     private LocalDate applyDate;
+    private LocalTime applyTime;
 
     @Column(name = "ap_p_name")
     private String approvedPersonName;
@@ -64,4 +71,6 @@ public class OtherLeave {
 
     @ManyToOne
     private FingerPrint fingerPrint;
+
+    private Integer hours;
 }

@@ -1,5 +1,6 @@
 package lk.zerocode.api.controller.request;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.model.FingerPrint;
@@ -9,16 +10,20 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.Year;
+
 @Data
 public class OtherLeavesRequest {
-
 
     private String department;
     private String leaveType;
     private String dayType;
     private String reason;
-    private LocalDate financialYear;
-    private LocalDate applyDate;
+    private Year financialYear;
+    private Month financialMonth;
+
+
     private String approvedPersonName;
     private LocalDate approvedDate;
     private LocalTime approvedTime;
@@ -27,9 +32,9 @@ public class OtherLeavesRequest {
     private LocalTime requiredCheckIn;
     private LocalTime requiredCheckOut;
     private Status status;
+    private Integer hours;
 //    private MonthlyBasedLeave monthlyBasedLeaves;
 //    private FingerPrint fingerPrint;
-
     private LocalTime wontedTime;
     private LocalDate wantedDate;
 }
