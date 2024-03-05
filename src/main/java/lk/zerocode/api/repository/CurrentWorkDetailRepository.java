@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface CurrentWorkDetailRepository extends JpaRepository<CurrentWorkDetail,Long> {
 
+
 }
 
 

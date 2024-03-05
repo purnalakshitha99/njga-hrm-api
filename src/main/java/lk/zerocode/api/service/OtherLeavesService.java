@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface OtherLeavesService {
 
-//    List<OtherLeavesResponse> createStandardOtherLeaves(Long empId, OtherLeavesRequest otherLeavesRequest);
+//    List<OtherLeavesResponse> createOtherLeaves(Long empId ,OtherLeavesRequest otherLeavesRequest);
 
 }
