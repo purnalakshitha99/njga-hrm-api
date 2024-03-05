@@ -45,7 +45,7 @@ public class PreviousWorkHistoryController {
     }
 
     @DeleteMapping(value = "employees/{empId}/previousWorkHistories/{historyId}",headers = "version=v1")
-    public String deleteEmergencyContactById(@PathVariable("empId") Long empId, @PathVariable("historyId") Long previousWorkHistoryId) throws EmployeeNotFoundException {
+    public String deleteEmergencyContactById(@PathVariable("empId") Long empId, @PathVariable("historyId") Long previousWorkHistoryId) throws EmployeeNotFoundException,PreviousWorkHistoryNotFoundException {
         return previousWorkHistoryService.deletePreviousWorkHistoryDetailsById(empId,previousWorkHistoryId);
     }
 

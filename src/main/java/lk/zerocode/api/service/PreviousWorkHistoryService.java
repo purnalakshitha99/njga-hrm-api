@@ -24,5 +24,5 @@ public interface PreviousWorkHistoryService {
 
     PreviousWorkHistoryIdResponse updatePreviousWorkHistoryDetails(Long eid, Long previousWorkHistoryId, PreviousWorkHistoryRequest updatedHistoryRequest)throws EmployeeNotFoundException,PreviousWorkHistoryNotFoundException;
 
-    String deletePreviousWorkHistoryDetailsById(Long empId, Long previousWorkHistoryId)throws EmployeeNotFoundException;
+    String deletePreviousWorkHistoryDetailsById(Long empId, Long previousWorkHistoryId)throws EmployeeNotFoundException,PreviousWorkHistoryNotFoundException;
 }
