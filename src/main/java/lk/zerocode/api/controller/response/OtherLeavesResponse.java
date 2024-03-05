@@ -9,6 +9,9 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.Year;
+
 @Data
 @Builder
 public class OtherLeavesResponse {
@@ -18,7 +21,8 @@ public class OtherLeavesResponse {
     private String leaveType;
     private String dayType;
     private String reason;
-    private LocalDate financialYear;
+    private Year financialYear;
+    private Month financialMonth;
     private LocalDate applyDate;
     private String approvedPersonName;
     private LocalDate approvedDate;
@@ -30,5 +34,6 @@ public class OtherLeavesResponse {
     private Status status;
     private Employee employee;
     private MonthlyBasedLeave monthlyBasedLeaves;
-    private FingerPrint fingerPrint;
+    private LocalTime wontedTime;
+    private LocalDate wantedDate;
 }
