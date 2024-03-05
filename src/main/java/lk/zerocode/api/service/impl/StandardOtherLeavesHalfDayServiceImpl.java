@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.stereotype.Service;
 
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,25 +33,21 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
     @Override
     public List<OtherLeavesResponse> createStandardHalfDayLeaves(Long empId,OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException {
 
-        Optional<Employee> employeeOptional = employeeRepository.findById(empId);
 
         Optional<CurrentWorkDetail> currentWorkDetailOptional = currentWorkDetailRepository.findById(empId);
-
-        CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
-
-        EmpCategory empCategory = currentWorkDetail.getEmpCategory();
+        Optional<Employee> employeeOptional = employeeRepository.findById(empId);
+        String empCategory = currentWorkDetailOptional.get().getEmpCategory().getEmpCategory();
 
         List<OtherLeavesResponse> responses = new ArrayList<>();
 
-        if (!currentWorkDetailOptional.isPresent() && empCategory == null || !"standard".equals(empCategory.getEmpCategory())
-        ) {
-
-         throw new EmployeeNotFoundException("employee not found with id :" +empId);
+        if (!currentWorkDetailOptional.isPresent()){
+            throw new EmployeeNotFoundException("employee not found with id " + empId);
         }
-
-        OtherLeave otherLeave = new OtherLeave();
+        else if (empCategory.equals("standard")) {
             Employee employee = employeeOptional.get();
+            CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
 
+            OtherLeave otherLeave = new OtherLeave();
             otherLeave.setName(employee.getFirstName());
             otherLeave.setDepartment(otherLeavesRequest.getDepartment());
             otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
@@ -76,6 +73,44 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
                     .build();
 
             responses.add(response);
-        return responses;
+
+            return responses;
+
+        } else if (empCategory.equals("pl")) {
+            Employee employee = employeeOptional.get();
+            CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
+
+            OtherLeave otherLeave = new OtherLeave();
+            otherLeave.setName(employee.getFirstName());
+            otherLeave.setDepartment(otherLeavesRequest.getDepartment());
+            otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
+            otherLeave.setDayType(otherLeavesRequest.getDayType());
+            otherLeave.setReason(otherLeavesRequest.getReason());
+            otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
+            otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
+            otherLeave.setEmployee(currentWorkDetail.getEmployee());
+            otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
+            otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
+            otherLeave.setStatus(Status.PENDING);
+
+            otherLeavesRepository.save(otherLeave);
+
+            OtherLeavesResponse response = OtherLeavesResponse.builder()
+                    .name(otherLeave.getName())
+                    .department(otherLeave.getDepartment())
+                    .leaveType(otherLeave.getLeaveType())
+                    .dayType(otherLeave.getDayType())
+                    .reason(otherLeavesRequest.getReason())
+                    .financialYear(otherLeave.getFinancialYear())
+                    .applyDate(otherLeave.getApplyDate())
+                    .build();
+
+            responses.add(response);
+
+            return responses;
+        }
+        else {
+            throw new EmployeeNotFoundException("you are not in the current work details table with id "+empId );
+        }
     }
 }
