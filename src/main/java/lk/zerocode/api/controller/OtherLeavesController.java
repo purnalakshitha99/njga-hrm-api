@@ -18,10 +18,18 @@ import java.util.List;
 public class OtherLeavesController {
 
     StandardOtherLeavesHalfDayService standardOtherLeavesHalfDayService;
+    private OtherLeavesService otherLeavesService;
 
     @PostMapping("employees/{emp-id}/currentworks/otherleaves")
     public List<OtherLeavesResponse> createStandardOtherLeave(@PathVariable("emp-id") Long empId,@RequestBody OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException {
         return standardOtherLeavesHalfDayService.createStandardHalfDayLeaves(empId,otherLeavesRequest);
+    }
+
+    @PostMapping("/employees/{emp_id}/other_leaves")
+    public List<OtherLeavesResponse> createLeave(@PathVariable("emp_id")Long empId,@RequestBody OtherLeavesRequest otherLeavesRequest)throws EmployeeNotFoundException {
+
+      return  otherLeavesService.createLeave(empId,otherLeavesRequest);
+
     }
 
 }
