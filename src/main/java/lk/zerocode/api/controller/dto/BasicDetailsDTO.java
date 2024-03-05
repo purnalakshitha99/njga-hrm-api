@@ -2,25 +2,41 @@ package lk.zerocode.api.controller.dto;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.*;
 import lk.zerocode.api.model.Gender;
 import lombok.Data;
-import lombok.NonNull;
+
 
 import java.time.LocalDate;
 
 @Data
 public class BasicDetailsDTO {
-    private Long id;
-    private String first_name;
-    private String last_name;
-    private LocalDate dob;
-//    private String address;
-    private String contact_number;
-    private String email;
-    private String image_path;
+    @NotBlank
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
+
+    @Pattern(regexp = "[0-9]{9}[Vv]")
     private String nic;
-    private String work_telephone;
+
+    @Past
+    private LocalDate dob;
+
+    @Email
+    private String email;
+
+    private String address;
+
+    @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$")
+    private String contactNumber;
+
+    @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$")
+    private String workTelephone;
+
+    private String imagePath;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
 }

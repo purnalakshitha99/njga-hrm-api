@@ -1,5 +1,6 @@
 package lk.zerocode.api.controller;
 
+import lk.zerocode.api.controller.request.AttendenceRequest;
 import lk.zerocode.api.controller.request.Testrq;
 import lk.zerocode.api.service.TestService;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,10 @@ public class TestController {
     @GetMapping("/time/display")
     public void getDay(){
         testService.getDayByMonth();
+    }
+
+    @GetMapping("/finger")
+    public void getFid(@RequestBody AttendenceRequest attendenceRequest){
+        testService.getFid(attendenceRequest);
     }
 }
