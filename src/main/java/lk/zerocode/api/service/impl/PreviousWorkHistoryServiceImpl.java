@@ -1,10 +1,15 @@
 package lk.zerocode.api.service.impl;
 
+import lk.zerocode.api.controller.request.EmergencyContactRequest;
 import lk.zerocode.api.controller.request.PreviousWorkHistoryRequest;
+import lk.zerocode.api.controller.response.DependentDetailMsgResponse;
+import lk.zerocode.api.controller.response.EmergencyResponse;
 import lk.zerocode.api.controller.response.PreviousWorkHistoryIdResponse;
 import lk.zerocode.api.controller.response.PreviousWorkHistoryResponse;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.exceptions.PreviousWorkHistoryNotFoundException;
+import lk.zerocode.api.model.DependentDetail;
+import lk.zerocode.api.model.EmergencyContact;
 import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.model.PreviousWorkHistory;
 import lk.zerocode.api.repository.EmployeeRepository;
@@ -23,34 +28,43 @@ public class PreviousWorkHistoryServiceImpl implements PreviousWorkHistoryServic
     private EmployeeRepository employeeRepository;
     private PreviousWorkHistoryRepository previousWorkHistoryRepository;
 
+
+
     @Override
-    public PreviousWorkHistoryIdResponse savePreviousWorkHistoryDetails(Long eid, PreviousWorkHistoryRequest previousWorkHistoryRequest) throws EmployeeNotFoundException {
-//        Optional<Employee> employeeOptional = employeeRepository.findById(id);
-//
-//        if(!employeeOptional.isPresent()){
-//            throw new EmployeeNotFoundException("Employee not found in id number "+id);
-//        }
-//        Employee employee = employeeOptional.get();
+    public List<PreviousWorkHistoryResponse> createPreviousWorkHistoryDetails(Long eid, List<PreviousWorkHistoryRequest> previousWorkHistoryRequests) throws EmployeeNotFoundException{
 
-        Employee employee = employeeRepository.findById(eid).orElseThrow(
-                () -> new EmployeeNotFoundException("Employee not found in id number " + eid)
-        );
+        Optional<Employee> employeeOptional=employeeRepository.findById(eid);
+        if(!employeeOptional.isPresent()){
+            throw  new EmployeeNotFoundException("Employee not found with Id : "+eid);
+        }
+        List<PreviousWorkHistoryResponse> previousWorkHistoryResponses= new ArrayList<>();
 
-        PreviousWorkHistory previousWorkHistory = new PreviousWorkHistory();
-        previousWorkHistory.setCompanyName(previousWorkHistoryRequest.getCompanyName());
-        previousWorkHistory.setDesignation(previousWorkHistoryRequest.getDesignation());
-        previousWorkHistory.setStartDate(previousWorkHistoryRequest.getStartDate());
-        previousWorkHistory.setEndDate(previousWorkHistoryRequest.getEndDate());
-        previousWorkHistory.setEmployee(employee);
-        previousWorkHistoryRepository.save(previousWorkHistory);
+        Employee employee =employeeOptional.get();
+        for(PreviousWorkHistoryRequest workHistoryRequest : previousWorkHistoryRequests){
+            PreviousWorkHistory previousWorkHistory = new PreviousWorkHistory();
+            previousWorkHistory.setCompanyName(workHistoryRequest.getCompanyName());
+            previousWorkHistory.setDesignation(workHistoryRequest.getDesignation());
+            previousWorkHistory.setStartDate(workHistoryRequest.getStartDate());
+            previousWorkHistory.setEndDate(workHistoryRequest.getEndDate());
+            previousWorkHistory.setEmployee(employee);
 
-        PreviousWorkHistoryIdResponse previousWorkHistoryResponse = PreviousWorkHistoryIdResponse.builder()
-                .id(employee.getId())
-                .empName(employee.getFirstName())
-                .build();
+            employee.getPreviousWorkHistories().add(previousWorkHistory);
+            previousWorkHistoryRepository.save(previousWorkHistory);
 
-        return previousWorkHistoryResponse;
+            PreviousWorkHistoryResponse workHistoryResponse = PreviousWorkHistoryResponse.builder()
+                    .id(previousWorkHistory.getId())
+                    .companyName(previousWorkHistory.getCompanyName())
+                    .designation(previousWorkHistory.getDesignation())
+                    .startDate(previousWorkHistory.getStartDate())
+                    .endDate(previousWorkHistory.getEndDate())
+                    .build();
+
+            previousWorkHistoryResponses.add(workHistoryResponse);
+        }
+
+        return previousWorkHistoryResponses;
     }
+
 
 
     @Override
@@ -62,15 +76,14 @@ public class PreviousWorkHistoryServiceImpl implements PreviousWorkHistoryServic
         }
         Employee employee = employeeOptional.get();
 
-        // Assuming you have a method in employeeRepository to get previous work history
+
         List<PreviousWorkHistory> previousWorkHistoryList = employeeRepository.findPreviousWorkHistoryByEmployee(employee);
 
 
-        // Convert PreviousWorkHistory objects to PreviousWorkHistoryResponse objects
+
         List<PreviousWorkHistoryResponse> responseList = new ArrayList<>();
         for (PreviousWorkHistory workHistory : previousWorkHistoryList) {
-            // Assuming you have a constructor or a mapper method in PreviousWorkHistoryResponse
-            // to convert from PreviousWorkHistory to PreviousWorkHistoryResponse
+
             PreviousWorkHistoryResponse response = PreviousWorkHistoryResponse.builder()
                     .id(workHistory.getId())
                     .companyName(workHistory.getCompanyName())
@@ -99,7 +112,7 @@ public class PreviousWorkHistoryServiceImpl implements PreviousWorkHistoryServic
         Optional<PreviousWorkHistory> previousWorkHistoryOptional = previousWorkHistoryRepository.findById(previousWorkHistoryId);
 
         if (!previousWorkHistoryOptional.isPresent()) {
-            throw new PreviousWorkHistoryNotFoundException("Previous Work History not found with ID: " + previousWorkHistoryId);
+            throw new PreviousWorkHistoryNotFoundException("Previous Work History not found with ID : " + previousWorkHistoryId);
         }
 
         PreviousWorkHistory previousWorkHistory = previousWorkHistoryOptional.get();
@@ -124,21 +137,24 @@ public class PreviousWorkHistoryServiceImpl implements PreviousWorkHistoryServic
 
 
     @Override
-    public String deletePreviousWorkHistoryDetailsById(Long empId, Long previousWorkHistoryId) throws EmployeeNotFoundException{
+    public String deletePreviousWorkHistoryDetailsById(Long empId, Long previousWorkHistoryId) throws EmployeeNotFoundException,PreviousWorkHistoryNotFoundException{
 
         Optional<Employee> employeeOptional = employeeRepository.findById(empId);
         if (!employeeOptional.isPresent()) {
             throw new EmployeeNotFoundException("Employee not found with id: " + empId);
         }
 
-        Optional<PreviousWorkHistory> contactOptional = previousWorkHistoryRepository.findById(previousWorkHistoryId);
-//        if (!contactOptional.isPresent()) {
-//            return null;
-//        }
+        Employee employee =employeeOptional.get();
 
+        Optional<PreviousWorkHistory> previousWorkHistoryOptional =previousWorkHistoryRepository.findPreviousWorkHistoriesByEmployeeAndId(employee,previousWorkHistoryId);
+        if(!previousWorkHistoryOptional.isPresent()){
+            throw new PreviousWorkHistoryNotFoundException("Employee not found with id: "+previousWorkHistoryId);
+        }
+        PreviousWorkHistory previousWorkHistory =previousWorkHistoryOptional.get();
         previousWorkHistoryRepository.deleteById(previousWorkHistoryId);
-        return "Delete successful for employee id: " + empId + " and contact id: " + previousWorkHistoryId;
-    }
 
+        return ("Delete successfully previousWorkHistoryId no "+previousWorkHistory.getId()+" of employee with Id: "+empId);
+
+    }
 
 }
