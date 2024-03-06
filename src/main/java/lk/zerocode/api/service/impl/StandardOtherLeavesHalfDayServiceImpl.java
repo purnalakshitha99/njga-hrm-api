@@ -31,21 +31,26 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
 
     @Override
-    public List<OtherLeavesResponse> createStandardHalfDayLeaves(Long empId,OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException {
+    public String createStandardHalfDayLeaves(Long empId,OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException {
 
 
         Optional<CurrentWorkDetail> currentWorkDetailOptional = Optional.ofNullable(currentWorkDetailRepository.findById(empId)
                 .orElseThrow(() -> new EmployeeNotFoundException("employee not found with id : " + empId)));
         Optional<Employee> employeeOptional = employeeRepository.findById(empId);
+
         String empCategory = currentWorkDetailOptional.get().getEmpCategory().getEmpCategory();
 
+
+
         List<OtherLeavesResponse> responses = new ArrayList<>();
+
+        OtherLeave otherLeave = new OtherLeave();
+        MonthlyBasedLeave monthlyBasedLeave = monthlyBasedLeavesRepository.findMonthlyBasedLeaveByCategoryAndType(empCategory, otherLeavesRequest.getLeaveType());
 
       if (empCategory.equals("standard")) {
             Employee employee = employeeOptional.get();
             CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
 
-            OtherLeave otherLeave = new OtherLeave();
             otherLeave.setName(employee.getFirstName());
             otherLeave.setDepartment(otherLeavesRequest.getDepartment());
             otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
@@ -54,6 +59,7 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
             otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
             otherLeave.setFinancialMonth(otherLeavesRequest.getFinancialMonth());
             otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
+            otherLeave.setMonthlyBasedLeaves(monthlyBasedLeave);
             otherLeave.setEmployee(currentWorkDetail.getEmployee());
             otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
             otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
@@ -61,26 +67,14 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
             otherLeavesRepository.save(otherLeave);
 
-            OtherLeavesResponse response = OtherLeavesResponse.builder()
-                    .name(otherLeave.getName())
-                    .department(otherLeave.getDepartment())
-                    .leaveType(otherLeave.getLeaveType())
-                    .dayType(otherLeave.getDayType())
-                    .reason(otherLeave.getReason())
-                    .financialYear(otherLeave.getFinancialYear())
-                    .financialMonth(otherLeave.getFinancialMonth())
-                    .applyDate(otherLeave.getApplyDate())
-                    .build();
 
-            responses.add(response);
 
-            return responses;
+            return "you are standard employee and you apply for halfday with empId : " + empId;
 
         } else if (empCategory.equals("pl")) {
             Employee employee = employeeOptional.get();
             CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
 
-            OtherLeave otherLeave = new OtherLeave();
             otherLeave.setName(employee.getFirstName());
             otherLeave.setDepartment(otherLeavesRequest.getDepartment());
             otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
@@ -89,7 +83,7 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
             otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
             otherLeave.setFinancialMonth(otherLeavesRequest.getFinancialMonth());
             otherLeave.setFinancialMonth(otherLeavesRequest.getFinancialMonth());
-//            otherLeave.setMonthlyBasedLeaves(otherLeavesRequest.getMonthlyBasedLeaves());
+            otherLeave.setMonthlyBasedLeaves(monthlyBasedLeave);
             otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
             otherLeave.setEmployee(currentWorkDetail.getEmployee());
             otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
@@ -98,21 +92,9 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
             otherLeavesRepository.save(otherLeave);
 
-            OtherLeavesResponse response = OtherLeavesResponse.builder()
-                    .name(otherLeave.getName())
-                    .department(otherLeave.getDepartment())
-                    .leaveType(otherLeave.getLeaveType())
-                    .dayType(otherLeave.getDayType())
-                    .reason(otherLeave.getReason())
-                    .financialYear(otherLeave.getFinancialYear())
-                    .financialMonth(otherLeave.getFinancialMonth())
-                    .monthlyBasedLeaves(otherLeave.getMonthlyBasedLeaves())
-                    .applyDate(otherLeave.getApplyDate())
-                    .build();
 
-            responses.add(response);
 
-            return responses;
+            return "you are pl employee and you apply for halfday with empId : " + empId;
         }
         else {
             throw new EmployeeNotFoundException("you are not in the current work details table with id "+empId );

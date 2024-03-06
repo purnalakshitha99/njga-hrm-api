@@ -19,8 +19,8 @@ public class OtherLeavesController {
     StandardOtherLeavesHalfDayService standardOtherLeavesHalfDayService;
 
 
-    @PostMapping("employees/{emp-id}/currentworks/otherleaves")
-    public List<OtherLeavesResponse> createStandardOtherLeave(@PathVariable("emp-id") Long empId,@RequestBody OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException {
+    @PostMapping("employees/currentworks/{emp-id}/otherleaves")
+    public String createStandardOtherLeave(@PathVariable("emp-id") Long empId,@RequestBody OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException {
         return standardOtherLeavesHalfDayService.createStandardHalfDayLeaves(empId,otherLeavesRequest);
     }
 

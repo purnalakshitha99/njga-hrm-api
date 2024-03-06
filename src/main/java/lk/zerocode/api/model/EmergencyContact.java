@@ -18,6 +18,5 @@ public class EmergencyContact {
     private String contact;
 
     @ManyToOne
-    @JsonManagedReference
     private Employee employee;
 }

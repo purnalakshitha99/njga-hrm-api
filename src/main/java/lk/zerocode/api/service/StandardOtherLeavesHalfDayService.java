@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface StandardOtherLeavesHalfDayService {
 
-    List<OtherLeavesResponse> createStandardHalfDayLeaves(Long empId, OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException;
+    String createStandardHalfDayLeaves(Long empId, OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException;
 }

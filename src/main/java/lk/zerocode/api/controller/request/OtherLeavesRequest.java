@@ -31,7 +31,7 @@ public class OtherLeavesRequest {
     private LocalTime requiredCheckIn;
     private LocalTime requiredCheckOut;
     private Status status;
-//    private MonthlyBasedLeave monthlyBasedLeaves;
+    private MonthlyBasedLeave monthlyBasedLeaves;
 //    private FingerPrint fingerPrint;
     private LocalTime wontedTime;
     private LocalDate wantedDate;

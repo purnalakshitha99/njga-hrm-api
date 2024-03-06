@@ -43,7 +43,6 @@ public class Employee {
     private List<DependentDetail> dependentDetailsList;
 
     @OneToMany(mappedBy = "employee")
-    @JsonBackReference
     private List<EmergencyContact> emergencyContactList;
 
     @OneToMany(mappedBy = "employee")
