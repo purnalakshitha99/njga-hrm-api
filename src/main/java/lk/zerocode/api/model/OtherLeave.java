@@ -32,6 +32,7 @@ public class OtherLeave {
     private Month financialMonth;
 
     private LocalDate applyDate;
+    private LocalTime applyTime;
 
     @Column(name = "ap_p_name")
     private String approvedPersonName;
@@ -71,4 +72,6 @@ public class OtherLeave {
 
     @ManyToOne
     private FingerPrint fingerPrint;
+
+    private Integer hours;
 }

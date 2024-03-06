@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface EmpCategoryRepository extends JpaRepository<EmpCategory,Long> {
 
     Optional<EmpCategory> findEmpCategoriesByEmpCategoryAndEmpType(String empCategory,String categoryType);
+
+    Optional<EmpCategory>findEmpCategoriesByEmpCategory(String empCategory);
 }

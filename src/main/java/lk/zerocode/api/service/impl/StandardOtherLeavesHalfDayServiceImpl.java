@@ -34,32 +34,27 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
     public String createStandardHalfDayLeaves(Long empId,OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException {
 
 
-        Optional<CurrentWorkDetail> currentWorkDetailOptional = Optional.ofNullable(currentWorkDetailRepository.findById(empId)
-                .orElseThrow(() -> new EmployeeNotFoundException("employee not found with id : " + empId)));
+        Optional<CurrentWorkDetail> currentWorkDetailOptional = currentWorkDetailRepository.findById(empId);
         Optional<Employee> employeeOptional = employeeRepository.findById(empId);
-
         String empCategory = currentWorkDetailOptional.get().getEmpCategory().getEmpCategory();
-
-
 
         List<OtherLeavesResponse> responses = new ArrayList<>();
 
-        OtherLeave otherLeave = new OtherLeave();
-        MonthlyBasedLeave monthlyBasedLeave = monthlyBasedLeavesRepository.findMonthlyBasedLeaveByCategoryAndType(empCategory, otherLeavesRequest.getLeaveType());
-
-      if (empCategory.equals("standard")) {
+        if (!currentWorkDetailOptional.isPresent()){
+            throw new EmployeeNotFoundException("employee not found with id " + empId);
+        }
+        else if (empCategory.equals("standard")) {
             Employee employee = employeeOptional.get();
             CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
 
+            OtherLeave otherLeave = new OtherLeave();
             otherLeave.setName(employee.getFirstName());
             otherLeave.setDepartment(otherLeavesRequest.getDepartment());
             otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
             otherLeave.setDayType(otherLeavesRequest.getDayType());
             otherLeave.setReason(otherLeavesRequest.getReason());
             otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
-            otherLeave.setFinancialMonth(otherLeavesRequest.getFinancialMonth());
-            otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
-            otherLeave.setMonthlyBasedLeaves(monthlyBasedLeave);
+//            otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
             otherLeave.setEmployee(currentWorkDetail.getEmployee());
             otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
             otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
@@ -69,22 +64,20 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
 
 
-            return "you are standard employee and you apply for halfday with empId : " + empId;
+            return "sjjsjs";
 
         } else if (empCategory.equals("pl")) {
             Employee employee = employeeOptional.get();
             CurrentWorkDetail currentWorkDetail = currentWorkDetailOptional.get();
 
+            OtherLeave otherLeave = new OtherLeave();
             otherLeave.setName(employee.getFirstName());
             otherLeave.setDepartment(otherLeavesRequest.getDepartment());
             otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
             otherLeave.setDayType(otherLeavesRequest.getDayType());
             otherLeave.setReason(otherLeavesRequest.getReason());
             otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
-            otherLeave.setFinancialMonth(otherLeavesRequest.getFinancialMonth());
-            otherLeave.setFinancialMonth(otherLeavesRequest.getFinancialMonth());
-            otherLeave.setMonthlyBasedLeaves(monthlyBasedLeave);
-            otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
+//            otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
             otherLeave.setEmployee(currentWorkDetail.getEmployee());
             otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
             otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
@@ -94,7 +87,7 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
 
 
 
-            return "you are pl employee and you apply for halfday with empId : " + empId;
+            return null;
         }
         else {
             throw new EmployeeNotFoundException("you are not in the current work details table with id "+empId );
