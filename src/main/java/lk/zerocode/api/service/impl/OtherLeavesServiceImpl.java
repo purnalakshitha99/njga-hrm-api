@@ -61,8 +61,13 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
         System.out.println("alowed hours : "+allowedHours);
         List<OtherLeave> takenLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndLeaveType(employee, otherLeavesRequest.getLeaveType());
 
+
+
+
         int noTakenHours = 0;
+
         for (OtherLeave otherLeave : takenLeaves) {
+
 
             noTakenHours = noTakenHours + otherLeave.getHours();
             System.out.println("other leave : "+ otherLeave.getHours());
@@ -70,51 +75,37 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
 
         }
 
-        System.out.println("num  :"+noTakenHours);
+        System.out.println("num of taken hours :"+noTakenHours);
         System.out.println("other leave request hours: "+otherLeavesRequest.getHours());
         System.out.println("sum of other leaves and no taken hours: "+(noTakenHours+otherLeavesRequest.getHours()));
 
-//        if (allowedHours < (noTakenHours + otherLeavesRequest.getHours()) || allowedHours < otherLeavesRequest.getHours()) {
-//            throw new CannotCreateLeaveException("can not create leave");
-//
-//
-//        }
 
-        if (allowedHours < noTakenHours+ otherLeavesRequest.getHours() || (allowedHours<otherLeavesRequest.getHours())) {
-            System.out.println("inside the if:"+(noTakenHours+otherLeavesRequest.getHours()));
-            System.out.println("inside the if request details : "+(allowedHours<otherLeavesRequest.getHours()));
-            throw new CannotCreateLeaveException("can not create leave");
+        if (otherLeavesRequest.getLeaveType().equals("gatepass")){
+            System.out.println("gate pass ekata awa");
+
+            System.out.println("mulin "+(noTakenHours+otherLeavesRequest.getHours()));
+            if (allowedHours < (noTakenHours+otherLeavesRequest.getHours()) || allowedHours< otherLeavesRequest.getHours()){
+                System.out.println("if eka athule :"+noTakenHours+otherLeavesRequest.getHours());
+                throw new CannotCreateLeaveException("can not create leave");
+            }
+            OtherLeave otherLeave = new OtherLeave();
+
+            otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
+            otherLeave.setHours(otherLeavesRequest.getHours());
+            otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
+            otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
+            otherLeave.setFinancialMonth(otherLeavesRequest.getFinancialMonth());
+            otherLeave.setFinancialMonth(otherLeavesRequest.getFinancialMonth());
+            otherLeave.setApplyTime(otherLeave.getApplyTime());
+            otherLeave.setApplyDate(otherLeave.getApplyDate());
+
+            otherLeavesRepository.save(otherLeave);
         }
 
-        OtherLeave otherLeave = new OtherLeave();
 
 
-        otherLeave.setApplyDate(currentDate);
-        otherLeave.setApplyTime(currentTime);
-        otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
-        otherLeave.setReason(otherLeavesRequest.getReason());
-        otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
-        otherLeave.setWantedTime(otherLeavesRequest.getApprovedTime());
-        otherLeave.setEmployee(employee);
-        otherLeave.setHours(otherLeavesRequest.getHours());
 
-        otherLeavesRepository.save(otherLeave);
 
-//        OtherLeavesResponse otherLeavesResponse = OtherLeavesResponse.builder()
-//                .id(otherLeave.getId())
-//                .applyDate(otherLeave.getApplyDate())
-//                .applyTime(otherLeave.getApplyTime())
-//                .leaveType(otherLeave.getLeaveType())
-//                .reason(otherLeave.getReason())
-//                .wantedDate(otherLeave.getWantedDate())
-//                .wantedTime(otherLeave.getWantedTime())
-//                .employee(otherLeave.getEmployee())
-//                .hours(otherLeave.getHours())
-//                .build();
-//
-//
-//
-//return otherLeavesResponse;
 
         return null;
 
