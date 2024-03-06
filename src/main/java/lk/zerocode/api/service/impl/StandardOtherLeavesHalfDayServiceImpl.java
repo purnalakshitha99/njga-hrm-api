@@ -54,7 +54,7 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
             otherLeave.setDayType(otherLeavesRequest.getDayType());
             otherLeave.setReason(otherLeavesRequest.getReason());
             otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
-            otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
+//            otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
             otherLeave.setEmployee(currentWorkDetail.getEmployee());
             otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
             otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
@@ -87,7 +87,7 @@ public class StandardOtherLeavesHalfDayServiceImpl implements StandardOtherLeave
             otherLeave.setDayType(otherLeavesRequest.getDayType());
             otherLeave.setReason(otherLeavesRequest.getReason());
             otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
-            otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
+//            otherLeave.setApplyDate(otherLeavesRequest.getApplyDate());
             otherLeave.setEmployee(currentWorkDetail.getEmployee());
             otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
             otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());

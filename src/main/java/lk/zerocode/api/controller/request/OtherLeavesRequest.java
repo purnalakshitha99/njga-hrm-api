@@ -22,7 +22,8 @@ public class OtherLeavesRequest {
     private String reason;
     private Year financialYear;
     private Month financialMonth;
-    private LocalDate applyDate;
+
+
     private String approvedPersonName;
     private LocalDate approvedDate;
     private LocalTime approvedTime;
@@ -31,6 +32,7 @@ public class OtherLeavesRequest {
     private LocalTime requiredCheckIn;
     private LocalTime requiredCheckOut;
     private Status status;
+    private Integer hours;
 //    private MonthlyBasedLeave monthlyBasedLeaves;
 //    private FingerPrint fingerPrint;
     private LocalTime wontedTime;
