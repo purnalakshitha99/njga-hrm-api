@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.Year;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,7 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
     public OtherLeavesResponse createLeave(Long empId,OtherLeavesRequest otherLeavesRequest)throws EmployeeNotFoundException,EmpCategoryNotFoundException, CannotCreateLeaveException {
 
         Year year = Year.of(Year.now().getValue());
+
 
         if(!year.equals(otherLeavesRequest.getFinancialYear())){
             throw new CannotCreateLeaveException("Cannot create more than 7 casual leaves for standard category.");
@@ -53,25 +55,35 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
                 () -> new EmpCategoryNotFoundException("that emp category not found")
         );
 
-        int allowedLeaveCount = monthlyBasedLeave.getNoOfDays();
+//        int allowedLeaveCount = monthlyBasedLeave.getNoOfDays();
         int allowedHours = monthlyBasedLeave.getNoOfHours();
 
+        System.out.println("alowed hours : "+allowedHours);
         List<OtherLeave> takenLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndLeaveType(employee, otherLeavesRequest.getLeaveType());
 
         int noTakenHours = 0;
         for (OtherLeave otherLeave : takenLeaves) {
 
             noTakenHours = noTakenHours + otherLeave.getHours();
+            System.out.println("other leave : "+ otherLeave.getHours());
 
 
         }
 
         System.out.println("num  :"+noTakenHours);
+        System.out.println("other leave request hours: "+otherLeavesRequest.getHours());
+        System.out.println("sum of other leaves and no taken hours: "+(noTakenHours+otherLeavesRequest.getHours()));
 
-        if (allowedHours < noTakenHours + otherLeavesRequest.getHours() || allowedHours< otherLeavesRequest.getHours()) {
+//        if (allowedHours < (noTakenHours + otherLeavesRequest.getHours()) || allowedHours < otherLeavesRequest.getHours()) {
+//            throw new CannotCreateLeaveException("can not create leave");
+//
+//
+//        }
+
+        if (allowedHours < noTakenHours+ otherLeavesRequest.getHours() || (allowedHours<otherLeavesRequest.getHours())) {
+            System.out.println("inside the if:"+(noTakenHours+otherLeavesRequest.getHours()));
+            System.out.println("inside the if request details : "+(allowedHours<otherLeavesRequest.getHours()));
             throw new CannotCreateLeaveException("can not create leave");
-
-
         }
 
         OtherLeave otherLeave = new OtherLeave();
@@ -88,21 +100,24 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
 
         otherLeavesRepository.save(otherLeave);
 
-        OtherLeavesResponse otherLeavesResponse = OtherLeavesResponse.builder()
-                .id(otherLeave.getId())
-                .applyDate(otherLeave.getApplyDate())
-                .applyTime(otherLeave.getApplyTime())
-                .leaveType(otherLeave.getLeaveType())
-                .reason(otherLeave.getReason())
-                .wantedDate(otherLeave.getWantedDate())
-                .wantedTime(otherLeave.getWantedTime())
-                .employee(otherLeave.getEmployee())
-                .hours(otherLeave.getHours())
-                .build();
+//        OtherLeavesResponse otherLeavesResponse = OtherLeavesResponse.builder()
+//                .id(otherLeave.getId())
+//                .applyDate(otherLeave.getApplyDate())
+//                .applyTime(otherLeave.getApplyTime())
+//                .leaveType(otherLeave.getLeaveType())
+//                .reason(otherLeave.getReason())
+//                .wantedDate(otherLeave.getWantedDate())
+//                .wantedTime(otherLeave.getWantedTime())
+//                .employee(otherLeave.getEmployee())
+//                .hours(otherLeave.getHours())
+//                .build();
+//
+//
+//
+//return otherLeavesResponse;
 
+        return null;
 
-
-return otherLeavesResponse;
 
 
 
