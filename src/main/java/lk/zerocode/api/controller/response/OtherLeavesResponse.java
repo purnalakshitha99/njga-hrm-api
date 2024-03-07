@@ -43,5 +43,5 @@ public class OtherLeavesResponse {
 
     private Status status;
 
-    private Integer hours;
+    private Float hours;
 }
