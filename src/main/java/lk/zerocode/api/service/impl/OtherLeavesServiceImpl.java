@@ -65,6 +65,7 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
 
         if (takenLeaves.isEmpty()) {
             if (otherLeavesRequest.getLeaveType().equals("halfday")){
+                noOfTakenHours=4;
             }else {
                 noOfTakenHours = 1;
             }
@@ -100,6 +101,7 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
 
             OtherLeave otherLeave = new OtherLeave();
 
+
             otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
             otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
             otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
@@ -112,6 +114,52 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
 
             otherLeave.setStatus(Status.PENDING);
             otherLeave.setHours(noOfTakenHours);
+            otherLeave.setApplyTime(currentTime);
+            otherLeave.setApplyDate(currentDate);
+
+            otherLeave.setEmployee(employee);
+
+            otherLeave.setDayType(otherLeavesRequest.getDayType());
+
+            otherLeavesRepository.save(otherLeave);
+
+            return OtherLeavesResponse.builder()
+                    .id(otherLeave.getId())
+                    .name(otherLeave.getName())
+                    .department(otherLeave.getDepartment())
+                    .leaveType(otherLeave.getLeaveType())
+                    .reason(otherLeave.getReason())
+                    .financialMonth(otherLeave.getFinancialMonth())
+                    .financialYear(otherLeave.getFinancialYear())
+                    .applyDate(otherLeave.getApplyDate())
+                    .applyTime(otherLeave.getApplyTime())
+                    .wantedDate(otherLeave.getWantedDate())
+                    .wantedTime(otherLeave.getWantedTime())
+                    .status(otherLeave.getStatus())
+                    .hours(otherLeave.getHours())
+                    .dayType(otherLeave.getDayType())
+                    .build();
+        }
+        if (otherLeavesRequest.getLeaveType().equals("shortleave")){
+
+            if (allowedHours<(noOfTakenHours+otherLeavesRequest.getHours()) || allowedHours<otherLeavesRequest.getHours()){
+                throw new CannotCreateLeaveException("can not create leave");
+            }
+
+            OtherLeave otherLeave = new OtherLeave();
+
+            otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
+            otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
+            otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
+            otherLeave.setFinancialMonth(otherLeavesRequest.getFinancialMonth());
+            otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
+            otherLeave.setReason(otherLeavesRequest.getReason());
+
+            otherLeave.setDepartment(employee.getCurrentWorkDetails().getDepartment().getName());
+            otherLeave.setName(employee.getFirstName());
+
+            otherLeave.setStatus(Status.PENDING);
+            otherLeave.setHours(otherLeavesRequest.getHours());
             otherLeave.setApplyTime(currentTime);
             otherLeave.setApplyDate(currentDate);
 

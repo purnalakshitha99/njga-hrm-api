@@ -26,7 +26,7 @@ public class OtherLeavesRequest {
 
 
     private Status status;
-    private Integer hours;
+    private Float hours;
 //    private MonthlyBasedLeave monthlyBasedLeaves;
 //    private FingerPrint fingerPrint;
     private LocalTime wontedTime;
