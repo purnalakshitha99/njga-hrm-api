@@ -10,5 +10,5 @@ import java.util.List;
 public interface OtherLeavesRepository extends JpaRepository<OtherLeave , Long> {
 
 
-    List<OtherLeave> findOtherLeaveByEmployeeAndLeaveType(Employee employee,String leaveType);
+    List<OtherLeave> findOtherLeaveByEmployeeAndLeaveTypeAndFinancialYearAndFinancialMonth(Employee employee,String leaveType,String year,String month);
 }
