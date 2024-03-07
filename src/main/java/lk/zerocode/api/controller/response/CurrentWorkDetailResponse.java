@@ -10,22 +10,13 @@ import java.time.LocalDate;
 public class CurrentWorkDetailResponse {
 
     private Long id;
-
     private String designation;
     private LocalDate startDate;
     private String workTelephone;
-
-
-    private Long empId;
-
+    private String empCode;
 
     private String branchCode;
-
-
     private String depId;
-
-
     private String empCategory;
-
     private String empCategoryType;
 }
