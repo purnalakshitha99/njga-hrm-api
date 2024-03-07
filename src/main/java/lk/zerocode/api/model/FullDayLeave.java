@@ -1,7 +1,9 @@
 package lk.zerocode.api.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -22,6 +24,7 @@ public class FullDayLeave {
     private String reason;
     private LocalDate startDate;
     private LocalDate endDate;
+    @Column(columnDefinition = "Integer DEFAULT 0")
     private Integer noOfDays;
     private Year financialYear;
     private LocalDate applyDate;
