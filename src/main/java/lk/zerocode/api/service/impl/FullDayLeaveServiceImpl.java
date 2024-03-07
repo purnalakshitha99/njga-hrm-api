@@ -16,6 +16,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.Year;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,15 +29,29 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
     private YearBasedLeaveRepository yearBasedLeaveRepository;
     @Override
     public FullDayLeavesResponse create(Long emp_id, FullDayLeavesRequest fullDayLeavesRequest) throws EmployeeNotFoundException, CannotCreateLeaveException {
+
+        Year year = Year.of(Year.now().getValue());
+
+        if(!year.equals(fullDayLeavesRequest.getFinancialYear())){
+            throw new CannotCreateLeaveException("Cannot create more leaves.");
+
+        }
         Employee employee = employeeRepository.findEmployeeById(emp_id).orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found"));
         String category = employee.getCurrentWorkDetails().getEmpCategory().getEmpCategory();
         Optional<YearlyBasedLeave> yearlyBasedLeaveResult = yearBasedLeaveRepository.findYearlyBasedLeaveByCategoryAndType(category, fullDayLeavesRequest.getLeaveType());
+//        System.out.println(yearlyBasedLeaveResult.get().getNoOfDays());
+        int allowedLeaveCount=yearlyBasedLeaveResult.get().getNoOfDays();
+        List<FullDayLeave> takenLeaves=fullDayLeavesRepository.findFullDayLeaveByEmployeeAndLeaveType(employee,fullDayLeavesRequest.getLeaveType() );
 
-        if (fullDayLeavesRequest.getLeaveType().equalsIgnoreCase("casual") && category.equalsIgnoreCase("standard")) {
-            int casualLeavesCount = fullDayLeavesRepository.countByYearBasedLeaveCategoryAndLeaveType(category, "casual");
-            if (casualLeavesCount >= 7) {
-                throw new CannotCreateLeaveException("Cannot create more than 7 casual leaves for standard category.");
-            }
+        int noTakenLeave=0;
+        for (FullDayLeave fullDayLeave:takenLeaves){
+            noTakenLeave=noTakenLeave+fullDayLeave.getNoOfDays();
+        }
+
+        System.out.println(noTakenLeave);
+
+        if (allowedLeaveCount < noTakenLeave+fullDayLeavesRequest.getNoOfDays() || allowedLeaveCount<fullDayLeavesRequest.getNoOfDays()){
+            throw new CannotCreateLeaveException("exceeded the leave limit");
         }
 
         FullDayLeave fullDayLeave = new FullDayLeave();
@@ -44,7 +61,6 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
         fullDayLeave.setStartDate(fullDayLeavesRequest.getStartDate());
         fullDayLeave.setYearBasedLeave(yearlyBasedLeaveResult.get());
         fullDayLeave.setEndDate(fullDayLeavesRequest.getEndDate());
-        fullDayLeave.setApprovedPersonName(fullDayLeavesRequest.getApprovedPersonName());
         fullDayLeave.setDepartment(fullDayLeavesRequest.getDepartment());
         fullDayLeave.setFinancialYear(fullDayLeavesRequest.getFinancialYear());
         fullDayLeave.setReason(fullDayLeavesRequest.getReason());
@@ -53,7 +69,6 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
 
         fullDayLeave.setEmployee(employee);
         fullDayLeavesRepository.save(fullDayLeave);
-
         return FullDayLeavesResponse.builder()
                 .name(fullDayLeave.getName())
                 .applyDate(fullDayLeave.getApplyDate())
@@ -67,6 +82,19 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
                 .status(fullDayLeave.getStatus())
                 .build();
     }
+    @Override
+    public void leaveStatus(Long id, FullDayLeavesRequest fullDayLeavesRequest) {
+        Optional<FullDayLeave> optionalFullDayLeave=fullDayLeavesRepository.findById(id);
+        if (optionalFullDayLeave.isPresent()){
+            FullDayLeave fullDayLeave=optionalFullDayLeave.get();
+            fullDayLeave.setApprovedDate(LocalDate.now());
+            fullDayLeave.setApprovedTime(LocalTime.now());
+            fullDayLeave.setApprovedPersonName("Viduth");
+            fullDayLeave.setStatus(fullDayLeavesRequest.getStatus());
+            fullDayLeavesRepository.save(fullDayLeave);
+        }
+    }
+
     @Override
     public void delete() {
         fullDayLeavesRepository.deleteAll();

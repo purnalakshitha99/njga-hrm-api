@@ -13,14 +13,19 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class FullDayLeavesController {
     private FullDayLeaveService fullDayLeaveService;
+
     @PostMapping("/employees/{employee-id}/year-based")
-    public FullDayLeavesResponse create(@PathVariable("employee-id") Long emp_id,@RequestBody FullDayLeavesRequest fullDayLeavesRequest)
-    throws EmployeeNotFoundException, CannotCreateLeaveException {
-       return fullDayLeaveService.create(emp_id,fullDayLeavesRequest);
+    public FullDayLeavesResponse create(@PathVariable("employee-id") Long emp_id, @RequestBody FullDayLeavesRequest fullDayLeavesRequest)
+            throws EmployeeNotFoundException, CannotCreateLeaveException {
+        return fullDayLeaveService.create(emp_id, fullDayLeavesRequest);
     }
-    @DeleteMapping("/leavedelete")
-    public void delete(){
-        fullDayLeaveService.delete();
+    @PostMapping ("/year-based/{leave-id}")
+    public void leaveStatus(@PathVariable("leave-id") Long id,@RequestBody FullDayLeavesRequest fullDayLeavesRequest) {
+        fullDayLeaveService.leaveStatus(id,fullDayLeavesRequest);
     }
 
+    @DeleteMapping("/leavedelete")
+    public void delete() {
+        fullDayLeaveService.delete();
+    }
 }
