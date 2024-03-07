@@ -12,4 +12,6 @@ public interface FullDayLeaveService {
     FullDayLeavesResponse create(Long emp_id, FullDayLeavesRequest fullDayLeavesRequest) throws EmployeeNotFoundException, CannotCreateLeaveException;
 
     void delete();
+    void leaveStatus(Long id, FullDayLeavesRequest fullDayLeavesRequest);
+
 }

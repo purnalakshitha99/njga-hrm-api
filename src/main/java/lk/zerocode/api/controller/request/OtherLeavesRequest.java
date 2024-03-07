@@ -22,17 +22,18 @@ public class OtherLeavesRequest {
     private String reason;
     private Year financialYear;
     private Month financialMonth;
-    private LocalDate applyDate;
-    private String approvedPersonName;
-    private LocalDate approvedDate;
-    private LocalTime approvedTime;
-    private LocalTime actualCheckIn;
-    private LocalTime actualCheckOut;
-    private LocalTime requiredCheckIn;
-    private LocalTime requiredCheckOut;
+
+
+
     private Status status;
+    private Float hours;
 //    private MonthlyBasedLeave monthlyBasedLeaves;
 //    private FingerPrint fingerPrint;
     private LocalTime wontedTime;
     private LocalDate wantedDate;
+
+
+
+
+
 }

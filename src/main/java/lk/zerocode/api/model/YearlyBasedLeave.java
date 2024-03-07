@@ -20,4 +20,5 @@ public class YearlyBasedLeave {
 
     @OneToMany(mappedBy = "yearBasedLeave")
     private List<FullDayLeave> fullDayLeavesList;
+
 }
