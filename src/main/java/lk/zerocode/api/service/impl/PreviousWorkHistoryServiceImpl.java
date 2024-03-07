@@ -1,15 +1,10 @@
 package lk.zerocode.api.service.impl;
 
-import lk.zerocode.api.controller.request.EmergencyContactRequest;
 import lk.zerocode.api.controller.request.PreviousWorkHistoryRequest;
-import lk.zerocode.api.controller.response.DependentDetailMsgResponse;
-import lk.zerocode.api.controller.response.EmergencyResponse;
 import lk.zerocode.api.controller.response.PreviousWorkHistoryIdResponse;
 import lk.zerocode.api.controller.response.PreviousWorkHistoryResponse;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.exceptions.PreviousWorkHistoryNotFoundException;
-import lk.zerocode.api.model.DependentDetail;
-import lk.zerocode.api.model.EmergencyContact;
 import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.model.PreviousWorkHistory;
 import lk.zerocode.api.repository.EmployeeRepository;
@@ -20,21 +15,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class PreviousWorkHistoryServiceImpl implements PreviousWorkHistoryService {
     private EmployeeRepository employeeRepository;
     private PreviousWorkHistoryRepository previousWorkHistoryRepository;
-
-
-
     @Override
-    public List<PreviousWorkHistoryResponse> createPreviousWorkHistoryDetails(Long eid, List<PreviousWorkHistoryRequest> previousWorkHistoryRequests) throws EmployeeNotFoundException{
+    public List<PreviousWorkHistoryResponse> createPreviousWorkHistoryDetails(Long empId, List<PreviousWorkHistoryRequest> previousWorkHistoryRequests) throws EmployeeNotFoundException{
 
-        Employee employee = employeeRepository.findById(eid).orElseThrow(
-                () -> new EmployeeNotFoundException("Employee not found with Id : "+eid)
+        Employee employee = employeeRepository.findById(empId).orElseThrow(
+                () -> new EmployeeNotFoundException("Employee not found with Id : "+ empId)
         );
 
         List<PreviousWorkHistoryResponse> previousWorkHistoryResponses= new ArrayList<>();
@@ -65,12 +56,11 @@ public class PreviousWorkHistoryServiceImpl implements PreviousWorkHistoryServic
     }
 
 
-
     @Override
-    public List<PreviousWorkHistoryResponse> getPreviousWorkHistoryByEmpId(Long eid) throws EmployeeNotFoundException {
+    public List<PreviousWorkHistoryResponse> getPreviousWorkHistoryByEmpId(Long empId) throws EmployeeNotFoundException {
 
-        Employee employee = employeeRepository.findById(eid).orElseThrow(
-                () -> new EmployeeNotFoundException(" Employee not  found in  id number " + eid)
+        Employee employee = employeeRepository.findById(empId).orElseThrow(
+                () -> new EmployeeNotFoundException(" Employee not  found in  id number " + empId)
         );
 
         List<PreviousWorkHistory> previousWorkHistoryList = employeeRepository.findPreviousWorkHistoryByEmployee(employee);
@@ -92,10 +82,10 @@ public class PreviousWorkHistoryServiceImpl implements PreviousWorkHistoryServic
 
 
     @Override
-    public PreviousWorkHistoryIdResponse updatePreviousWorkHistoryDetails(Long eid, Long previousWorkHistoryId, PreviousWorkHistoryRequest updatedHistoryRequest) throws EmployeeNotFoundException, PreviousWorkHistoryNotFoundException {
-//
-        Employee employee = employeeRepository.findById(eid).orElseThrow(
-                () -> new EmployeeNotFoundException("Employee not found with ID: " + eid)
+    public PreviousWorkHistoryIdResponse updatePreviousWorkHistoryDetails(Long empId, Long previousWorkHistoryId, PreviousWorkHistoryRequest updatedHistoryRequest) throws EmployeeNotFoundException, PreviousWorkHistoryNotFoundException {
+
+        Employee employee = employeeRepository.findById(empId).orElseThrow(
+                () -> new EmployeeNotFoundException("Employee not found with ID: " + empId)
         );
 
         PreviousWorkHistory previousWorkHistory = previousWorkHistoryRepository.findById(previousWorkHistoryId).orElseThrow(
@@ -120,17 +110,12 @@ public class PreviousWorkHistoryServiceImpl implements PreviousWorkHistoryServic
         return previousWorkHistoryResponse;
     }
 
-
     @Override
     public String deletePreviousWorkHistoryDetailsById(Long empId, Long previousWorkHistoryId) throws EmployeeNotFoundException,PreviousWorkHistoryNotFoundException{
-
-
 
         Employee employee = employeeRepository.findById(empId).orElseThrow(
                 () -> new EmployeeNotFoundException("Employee not found with id: " + empId)
         );
-
-
 
         PreviousWorkHistory previousWorkHistory = previousWorkHistoryRepository.findById(previousWorkHistoryId).orElseThrow(
                 () -> new PreviousWorkHistoryNotFoundException("Employee not found with id: "+previousWorkHistoryId)
@@ -138,7 +123,5 @@ public class PreviousWorkHistoryServiceImpl implements PreviousWorkHistoryServic
         previousWorkHistoryRepository.deleteById(previousWorkHistoryId);
 
         return ("Delete successfully previousWorkHistoryId no "+previousWorkHistory.getId()+" of employee with Id: "+empId);
-
     }
-
 }
