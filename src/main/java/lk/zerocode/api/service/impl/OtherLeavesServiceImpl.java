@@ -60,24 +60,41 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
         System.out.println("alowed hours : " + allowedHours);
         List<OtherLeave> takenLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndLeaveType(employee, otherLeavesRequest.getLeaveType());
 
-        float noOfTakenHours = 0;
+
+        float noOfTakenHours;
+
         if (takenLeaves.isEmpty()) {
-            noOfTakenHours = 1;
+            if (otherLeavesRequest.getLeaveType().equals("halfday")){
+            }else {
+                noOfTakenHours = 1;
+            }
         }
+
+        if (otherLeavesRequest.getLeaveType().equals("halfday")) {
+             noOfTakenHours = 4;
+        }
+        else {
+             noOfTakenHours = 0;
+        }
+
         for (OtherLeave otherLeave : takenLeaves) {
 
             if (otherLeavesRequest.getLeaveType().equals("gatepass")){
 
                 noOfTakenHours = noOfTakenHours+1;
-            }else {
+            } else if (otherLeavesRequest.getLeaveType().equals("halfday")) {
+                noOfTakenHours = noOfTakenHours+4;
+            } else  {
                 noOfTakenHours = (noOfTakenHours + otherLeave.getHours());
 
             }
         }
+        System.out.println("no of taken hours 1:"+noOfTakenHours);
 
-        if (otherLeavesRequest.getLeaveType().equals("gatepass")){
+        if (otherLeavesRequest.getLeaveType().equals("gatepass") || otherLeavesRequest.getLeaveType().equals("halfday")){
 
             if (allowedHours< noOfTakenHours){
+                System.out.println("no of taken hours 2: "+noOfTakenHours);
                 throw new CannotCreateLeaveException("can not create leave");
             }
 
