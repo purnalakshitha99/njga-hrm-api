@@ -72,5 +72,5 @@ public class OtherLeave {
     @ManyToOne
     private FingerPrint fingerPrint;
 
-    private Integer hours;
+    private Float hours;
 }

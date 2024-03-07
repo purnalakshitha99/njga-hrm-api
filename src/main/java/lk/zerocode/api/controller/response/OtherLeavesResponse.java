@@ -35,19 +35,7 @@ public class OtherLeavesResponse {
     private LocalDate applyDate;
     private LocalTime applyTime;
 
-    private String approvedPersonName;
 
-    private LocalDate approvedDate;
-
-    private LocalTime approvedTime;
-
-    private LocalTime actualCheckIn;
-
-    private LocalTime actualCheckOut;
-
-    private LocalTime requiredCheckIn;
-
-    private LocalTime requiredCheckOut;
 
     private LocalTime wantedTime;
 
@@ -55,10 +43,5 @@ public class OtherLeavesResponse {
 
     private Status status;
 
-    private Employee employee;
-
-    private MonthlyBasedLeave monthlyBasedLeaves;
-
-
-    private Integer hours;
+    private Float hours;
 }
