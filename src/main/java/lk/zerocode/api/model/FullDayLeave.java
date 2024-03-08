@@ -26,7 +26,7 @@ public class FullDayLeave {
     private LocalDate endDate;
     @Column(columnDefinition = "Integer DEFAULT 0")
     private Integer noOfDays;
-    private Year financialYear;
+    private String financialYear;
     private LocalDate applyDate;
     private String approvedPersonName;
     private LocalDate approvedDate;
