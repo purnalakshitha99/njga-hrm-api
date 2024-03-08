@@ -16,6 +16,8 @@ public interface OtherLeavesRepository extends JpaRepository<OtherLeave , Long> 
 
     List<OtherLeave> findOtherLeaveByEmployeeAndWantedDateAndWantedTime(Employee employee, LocalDate wantedDate, LocalTime wantedTime);
 
+//    List<OtherLeave> findOtherLeaveByEmployeeIdAndLeaveType(Long empId,String leaveType);
+
 
 
 }

@@ -35,4 +35,7 @@ public class OtherLeavesController {
         return otherLeavesService.getLeaves(empId);
     }
 
+//    @GetMapping("/employees/{emp_id}/other_leaves/")
+//   public List <OtherLeavesResponse> getSpecificLeaves(@PathVariable )
+
 }

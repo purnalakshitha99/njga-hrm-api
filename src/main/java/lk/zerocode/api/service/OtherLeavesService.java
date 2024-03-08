@@ -13,6 +13,8 @@ public interface OtherLeavesService {
 
     List<OtherLeavesResponse> getLeaves(Long empId)throws EmployeeNotFoundException;
 
+
+
 //    List<OtherLeavesResponse> createOtherLeaves(Long empId ,OtherLeavesRequest otherLeavesRequest);
 
 }
