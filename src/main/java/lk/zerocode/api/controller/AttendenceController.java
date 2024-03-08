@@ -48,4 +48,10 @@ public class AttendenceController {
          attendenceService.delete();
     }
 
+
+    @DeleteMapping("/delete/fullday")
+    public void deletFullDay( ){
+        attendenceService.deleteFullday();
+    }
+
 }

@@ -26,4 +26,6 @@ public interface AttendenceService {
     List<AttendanceDTO> getAll() throws AttendanceException;
 
     List<AttendanceDTO> findByDate(AttandanceSearchDTO attandanceSearchDTO) throws AttendanceException;
+
+    void deleteFullday( );
 }

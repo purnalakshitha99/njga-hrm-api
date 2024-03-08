@@ -32,14 +32,16 @@ public class AttendenceServiceImpl implements AttendenceService {
     private EmployeeRepository employeeRepository;
     private ModelMapper modelMapper;
 
+    private OtherLeavesRepository otherLeavesRepository;
+
     @Override
     public ResponseEntity<String> addAttendenceCheckIn(FingerPrintDTO fingerPrintDTO) throws AttendanceException {
 
         LocalDate today = LocalDate.now();
-        LocalTime requiredCheckInSTD = LocalTime.of(13, 0);
-        LocalTime requiredCheckOutSTD = LocalTime.of(14, 30);
-        LocalTime afterRequiredTimeSTD = LocalTime.of(13, 30);
-        LocalTime checkOutEarlySTD = LocalTime.of(14, 0);
+        LocalTime requiredCheckInSTD = LocalTime.of(17, 20);
+        LocalTime requiredCheckOutSTD = LocalTime.of(18, 30);
+        LocalTime afterRequiredTimeSTD = LocalTime.of(17, 30);
+        LocalTime checkOutEarlySTD = LocalTime.of(18, 0);
         Duration lateTimeSTD = Duration.between(requiredCheckInSTD, LocalTime.now());
 
         LocalTime requiredCheckInPL = LocalTime.of(13, 40);
@@ -80,7 +82,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                         throw new AttendanceException("Attendance already marked!");
                     }
                     //avoid employee leave early
-                    if (LocalTime.of(14, 10).isBefore(existingAttendance.get().getRequiredCheckOut().minus(5, ChronoUnit.MINUTES))) {
+                    if (LocalTime.of(18, 00).isBefore(existingAttendance.get().getRequiredCheckOut().minus(5, ChronoUnit.MINUTES))) {
 
                         return ResponseEntity.status(HttpStatus.CREATED).body("Oyata Yanna denna be, " + "(" + empCategory + ")" + fingerPrint.getEmployee().getFirstName());
                     }
@@ -88,7 +90,9 @@ public class AttendenceServiceImpl implements AttendenceService {
                     else {
                         attendance.setActualCheckOut(LocalTime.now());
                         attendance.setStatus(Status.APPROVED);
+
                         attendenceRepository.save(attendance);
+
                         return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye 1, " + "(" + empCategory + ")" + fingerPrint.getEmployee().getFirstName());
                     }
                 }
@@ -102,10 +106,11 @@ public class AttendenceServiceImpl implements AttendenceService {
                     attendanceLate.setEmployee(fingerPrint.getEmployee());
                     attendanceLate.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                     attendanceLate.setStatus(Status.PENDING);
+
                     attendenceRepository.save(attendanceLate);
+
                     throw new AttendanceException("Sorry, you are late, " + "(" + empCategory + ")" + fingerPrint.getEmployee().getFirstName());
                 }
-
             }
             //check attendance too late comers (ex - after 8.30)
             if (LocalTime.now().isAfter(afterRequiredTimeSTD)) {
@@ -129,16 +134,16 @@ public class AttendenceServiceImpl implements AttendenceService {
                     attendance.setStatus(Status.PENDING);
 
                     attendenceRepository.save(attendance);
+
                     return ResponseEntity.status(HttpStatus.CREATED).body("Sorry, you are too late meet your head please," + "(" + empCategory + ")" + fingerPrint.getEmployee().getFirstName());
                 }
             }
-
-
             if (existingAttendance.isPresent()) {
 
                 Attendance attendance = existingAttendance.get();
 
                 if (attendance.getActualCheckOut() != null) {
+
                     throw new AttendanceException("Attendance already marked!" + "(" + empCategory + ")");
                 }
                 //employee can check out early when he comes early
@@ -148,10 +153,36 @@ public class AttendenceServiceImpl implements AttendenceService {
                     attendance.setStatus(Status.APPROVED);
 
                     attendenceRepository.save(attendance);
+
                     return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye2, " + "(" + empCategory + ")" + fingerPrint.getEmployee().getFirstName());
                 } else {
-                    throw new AttendanceException("You are trying to leave early!" + "(" + empCategory + ")");
+//                    throw new AttendanceException("You are trying to leave early!" + "(" + empCategory + ")");
+                    OtherLeave otherLeave = otherLeavesRepository.findByEmployee(employee).orElseThrow(
+                            () -> new AttendanceException("muta leave ne")
+                    );
+                    System.out.println(otherLeave.getId());
+                    OtherLeave existingOtherLeave = otherLeavesRepository.findById(otherLeave.getId()).orElseThrow(
+                            () -> new AttendanceException("muta attendance id ekk ne")
+                    );
+
+                    if (existingOtherLeave.getActualCheckIn() == null) {
+                        System.out.println("other leave ekk tynw");
+                        existingOtherLeave.setActualCheckOut(LocalTime.now());
+                        existingOtherLeave.setActualCheckIn(LocalTime.of(17, 15));
+
+                        otherLeavesRepository.save(existingOtherLeave);
+
+                        throw new AttendanceException("other leave eka set kala");
+                    } else {
+                        attendance.setActualCheckOut(LocalTime.now());
+                        attendance.setStatus(Status.APPROVED);
+
+                        attendenceRepository.save(attendance);
+
+                        throw new AttendanceException("Goodbye other leave ek ethule, " + "(" + empCategory + ")" + fingerPrint.getEmployee().getFirstName());
+                    }
                 }
+
 
             } else {
                 Attendance attendance = new Attendance();
@@ -162,7 +193,9 @@ public class AttendenceServiceImpl implements AttendenceService {
                 attendance.setEmployee(fingerPrint.getEmployee());
                 attendance.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                 attendance.setStatus(Status.APPROVED);
+
                 attendenceRepository.save(attendance);
+
                 return ResponseEntity.status(HttpStatus.CREATED).body("Good Morning 8, " + "(" + empCategory + ")" + fingerPrint.getEmployee().getFirstName());
             }
         } else if (empCategory.equals("pl")) {
@@ -170,11 +203,15 @@ public class AttendenceServiceImpl implements AttendenceService {
             if (LocalTime.now().isAfter(requiredCheckInPL) && LocalTime.now().isBefore(afterRequiredTimePL)) {
 
                 if (existingAttendance.isPresent()) {
+
                     Attendance attendance = existingAttendance.get();
+
                     if (attendance.getActualCheckOut() != null) {
+
                         throw new AttendanceException("Attendance already marked!" + "(" + empCategory + ")");
                     }
                     if (LocalTime.of(14, 35).isBefore(existingAttendance.get().getRequiredCheckOut().minusMinutes(5))) {
+
                         return ResponseEntity.status(HttpStatus.CREATED).body("Oyata Yanna denna be, " + "(" + empCategory + ")" + fingerPrint.getEmployee().getFirstName());
                     } else {
 
@@ -195,7 +232,9 @@ public class AttendenceServiceImpl implements AttendenceService {
                     attendanceLate.setEmployee(fingerPrint.getEmployee());
                     attendanceLate.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                     attendanceLate.setStatus(Status.PENDING);
+
                     attendenceRepository.save(attendanceLate);
+
                     throw new AttendanceException("Sorry, you are late, " + "(" + empCategory + ")" + fingerPrint.getEmployee().getFirstName());
                 }
 
@@ -203,9 +242,13 @@ public class AttendenceServiceImpl implements AttendenceService {
         }
 
         if (LocalTime.now().isAfter(afterRequiredTimePL)) {
+
             if (existingAttendance.isPresent()) {
+
                 Attendance attendance = existingAttendance.get();
+
                 if (attendance.getActualCheckOut() != null) {
+
                     throw new AttendanceException("Attendance already marked!" + "(" + empCategory + ")");
                 }
 
@@ -235,11 +278,14 @@ public class AttendenceServiceImpl implements AttendenceService {
                 attendance.setStatus(Status.APPROVED);
 
                 attendenceRepository.save(attendance);
+
                 return ResponseEntity.status(HttpStatus.CREATED).body("Goodbye2, " + "(" + empCategory + ")" + fingerPrint.getEmployee().getFirstName());
             } else {
+
                 throw new AttendanceException("You are trying to leave early!" + "(" + empCategory + ")");
             }
         } else {
+
             Attendance attendance = new Attendance();
             attendance.setDate(today);
             attendance.setActualCheckIn(LocalTime.now());
@@ -292,10 +338,11 @@ public class AttendenceServiceImpl implements AttendenceService {
     @Override
     public List<AttendanceDTO> getAll() throws AttendanceException {
         List<Attendance> attendanceDTOList = attendenceRepository.findAll();
-        if (attendanceDTOList.isEmpty()){
+        if (attendanceDTOList.isEmpty()) {
             throw new AttendanceException("attendance ne");
         }
-        return modelMapper.map(attendanceDTOList, new TypeToken<List<AttendanceDTO>>(){}.getType());
+        return modelMapper.map(attendanceDTOList, new TypeToken<List<AttendanceDTO>>() {
+        }.getType());
     }
 
     @Override
@@ -303,10 +350,17 @@ public class AttendenceServiceImpl implements AttendenceService {
 
         List<Attendance> attendanceList = attendenceRepository.findByDate(attandanceSearchDTO.getDate());
 
-        if (attendanceList.isEmpty()){
+        if (attendanceList.isEmpty()) {
             throw new AttendanceException("attendance eka ne");
         }
-        return modelMapper.map(attendanceList, new TypeToken<List<AttendanceDTO>>(){}.getType());
+        return modelMapper.map(attendanceList, new TypeToken<List<AttendanceDTO>>() {
+        }.getType());
     }
+
+    @Override
+    public void deleteFullday() {
+        otherLeavesRepository.deleteAll();
+    }
+
 
 }
