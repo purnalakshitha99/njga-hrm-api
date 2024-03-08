@@ -28,9 +28,9 @@ public class OtherLeavesResponse {
     private String dayType;
     private String reason;
 
-    private Year financialYear;
+    private String financialYear;
 
-    private Month financialMonth;
+    private String  financialMonth;
 
     private LocalDate applyDate;
     private LocalTime applyTime;

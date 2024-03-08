@@ -10,14 +10,11 @@ import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.service.OtherLeavesService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Month;
-import java.time.Year;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @AllArgsConstructor
@@ -29,15 +26,8 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
     private MonthlyBasedLeavesRepository monthlyBasedLeavesRepository;
 
     @Override
-    public OtherLeavesResponse createLeave(Long empId,OtherLeavesRequest otherLeavesRequest)throws EmployeeNotFoundException,EmpCategoryNotFoundException, CannotCreateLeaveException {
+    public OtherLeavesResponse createLeave(Long empId, OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException, EmpCategoryNotFoundException, CannotCreateLeaveException {
 
-        Year year = Year.of(Year.now().getValue());
-
-
-        if (!year.equals(otherLeavesRequest.getFinancialYear())) {
-            throw new CannotCreateLeaveException("Cannot create more than 7 casual leaves for standard category.");
-
-        }
 
         // Get the current local date
         LocalDate currentDate = LocalDate.now();
@@ -45,145 +35,84 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
         // Get the current local time
         LocalTime currentTime = LocalTime.now();
 
+
+
+        String year = String.valueOf(otherLeavesRequest.getWantedDate().getYear());
+        String month = String.valueOf(otherLeavesRequest.getWantedDate().getMonth().getValue());
+
         Employee employee = employeeRepository.findById(empId).orElseThrow(
                 () -> new EmployeeNotFoundException("that employee not in a database")
         );
+
+        List<OtherLeave> existingLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndWantedDateAndWantedTime(employee,otherLeavesRequest.getWantedDate(),otherLeavesRequest.getWontedTime());
+
+        if (!existingLeaves.isEmpty()){
+            throw new CannotCreateLeaveException("cant create leave in same date and same time");
+        }
 
         String category = employee.getCurrentWorkDetails().getEmpCategory().getEmpCategory();
         MonthlyBasedLeave monthlyBasedLeave = monthlyBasedLeavesRepository.findMonthlyBasedLeaveByCategoryAndType(category, otherLeavesRequest.getLeaveType()).orElseThrow(
                 () -> new EmpCategoryNotFoundException("that emp category not found")
         );
 
-//        int allowedLeaveCount = monthlyBasedLeave.getNoOfDays();
         int allowedHours = monthlyBasedLeave.getNoOfHours();
 
-        System.out.println("alowed hours : " + allowedHours);
-        List<OtherLeave> takenLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndLeaveType(employee, otherLeavesRequest.getLeaveType());
+        List<OtherLeave> takenLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndLeaveTypeAndFinancialYearAndFinancialMonth(employee, otherLeavesRequest.getLeaveType(),year,month);
 
+        float noOfTakenHours = 0;
 
-        float noOfTakenHours;
-
-        if (takenLeaves.isEmpty()) {
-            if (otherLeavesRequest.getLeaveType().equals("halfday")){
-                noOfTakenHours=4;
-            }else {
-                noOfTakenHours = 1;
-            }
+        for (OtherLeave otherLeave : takenLeaves){
+            noOfTakenHours = noOfTakenHours+otherLeave.getHours();
         }
 
-        if (otherLeavesRequest.getLeaveType().equals("halfday")) {
-             noOfTakenHours = 4;
-        }
-        else {
-             noOfTakenHours = 0;
+        if (allowedHours<noOfTakenHours+otherLeavesRequest.getHours()){
+            throw new CannotCreateLeaveException("cant create");
         }
 
-        for (OtherLeave otherLeave : takenLeaves) {
-
-            if (otherLeavesRequest.getLeaveType().equals("gatepass")){
-
-                noOfTakenHours = noOfTakenHours+1;
-            } else if (otherLeavesRequest.getLeaveType().equals("halfday")) {
-                noOfTakenHours = noOfTakenHours+4;
-            } else  {
-                noOfTakenHours = (noOfTakenHours + otherLeave.getHours());
-
-            }
-        }
-        System.out.println("no of taken hours 1:"+noOfTakenHours);
-
-        if (otherLeavesRequest.getLeaveType().equals("gatepass") || otherLeavesRequest.getLeaveType().equals("halfday")){
-
-            if (allowedHours< noOfTakenHours){
-                System.out.println("no of taken hours 2: "+noOfTakenHours);
-                throw new CannotCreateLeaveException("can not create leave");
-            }
-
-            OtherLeave otherLeave = new OtherLeave();
-
-
-            otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
-            otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
-            otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
-            otherLeave.setFinancialMonth(otherLeavesRequest.getFinancialMonth());
-            otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
-            otherLeave.setReason(otherLeavesRequest.getReason());
-
-            otherLeave.setDepartment(employee.getCurrentWorkDetails().getDepartment().getName());
-            otherLeave.setName(employee.getFirstName());
-
-            otherLeave.setStatus(Status.PENDING);
-            otherLeave.setHours(noOfTakenHours);
-            otherLeave.setApplyTime(currentTime);
-            otherLeave.setApplyDate(currentDate);
-
-            otherLeave.setEmployee(employee);
-
-            otherLeave.setDayType(otherLeavesRequest.getDayType());
-
-            otherLeavesRepository.save(otherLeave);
-
-            return OtherLeavesResponse.builder()
-                    .id(otherLeave.getId())
-                    .name(otherLeave.getName())
-                    .department(otherLeave.getDepartment())
-                    .leaveType(otherLeave.getLeaveType())
-                    .reason(otherLeave.getReason())
-                    .financialMonth(otherLeave.getFinancialMonth())
-                    .financialYear(otherLeave.getFinancialYear())
-                    .applyDate(otherLeave.getApplyDate())
-                    .applyTime(otherLeave.getApplyTime())
-                    .wantedDate(otherLeave.getWantedDate())
-                    .wantedTime(otherLeave.getWantedTime())
-                    .status(otherLeave.getStatus())
-                    .hours(otherLeave.getHours())
-                    .dayType(otherLeave.getDayType())
-                    .build();
-        }
-        if (otherLeavesRequest.getLeaveType().equals("shortleave")){
-
-            if (allowedHours<(noOfTakenHours+otherLeavesRequest.getHours()) || allowedHours<otherLeavesRequest.getHours()){
-                throw new CannotCreateLeaveException("can not create leave");
-            }
-
-            OtherLeave otherLeave = new OtherLeave();
-
-            otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
-            otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
-            otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
-            otherLeave.setFinancialMonth(otherLeavesRequest.getFinancialMonth());
-            otherLeave.setFinancialYear(otherLeavesRequest.getFinancialYear());
-            otherLeave.setReason(otherLeavesRequest.getReason());
-
-            otherLeave.setDepartment(employee.getCurrentWorkDetails().getDepartment().getName());
-            otherLeave.setName(employee.getFirstName());
-
-            otherLeave.setStatus(Status.PENDING);
-            otherLeave.setHours(otherLeavesRequest.getHours());
-            otherLeave.setApplyTime(currentTime);
-            otherLeave.setApplyDate(currentDate);
-
-            otherLeave.setEmployee(employee);
-
-            otherLeavesRepository.save(otherLeave);
-
-            return OtherLeavesResponse.builder()
-                    .id(otherLeave.getId())
-                    .name(otherLeave.getName())
-                    .department(otherLeave.getDepartment())
-                    .leaveType(otherLeave.getLeaveType())
-                    .reason(otherLeave.getReason())
-                    .financialMonth(otherLeave.getFinancialMonth())
-                    .financialYear(otherLeave.getFinancialYear())
-                    .applyDate(otherLeave.getApplyDate())
-                    .applyTime(otherLeave.getApplyTime())
-                    .wantedDate(otherLeave.getWantedDate())
-                    .wantedTime(otherLeave.getWantedTime())
-                    .status(otherLeave.getStatus())
-                    .hours(otherLeave.getHours())
-                    .build();
+        if (!otherLeavesRequest.getLeaveType().equals("halfday")){
+            otherLeavesRequest.setDayType(null);
         }
 
-        return null;
+        OtherLeave otherLeave = new OtherLeave();
+
+
+        otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
+        otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
+        otherLeave.setFinancialMonth(month);
+        otherLeave.setFinancialYear(year);
+        otherLeave.setReason(otherLeavesRequest.getReason());
+        otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
+
+        otherLeave.setDepartment(employee.getCurrentWorkDetails().getDepartment().getName());
+        otherLeave.setName(employee.getFirstName());
+
+        otherLeave.setStatus(Status.PENDING);
+        otherLeave.setHours(otherLeavesRequest.getHours());
+        otherLeave.setApplyTime(currentTime);
+        otherLeave.setApplyDate(currentDate);
+
+        otherLeave.setEmployee(employee);
+
+        otherLeave.setDayType(otherLeavesRequest.getDayType());
+
+        otherLeavesRepository.save(otherLeave);
+
+        return OtherLeavesResponse.builder()
+                .id(otherLeave.getId())
+                .name(otherLeave.getName())
+                .department(otherLeave.getDepartment())
+                .leaveType(otherLeave.getLeaveType())
+                .reason(otherLeave.getReason())
+                .financialMonth(otherLeave.getFinancialMonth())
+                .financialYear(otherLeave.getFinancialYear())
+                .applyDate(otherLeave.getApplyDate())
+                .applyTime(otherLeave.getApplyTime())
+                .wantedDate(otherLeave.getWantedDate())
+                .wantedTime(otherLeave.getWantedTime())
+                .status(otherLeave.getStatus())
+                .hours(otherLeave.getHours())
+                .dayType(otherLeave.getDayType())
+                .build();
+
     }
-    }
+}
