@@ -2,6 +2,7 @@ package lk.zerocode.api.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,13 +19,21 @@ public class Employee {
     private Long id;
 
     private String firstName;
+
     private String lastName;
+
     private String nic;
+
     private LocalDate dob;
+
     private String email;
+
     private String address;
+
     private String contactNumber;
+
     private String workTelephone;
+
     private String imagePath;
 
     @Enumerated(EnumType.STRING)

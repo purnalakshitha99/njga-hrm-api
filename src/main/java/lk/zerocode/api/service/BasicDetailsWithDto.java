@@ -14,6 +14,8 @@ public interface BasicDetailsWithDto  {
 
     List<BasicDetailsDTO> getAllDetails();
 
-    List<Employee> getByEmpEmail(BasicDetailsDTO basicDetailsDTORqst);
+    List<Employee> filterByName(BasicDetailsDTO basicDetailsDTORqst);
+
+    BasicDetailsDTO updateBasicDetails(Long id, BasicDetailsDTO basicDetailsDTO)throws EmployeeNotFoundException;
 
 }
