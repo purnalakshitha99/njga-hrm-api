@@ -1,12 +1,17 @@
 package lk.zerocode.api.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+import lk.zerocode.api.controller.dto.AttendanceDTO;
 import lk.zerocode.api.controller.request.AttendenceRequest;
 import lk.zerocode.api.controller.request.Testrq;
+import lk.zerocode.api.exceptions.AttendanceException;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
+import lk.zerocode.api.model.Attendance;
 import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.model.FingerPrint;
 import lk.zerocode.api.model.Test;
+import lk.zerocode.api.repository.AttendenceRepository;
+import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.repository.FingerPrintRepository;
 import lk.zerocode.api.repository.TestRepository;
 import lk.zerocode.api.service.TestService;
@@ -20,14 +25,16 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class testimpl implements TestService {
 
     private TestRepository testRepository;
-    private ModelMapper modelMapper;
     private FingerPrintRepository fingerPrintRepository;
+    private AttendenceRepository attendenceRepository;
+    private EmployeeRepository employeeRepository;
     @Override
     public void testTime(Testrq testrq) {
 
@@ -74,5 +81,40 @@ public class testimpl implements TestService {
         Duration betweenNow = Duration.between(LocalTime.now(), tomorow);
         System.out.println(betweenNow);
 
+    }
+
+    public void testAttandance(AttendenceRequest attendenceRequest)throws AttendanceException {
+        LocalDate today = LocalDate.now();
+        LocalTime requiredCheckInSTD = LocalTime.of(13, 0);
+        LocalTime requiredCheckOutSTD = LocalTime.of(14, 30);
+        LocalTime afterRequiredTimeSTD = LocalTime.of(13, 30);
+        LocalTime checkOutEarlySTD = LocalTime.of(14, 0);
+        Duration lateTimeSTD = Duration.between(requiredCheckInSTD, LocalTime.now());
+
+        LocalTime requiredCheckInPL = LocalTime.of(13, 40);
+        LocalTime requiredCheckOutPL = LocalTime.of(15, 30);
+        LocalTime afterRequiredTimePL = LocalTime.of(14, 0);
+        LocalTime checkoutEarlyPL = LocalTime.of(15, 15);
+        Duration lateTimePL = Duration.between(requiredCheckInPL, LocalTime.now());
+
+
+        String fId = attendenceRequest.getFingerPrintId();
+
+        FingerPrint fingerPrint = fingerPrintRepository.findByFingerPrintId(fId)
+                .orElseThrow(() -> new AttendanceException("Employee fingerprint not found!"));
+
+        Employee employee = employeeRepository.findById(fingerPrint.getEmployee().getId()).orElseThrow(
+                () -> new AttendanceException("employee not found!")
+        );
+
+        String empCategory = employee.getCurrentWorkDetails().getEmpCategory().getEmpCategory();
+
+        Optional<Attendance> existingAttendanceOpt = attendenceRepository.findAttendanceByDateAndEmployee(today, fingerPrint.getEmployee());
+
+        Attendance attendance = new Attendance();
+
+        //checking employee standard or Pl
+        if (empCategory.equals("standard")) {
+        }
     }
 }

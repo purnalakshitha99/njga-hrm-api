@@ -24,17 +24,22 @@ public class BasicDetailControllerWithDto {
         return new ResponseEntity<>(createdemployee, HttpStatus.CREATED);
     }
 
-    @GetMapping("/allemployees")
+    @GetMapping("/employees")
     public ResponseEntity<List<BasicDetailsDTO>> getAllDetails(){
         List<BasicDetailsDTO> allDetails = basicDetailsWithDto.getAllDetails();
         return new ResponseEntity<>(allDetails, HttpStatus.OK);
     }
 
 
-    @GetMapping("/empname")
+    @GetMapping("/employee/name")
     public ResponseEntity<List<Employee>> getByName(@RequestBody BasicDetailsDTO basicDetailsDTO) {
-        String fullName = basicDetailsDTO.getFirstName();
-        List<Employee> details = basicDetailsWithDto.getByEmpEmail(basicDetailsDTO);
+        List<Employee> details = basicDetailsWithDto.filterByName(basicDetailsDTO);
         return new ResponseEntity<>(details, HttpStatus.OK);
+    }
+
+    @PutMapping("/employee/{empId}")
+    public ResponseEntity<BasicDetailsDTO> updateBasicDetails(@PathVariable ("empId") Long id, @RequestBody BasicDetailsDTO basicDetailsDTO) throws EmployeeNotFoundException {
+        BasicDetailsDTO updatedEmployee = basicDetailsWithDto.updateBasicDetails(id,basicDetailsDTO);
+        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
     }
 }

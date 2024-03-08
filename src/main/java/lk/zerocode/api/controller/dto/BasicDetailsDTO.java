@@ -1,5 +1,8 @@
 package lk.zerocode.api.controller.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
@@ -10,6 +13,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class BasicDetailsDTO {
     @NotBlank
     private String firstName;
