@@ -10,6 +10,9 @@ import lk.zerocode.api.service.StandardOtherLeavesHalfDayService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.MediaSize;
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 public class OtherLeavesController {
@@ -21,10 +24,15 @@ public class OtherLeavesController {
 
     @PostMapping("/employees/{emp_id}/other_leaves")
     public OtherLeavesResponse createLeave(@PathVariable("emp_id")Long empId,@RequestBody OtherLeavesRequest otherLeavesRequest)throws EmployeeNotFoundException, EmpCategoryNotFoundException, CannotCreateLeaveException {
-        System.out.println("controller athule");
-        System.out.println("controller eke hours : "+otherLeavesRequest.getHours());
+
       return  otherLeavesService.createLeave(empId,otherLeavesRequest);
 
+    }
+
+    @GetMapping("/employees/{emp_id}/other_leaves")
+    public List <OtherLeavesResponse> getLeaves(@PathVariable("emp_id")Long empId)throws EmployeeNotFoundException{
+
+        return otherLeavesService.getLeaves(empId);
     }
 
 }
