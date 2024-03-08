@@ -58,11 +58,9 @@ public class EducationQualificationServiceImpl implements EducationQualification
                 System.out.println("Education Qualification Delete Successfully");
             }
         }
-
     @Override
     public List<EducationQualificationResponse> getSpecific(Long id) throws EmployeeNotFoundException {
         Employee employee = employeeRepository.findById(id).orElseThrow(()->new  EmployeeNotFoundException("Employee Not Found"));
-
             List<EducationQualification> allQualifications = educationQualificationRepository.findEducationQualificationsByEmployee(employee);
             List<EducationQualificationResponse> qualificationResponseList = allQualifications.stream()
                     .map(qualification -> EducationQualificationResponse.builder()
