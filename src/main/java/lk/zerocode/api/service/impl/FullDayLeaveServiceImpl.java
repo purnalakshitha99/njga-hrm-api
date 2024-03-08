@@ -37,6 +37,10 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
         if (!startDate.equals(endDate)) {
             throw new CannotCreateLeaveException("you can't take leaves from two different years.apply separately");
         }
+        List<FullDayLeave> existingLeaves = fullDayLeavesRepository.findFullDayLeaveByEmployeeAndStartDateAndEndDate(employee,fullDayLeavesRequest.getStartDate(),fullDayLeavesRequest.getEndDate());
+        if (!existingLeaves.isEmpty()){
+            throw new CannotCreateLeaveException("you cant create leaves on same date");
+        }
         String category = employee.getCurrentWorkDetails().getEmpCategory().getEmpCategory();
         Optional<YearlyBasedLeave> yearlyBasedLeaveResult = yearBasedLeaveRepository.findYearlyBasedLeaveByCategoryAndType(category, fullDayLeavesRequest.getLeaveType());
         int allowedLeaveCount = yearlyBasedLeaveResult.get().getNoOfDays();
@@ -77,7 +81,6 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
                 .status(fullDayLeave.getStatus())
                 .build();
     }
-
     @Override
     public void leaveStatus(Long id, FullDayLeavesRequest fullDayLeavesRequest) {
         Optional<FullDayLeave> optionalFullDayLeave = fullDayLeavesRepository.findById(id);
