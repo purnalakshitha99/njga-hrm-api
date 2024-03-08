@@ -14,4 +14,5 @@ import java.util.Optional;
 
 public interface FullDayLeavesRepository extends JpaRepository<FullDayLeave,Long> {
     List<FullDayLeave> findFullDayLeaveByEmployeeAndLeaveTypeAndFinancialYear(Employee employee, String leaveType,String year);
+    List<FullDayLeave> findFullDayLeaveByEmployee(Employee employee);
 }

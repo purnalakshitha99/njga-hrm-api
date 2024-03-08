@@ -1,6 +1,7 @@
 package lk.zerocode.api.service.impl;
 
 import lk.zerocode.api.controller.request.FullDayLeavesRequest;
+import lk.zerocode.api.controller.response.EducationQualificationResponse;
 import lk.zerocode.api.controller.response.FullDayLeavesResponse;
 import lk.zerocode.api.exceptions.CannotCreateLeaveException;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
@@ -19,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -75,6 +77,7 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
                 .status(fullDayLeave.getStatus())
                 .build();
     }
+
     @Override
     public void leaveStatus(Long id, FullDayLeavesRequest fullDayLeavesRequest) {
         Optional<FullDayLeave> optionalFullDayLeave = fullDayLeavesRepository.findById(id);
@@ -87,4 +90,22 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
             fullDayLeavesRepository.save(fullDayLeave);
         }
     }
+    @Override
+    public List<FullDayLeavesResponse> getSpecific(Long empId) throws EmployeeNotFoundException {
+        Employee employee = employeeRepository.findEmployeeById(empId).orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found"));
+        List<FullDayLeave> allLeavesList = fullDayLeavesRepository.findFullDayLeaveByEmployee(employee);
+        List<FullDayLeavesResponse> allSpecificLeavesResponse = allLeavesList.stream()
+                .map(allLeaves -> FullDayLeavesResponse.builder()
+                        .applyDate(allLeaves.getApplyDate())
+                        .startDate(allLeaves.getStartDate())
+                        .endDate(allLeaves.getEndDate())
+                        .financialYear(allLeaves.getFinancialYear())
+                        .noOfDays(allLeaves.getNoOfDays())
+                        .reason(allLeaves.getReason())
+                        .status(allLeaves.getStatus())
+                        .build())
+                .collect(Collectors.toList());
+        return allSpecificLeavesResponse;
+    }
 }
+
