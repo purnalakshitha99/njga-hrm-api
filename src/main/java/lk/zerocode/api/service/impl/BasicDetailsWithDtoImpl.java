@@ -10,6 +10,7 @@ import lk.zerocode.api.service.BasicDetailsWithDto;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class BasicDetailsWithDtoImpl implements BasicDetailsWithDto {
     }
 
     @Override
-    public List<Employee> getByEmpEmail(BasicDetailsDTO basicDetailsDTORqst) {
+    public List<Employee> filterByName(BasicDetailsDTO basicDetailsDTORqst) {
 
         System.out.println(basicDetailsDTORqst.getFirstName());
         String name = basicDetailsDTORqst.getFirstName();
@@ -50,5 +51,16 @@ public class BasicDetailsWithDtoImpl implements BasicDetailsWithDto {
         }
 
         return modelMapper.map(employees, new TypeToken<List<BasicDetailsDTO>>(){}.getType());
+    }
+
+    @Override
+    public BasicDetailsDTO updateBasicDetails(Long id, BasicDetailsDTO basicDetailsDTO)throws EmployeeNotFoundException{
+
+        employeeRepository.findById(id).orElseThrow(
+                () -> new EmployeeNotFoundException("Employee not found!")
+        );
+
+        Employee employeeUpdated = employeeRepository.save(modelMapper.map(basicDetailsDTO, Employee.class));
+        return modelMapper.map(employeeUpdated, BasicDetailsDTO.class);
     }
 }
