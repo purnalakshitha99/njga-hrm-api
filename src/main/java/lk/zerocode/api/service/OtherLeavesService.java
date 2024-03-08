@@ -11,6 +11,10 @@ import java.util.List;
 public interface OtherLeavesService {
     OtherLeavesResponse createLeave(Long empId,OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException, EmpCategoryNotFoundException, CannotCreateLeaveException;
 
+    List<OtherLeavesResponse> getLeaves(Long empId)throws EmployeeNotFoundException;
+
+
+
 //    List<OtherLeavesResponse> createOtherLeaves(Long empId ,OtherLeavesRequest otherLeavesRequest);
 
 }
