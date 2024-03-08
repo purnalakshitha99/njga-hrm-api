@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface YearBasedLeaveRepository extends JpaRepository<YearlyBasedLeave,Long> {
-
     Optional<YearlyBasedLeave> findYearlyBasedLeaveByCategoryAndType(String category, String type);
-   int countYearlyBasedLeaveByNoOfDaysAndCategoryAndType(int noOfDays,String category,String type);
 
 }
