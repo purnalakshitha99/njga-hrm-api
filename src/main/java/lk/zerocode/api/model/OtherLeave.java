@@ -25,10 +25,10 @@ public class OtherLeave {
     private String reason;
 
     @Column(name = "f_year")
-    private Year financialYear;
+    private String financialYear;
 
     @Column(name = "f_month")
-    private Month financialMonth;
+    private String financialMonth;
 
     private LocalDate applyDate;
     private LocalTime applyTime;
