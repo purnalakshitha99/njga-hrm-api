@@ -1,5 +1,7 @@
 package lk.zerocode.api.controller.request;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lk.zerocode.api.model.Branch;
@@ -11,6 +13,7 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CurrentWorkDetailRequest {
 
     private Long id;
