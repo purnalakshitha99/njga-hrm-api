@@ -44,6 +44,12 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
                 () -> new EmployeeNotFoundException("that employee not in a database")
         );
 
+        List<OtherLeave> existingLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndWantedDateAndWantedTime(employee,otherLeavesRequest.getWantedDate(),otherLeavesRequest.getWontedTime());
+
+        if (!existingLeaves.isEmpty()){
+            throw new CannotCreateLeaveException("cant create leave in same date and same time");
+        }
+
         String category = employee.getCurrentWorkDetails().getEmpCategory().getEmpCategory();
         MonthlyBasedLeave monthlyBasedLeave = monthlyBasedLeavesRepository.findMonthlyBasedLeaveByCategoryAndType(category, otherLeavesRequest.getLeaveType()).orElseThrow(
                 () -> new EmpCategoryNotFoundException("that emp category not found")
