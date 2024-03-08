@@ -10,14 +10,11 @@ import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.service.OtherLeavesService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Month;
-import java.time.Year;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @AllArgsConstructor
@@ -47,12 +44,17 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
                 () -> new EmployeeNotFoundException("that employee not in a database")
         );
 
+        List<OtherLeave> existingLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndWantedDateAndWantedTime(employee,otherLeavesRequest.getWantedDate(),otherLeavesRequest.getWontedTime());
+
+        if (!existingLeaves.isEmpty()){
+            throw new CannotCreateLeaveException("cant create leave in same date and same time");
+        }
+
         String category = employee.getCurrentWorkDetails().getEmpCategory().getEmpCategory();
         MonthlyBasedLeave monthlyBasedLeave = monthlyBasedLeavesRepository.findMonthlyBasedLeaveByCategoryAndType(category, otherLeavesRequest.getLeaveType()).orElseThrow(
                 () -> new EmpCategoryNotFoundException("that emp category not found")
         );
 
-//      int allowedLeaveCount = monthlyBasedLeave.getNoOfDays();
         int allowedHours = monthlyBasedLeave.getNoOfHours();
 
         List<OtherLeave> takenLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndLeaveTypeAndFinancialYearAndFinancialMonth(employee, otherLeavesRequest.getLeaveType(),year,month);
