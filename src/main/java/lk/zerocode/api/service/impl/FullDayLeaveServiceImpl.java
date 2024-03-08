@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Year;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,33 +26,27 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
     private FullDayLeavesRepository fullDayLeavesRepository;
     private EmployeeRepository employeeRepository;
     private YearBasedLeaveRepository yearBasedLeaveRepository;
+
     @Override
-    public FullDayLeavesResponse create(Long emp_id, FullDayLeavesRequest fullDayLeavesRequest) throws EmployeeNotFoundException, CannotCreateLeaveException {
-
-        Year year = Year.of(Year.now().getValue());
-
-        if(!year.equals(fullDayLeavesRequest.getFinancialYear())){
-            throw new CannotCreateLeaveException("Cannot create more leaves.");
-
+    public FullDayLeavesResponse create(Long empId, FullDayLeavesRequest fullDayLeavesRequest) throws EmployeeNotFoundException, CannotCreateLeaveException {
+        Employee employee = employeeRepository.findEmployeeById(empId).orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found"));
+        String startDate = String.valueOf(fullDayLeavesRequest.getStartDate().getYear());
+        String endDate = String.valueOf(fullDayLeavesRequest.getEndDate().getYear());
+        if (!startDate.equals(endDate)) {
+            throw new CannotCreateLeaveException("you can't take leaves from two different years.apply separately");
         }
-        Employee employee = employeeRepository.findEmployeeById(emp_id).orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found"));
         String category = employee.getCurrentWorkDetails().getEmpCategory().getEmpCategory();
         Optional<YearlyBasedLeave> yearlyBasedLeaveResult = yearBasedLeaveRepository.findYearlyBasedLeaveByCategoryAndType(category, fullDayLeavesRequest.getLeaveType());
-//        System.out.println(yearlyBasedLeaveResult.get().getNoOfDays());
-        int allowedLeaveCount=yearlyBasedLeaveResult.get().getNoOfDays();
-        List<FullDayLeave> takenLeaves=fullDayLeavesRepository.findFullDayLeaveByEmployeeAndLeaveType(employee,fullDayLeavesRequest.getLeaveType() );
-
-        int noTakenLeave=0;
-        for (FullDayLeave fullDayLeave:takenLeaves){
-            noTakenLeave=noTakenLeave+fullDayLeave.getNoOfDays();
+        int allowedLeaveCount = yearlyBasedLeaveResult.get().getNoOfDays();
+        List<FullDayLeave> takenLeavesByYear = fullDayLeavesRepository.findFullDayLeaveByEmployeeAndLeaveTypeAndFinancialYear(employee, fullDayLeavesRequest.getLeaveType(), startDate);
+        int noOfTakenLeaves = 0;
+        for (FullDayLeave fullDayLeave : takenLeavesByYear) {
+            noOfTakenLeaves = noOfTakenLeaves + fullDayLeave.getNoOfDays();
         }
 
-        System.out.println(noTakenLeave);
-
-        if (allowedLeaveCount < noTakenLeave+fullDayLeavesRequest.getNoOfDays() || allowedLeaveCount<fullDayLeavesRequest.getNoOfDays()){
+        if (allowedLeaveCount < noOfTakenLeaves + fullDayLeavesRequest.getNoOfDays() || allowedLeaveCount < fullDayLeavesRequest.getNoOfDays()) {
             throw new CannotCreateLeaveException("exceeded the leave limit");
         }
-
         FullDayLeave fullDayLeave = new FullDayLeave();
         fullDayLeave.setName(fullDayLeavesRequest.getName());
         fullDayLeave.setApplyDate(LocalDate.now());
@@ -62,13 +55,13 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
         fullDayLeave.setYearBasedLeave(yearlyBasedLeaveResult.get());
         fullDayLeave.setEndDate(fullDayLeavesRequest.getEndDate());
         fullDayLeave.setDepartment(fullDayLeavesRequest.getDepartment());
-        fullDayLeave.setFinancialYear(fullDayLeavesRequest.getFinancialYear());
+        fullDayLeave.setFinancialYear(startDate);
         fullDayLeave.setReason(fullDayLeavesRequest.getReason());
         fullDayLeave.setLeaveType(fullDayLeavesRequest.getLeaveType());
         fullDayLeave.setStatus(Status.PENDING);
-
         fullDayLeave.setEmployee(employee);
         fullDayLeavesRepository.save(fullDayLeave);
+
         return FullDayLeavesResponse.builder()
                 .name(fullDayLeave.getName())
                 .applyDate(fullDayLeave.getApplyDate())
@@ -84,19 +77,14 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
     }
     @Override
     public void leaveStatus(Long id, FullDayLeavesRequest fullDayLeavesRequest) {
-        Optional<FullDayLeave> optionalFullDayLeave=fullDayLeavesRepository.findById(id);
-        if (optionalFullDayLeave.isPresent()){
-            FullDayLeave fullDayLeave=optionalFullDayLeave.get();
+        Optional<FullDayLeave> optionalFullDayLeave = fullDayLeavesRepository.findById(id);
+        if (optionalFullDayLeave.isPresent()) {
+            FullDayLeave fullDayLeave = optionalFullDayLeave.get();
             fullDayLeave.setApprovedDate(LocalDate.now());
             fullDayLeave.setApprovedTime(LocalTime.now());
             fullDayLeave.setApprovedPersonName("Viduth");
             fullDayLeave.setStatus(fullDayLeavesRequest.getStatus());
             fullDayLeavesRepository.save(fullDayLeave);
         }
-    }
-
-    @Override
-    public void delete() {
-        fullDayLeavesRepository.deleteAll();
     }
 }

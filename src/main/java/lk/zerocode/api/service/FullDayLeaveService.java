@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface FullDayLeaveService {
 
-    FullDayLeavesResponse create(Long emp_id, FullDayLeavesRequest fullDayLeavesRequest) throws EmployeeNotFoundException, CannotCreateLeaveException;
-
-    void delete();
+    FullDayLeavesResponse create(Long empId, FullDayLeavesRequest fullDayLeavesRequest) throws EmployeeNotFoundException, CannotCreateLeaveException;
     void leaveStatus(Long id, FullDayLeavesRequest fullDayLeavesRequest);
 
 }
