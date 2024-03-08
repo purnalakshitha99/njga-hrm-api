@@ -1,5 +1,8 @@
 package lk.zerocode.api.controller.request;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import lk.zerocode.api.model.Employee;
@@ -14,6 +17,7 @@ import java.time.Month;
 import java.time.Year;
 
 @Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class OtherLeavesRequest {
 
     private String department;
