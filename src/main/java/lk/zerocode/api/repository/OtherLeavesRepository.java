@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 public interface OtherLeavesRepository extends JpaRepository<OtherLeave , Long> {
 
@@ -17,7 +16,7 @@ public interface OtherLeavesRepository extends JpaRepository<OtherLeave , Long> 
 
     List<OtherLeave> findOtherLeaveByEmployeeAndWantedDateAndWantedTime(Employee employee, LocalDate wantedDate, LocalTime wantedTime);
 
-    Optional<OtherLeave> findByEmployee(Employee employee);
+//    List<OtherLeave> findOtherLeaveByEmployeeIdAndLeaveType(Long empId,String leaveType);
 
 
 

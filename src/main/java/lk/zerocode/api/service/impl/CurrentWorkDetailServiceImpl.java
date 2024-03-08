@@ -8,6 +8,7 @@ import lk.zerocode.api.model.*;
 import lk.zerocode.api.repository.*;
 import lk.zerocode.api.service.CurrentWorkDetailService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.EmptyStackException;
@@ -22,6 +23,8 @@ public class CurrentWorkDetailServiceImpl implements CurrentWorkDetailService {
     private final BranchesRepository branchesRepository;
     private final DepartmentRepository departmentRepository;
     private final EmpCategoryRepository empCategoryRepository;
+
+    private ModelMapper modelMapper;
 
     public void saveWorkDetail(Long empId, CurrentWorkDetailRequest currentWorkDetailRequest) throws EmployeeNotFoundException,BranchNotFoundException ,DepartmentNotFoundException,EmpCategoryNotFoundException{
 

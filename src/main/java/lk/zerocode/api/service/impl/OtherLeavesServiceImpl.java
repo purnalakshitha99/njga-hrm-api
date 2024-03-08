@@ -1,4 +1,5 @@
 package lk.zerocode.api.service.impl;
+import lk.zerocode.api.controller.OtherLeavesController;
 import lk.zerocode.api.controller.request.OtherLeavesRequest;
 import lk.zerocode.api.controller.response.OtherLeavesResponse;
 import lk.zerocode.api.exceptions.CannotCreateLeaveException;
@@ -115,4 +116,31 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
                 .build();
 
     }
+
+    @Override
+    public List <OtherLeavesResponse> getLeaves(Long empId)throws EmployeeNotFoundException {
+
+       Employee employee = employeeRepository.findById(empId).orElseThrow(
+               ()-> new EmployeeNotFoundException("that employee not in a database")
+       );
+
+       List <OtherLeave> otherLeavesList = employee.getOtherLeavesList();
+
+       return otherLeavesList.stream().map(otherLeave -> OtherLeavesResponse.builder().id(otherLeave.getId())
+                .name(otherLeave.getName())
+                .department(otherLeave.getDepartment())
+                .leaveType(otherLeave.getLeaveType())
+                .reason(otherLeave.getReason())
+                .financialMonth(otherLeave.getFinancialMonth())
+                .financialYear(otherLeave.getFinancialYear())
+                .applyDate(otherLeave.getApplyDate())
+                .applyTime(otherLeave.getApplyTime())
+                .wantedDate(otherLeave.getWantedDate())
+                .wantedTime(otherLeave.getWantedTime())
+                .status(otherLeave.getStatus())
+                .hours(otherLeave.getHours())
+                .dayType(otherLeave.getDayType()).build()).toList();
+    }
+
+
 }
