@@ -11,7 +11,6 @@ import java.time.LocalTime;
 import java.time.Year;
 
 @Data
-@Builder
 public class FullDayLeavesResponse {
 
     private String name;
@@ -21,7 +20,7 @@ public class FullDayLeavesResponse {
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer noOfDays;
-    private Year financialYear;
+    private String financialYear;
     private LocalDate applyDate;
     private String approvedPersonName;
     private LocalDate approvedDate;

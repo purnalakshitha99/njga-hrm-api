@@ -1,5 +1,7 @@
-package lk.zerocode.api.controller.request;
+package lk.zerocode.api.controller.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lk.zerocode.api.model.Status;
@@ -8,11 +10,11 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Year;
 
 @Data
 @Builder
-public class FullDayLeavesRequest {
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public class FullDayLeavesRequestDTO {
 
     private String name;
     private String department;
@@ -21,7 +23,7 @@ public class FullDayLeavesRequest {
     private LocalDate startDate;
     private LocalDate endDate;
     private Integer noOfDays;
-    private Year financialYear;
+    private Integer financialYear;
     private LocalDate applyDate;
     private String approvedPersonName;
     private LocalDate approvedDate;
