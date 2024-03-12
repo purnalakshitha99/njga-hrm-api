@@ -1,8 +1,6 @@
-package lk.zerocode.api.controller.request;
+package lk.zerocode.api.controller.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,12 +10,11 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Year;
 
 @Data
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class FullDayLeavesRequest {
+public class FullDayLeavesRequestDTO {
 
     private String name;
     private String department;
