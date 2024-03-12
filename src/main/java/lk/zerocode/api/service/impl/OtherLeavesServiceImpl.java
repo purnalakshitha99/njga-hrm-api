@@ -94,6 +94,19 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
 
         if (otherLeavesDTO.getLeaveType().equals("gatepass")){
             otherLeave.setRequiredCheckIn(otherLeavesDTO.getWantedTime().plusHours(1));
+        } else if (otherLeavesDTO.getLeaveType().equals("shortleave")) {
+            LocalTime time = otherLeavesDTO.getWantedTime();
+
+            Float originalTime = otherLeavesDTO.getHours();
+            if (originalTime == 0.5){
+                otherLeave.setRequiredCheckIn(otherLeavesDTO.getWantedTime().plusMinutes(30));
+            } else if (originalTime == 1.0) {
+                otherLeave.setRequiredCheckIn(otherLeavesDTO.getWantedTime().plusHours(1));
+            } else if (originalTime == 1.5) {
+                otherLeave.setRequiredCheckIn(otherLeavesDTO.getWantedTime().plusMinutes(90));
+
+            }
+
         }
 
 
