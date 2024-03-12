@@ -4,9 +4,6 @@ import lk.zerocode.api.controller.dto.AttandanceSearchDTO;
 import lk.zerocode.api.controller.dto.AttendanceDTO;
 import lk.zerocode.api.controller.dto.FingerPrintDTO;
 import lk.zerocode.api.exceptions.AttendanceException;
-import lk.zerocode.api.model.Attendance;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +14,7 @@ public interface AttendenceService {
 
     ResponseEntity<String> addAttendenceCheckIn(FingerPrintDTO fingerPrintDTO)throws AttendanceException;
 
-    void delete();
+    ResponseEntity<String> delete();
 
 //    ResponseEntity<List<Attendance>> getAllByDate(AttandanceSearchDTO attandanceSearchDTO)throws AttendanceException;
 

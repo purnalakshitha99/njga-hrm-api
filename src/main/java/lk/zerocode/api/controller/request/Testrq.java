@@ -7,5 +7,6 @@ import java.time.LocalTime;
 
 @Data
 public class Testrq {
-    private LocalDate dates;
+    private LocalDate date;
+    private String empId;
 }

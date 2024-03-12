@@ -5,3 +5,4 @@ public class AllNotFoundException extends Exception{
         super(message);
     }
 }
+
