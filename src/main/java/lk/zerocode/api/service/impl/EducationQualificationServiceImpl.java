@@ -1,7 +1,9 @@
 package lk.zerocode.api.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lk.zerocode.api.controller.dto.EducationQualificationRqDTO;
 import lk.zerocode.api.controller.response.EducationQualificationResponse;
+import lk.zerocode.api.exceptions.EducationNotFoundException;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.EducationQualification;
 import lk.zerocode.api.model.Employee;
@@ -35,9 +37,9 @@ public class EducationQualificationServiceImpl implements EducationQualification
             return modelMapper.map(educationQualification,EducationQualificationResponse.class);
         }
     @Override
-    public ResponseEntity<String> delete(Long employeeId, Long id) throws  EmployeeNotFoundException{
+    public ResponseEntity<String> delete(Long employeeId, Long id) throws  EmployeeNotFoundException, EducationNotFoundException {
         Employee employee= employeeRepository.findById(employeeId).orElseThrow(()-> new EmployeeNotFoundException("Employee Not Found"));
-
+        educationQualificationRepository.findById(id).orElseThrow(()-> new EducationNotFoundException("No education qualifications for this id"));
             List<EducationQualification> educationQualificationList=employee.getEducationQualificationList();
             EducationQualification qualificationToDelete=educationQualificationList.stream()
                     .filter(educationQualification -> educationQualification.getId().equals(id))
@@ -53,8 +55,7 @@ public class EducationQualificationServiceImpl implements EducationQualification
     @Override
     public List<EducationQualificationResponse> getSpecific(Long id) throws EmployeeNotFoundException {
         Employee employee = employeeRepository.findById(id).orElseThrow(()->new  EmployeeNotFoundException("Employee Not Found"));
-            List<EducationQualification> allQualifications = educationQualificationRepository.findEducationQualificationsByEmployee(employee);
-        ModelMapper modelMapper = new ModelMapper();
+        List<EducationQualification> allQualifications = educationQualificationRepository.findEducationQualificationsByEmployee(employee);
         List<EducationQualificationResponse> qualificationResponseList = allQualifications.stream()
                 .map(qualification -> modelMapper.map(qualification, EducationQualificationResponse.class))
                 .collect(Collectors.toList());

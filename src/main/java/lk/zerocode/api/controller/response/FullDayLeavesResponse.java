@@ -11,7 +11,6 @@ import java.time.LocalTime;
 import java.time.Year;
 
 @Data
-@Builder
 public class FullDayLeavesResponse {
 
     private String name;
