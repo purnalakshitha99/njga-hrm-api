@@ -4,6 +4,7 @@ import lk.zerocode.api.controller.dto.FullDayLeavesRequestDTO;
 import lk.zerocode.api.controller.response.FullDayLeavesResponse;
 import lk.zerocode.api.exceptions.CannotCreateLeaveException;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
+import lk.zerocode.api.exceptions.FullDayLeavesNotFoundException;
 import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.model.FullDayLeave;
 import lk.zerocode.api.model.Status;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -65,9 +67,11 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
         return modelMapper.map(fullDayLeave, FullDayLeavesResponse.class);
     }
     @Override
-    public void leaveStatus(Long id, FullDayLeavesRequestDTO fullDayLeavesRequestDTO) {
+    public void leaveStatus(Long id, FullDayLeavesRequestDTO fullDayLeavesRequestDTO) throws FullDayLeavesNotFoundException {
         Optional<FullDayLeave> optionalFullDayLeave = fullDayLeavesRepository.findById(id);
-        if (optionalFullDayLeave.isPresent()) {
+        if (!optionalFullDayLeave.isPresent()) {
+            throw new FullDayLeavesNotFoundException(" not found");
+        }else {
             FullDayLeave fullDayLeave = optionalFullDayLeave.get();
             fullDayLeave.setApprovedDate(LocalDate.now());
             fullDayLeave.setApprovedTime(LocalTime.now());

@@ -4,6 +4,7 @@ import lk.zerocode.api.controller.dto.FullDayLeavesRequestDTO;
 import lk.zerocode.api.controller.response.FullDayLeavesResponse;
 import lk.zerocode.api.exceptions.CannotCreateLeaveException;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
+import lk.zerocode.api.exceptions.FullDayLeavesNotFoundException;
 import lk.zerocode.api.service.FullDayLeaveService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class FullDayLeavesController {
         return fullDayLeaveService.create(empId, fullDayLeavesRequestDTO);
     }
     @PostMapping (value = "/annual-leaves/{leave-id}",headers ="X-API-VERSION=V1")
-    public void leaveStatus(@PathVariable("leave-id") Long id,@RequestBody FullDayLeavesRequestDTO fullDayLeavesRequestDTO){
+    public void leaveStatus(@PathVariable("leave-id") Long id,@RequestBody FullDayLeavesRequestDTO fullDayLeavesRequestDTO)throws FullDayLeavesNotFoundException {
         fullDayLeaveService.leaveStatus(id, fullDayLeavesRequestDTO);
     }
     @GetMapping(value = "/employees/{employee-id}/annual-leaves",headers ="X-API-VERSION=V1")
