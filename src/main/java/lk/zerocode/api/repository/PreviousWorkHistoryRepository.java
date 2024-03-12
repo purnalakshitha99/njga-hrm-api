@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface PreviousWorkHistoryRepository extends JpaRepository<PreviousWorkHistory,Long> {
 
-    Optional<PreviousWorkHistory> findPreviousWorkHistoriesByEmployeeAndId(Employee employee,Long id);
+//    Optional<PreviousWorkHistory> findPreviousWorkHistoriesByEmployeeAndId(Employee employee,Long id);
 
 }
