@@ -25,31 +25,31 @@ public class AttendenceController {
         return attendenceService.addAttendenceCheckIn(fingerPrintDTO);
     }
 
-    @GetMapping("/attendance/{empId}")
+    @GetMapping(value = "/attendance/{empId}",headers ="VERSION=V1")
     public AttendanceDTO getAllAttendanceByDate(@PathVariable ("empId")Long id) throws AttendanceException {
         return attendenceService.findByEmpId(id);
     }
 
-    @GetMapping("/attendances")
+    @GetMapping(value = "/attendances",headers ="VERSION=V1")
     public ResponseEntity<List<AttendanceDTO>> getAllAttendance()throws AttendanceException{
         List<AttendanceDTO> attendanceDTO = attendenceService.getAll();
         return new ResponseEntity<>(attendanceDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/attendance/date")
+    @GetMapping(value = "/attendance/date",headers ="VERSION=V1")
     public ResponseEntity<List<AttendanceDTO>> getAllAttendanceByDate(@RequestBody AttandanceSearchDTO attandanceSearchDTO)throws AttendanceException{
         List<AttendanceDTO> attendanceDTOList = attendenceService.findByDate(attandanceSearchDTO);
         return new ResponseEntity<>(attendanceDTOList, HttpStatus.OK);
     }
 
     //optional
-    @DeleteMapping("/delete/att")
+    @DeleteMapping(value = "/delete/att",headers ="VERSION=V1")
     public void delete(){
          attendenceService.delete();
     }
 
 
-    @DeleteMapping("/delete/fullday")
+    @DeleteMapping(value = "/delete/fullday",headers ="VERSION=V1")
     public void deletFullDay( ){
         attendenceService.deleteFullday();
     }
