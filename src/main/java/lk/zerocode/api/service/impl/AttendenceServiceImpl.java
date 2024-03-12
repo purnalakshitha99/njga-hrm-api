@@ -47,7 +47,6 @@ public class AttendenceServiceImpl implements AttendenceService {
         LocalTime checkoutEarlyPL = LocalTime.of(18, 15);
         Duration lateTimePL = Duration.between(requiredCheckInPL, LocalTime.now());
 
-
         String fId = fingerPrintDTO.getFingerPrintId();
 
         FingerPrint fingerPrint = fingerPrintRepository.findByFingerPrintId(fId)

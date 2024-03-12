@@ -1,6 +1,6 @@
 package lk.zerocode.api.service.impl;
 
-import lk.zerocode.api.controller.request.EducationQualificationRequest;
+import lk.zerocode.api.controller.dto.EducationQualificationRqDTO;
 import lk.zerocode.api.controller.response.EducationQualificationResponse;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.EducationQualification;
@@ -9,10 +9,12 @@ import lk.zerocode.api.repository.EducationQualificationRepository;
 import lk.zerocode.api.repository.EmployeeRepository;
 import lk.zerocode.api.service.EducationQualificationService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,29 +23,19 @@ public class EducationQualificationServiceImpl implements EducationQualification
 
     private EducationQualificationRepository educationQualificationRepository;
     private EmployeeRepository employeeRepository;
+    private ModelMapper modelMapper;
     @Override
-    public EducationQualificationResponse create(Long id, EducationQualificationRequest educationQualificationRequest) throws EmployeeNotFoundException {
-        Employee employee= employeeRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found"));
+    public EducationQualificationResponse create(Long id, EducationQualificationRqDTO educationQualificationRqDTO) throws EmployeeNotFoundException {
+        Employee employee=employeeRepository.findById(id).orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found"));
 
-            EducationQualification educationQualification=new EducationQualification();
-            educationQualification.setUniversityName(educationQualificationRequest.getUniversityName());
-            educationQualification.setQualification(educationQualificationRequest.getQualification());
-            educationQualification.setStartDate(educationQualificationRequest.getStartDate());
-            educationQualification.setEndDate(educationQualificationRequest.getEndDate());
+            EducationQualification educationQualification= modelMapper.map(educationQualificationRqDTO,EducationQualification.class);
             educationQualification.setEmployee(employee);
             educationQualificationRepository.save(educationQualification);
 
-            EducationQualificationResponse educationQualificationResponse=EducationQualificationResponse.builder()
-                    .id(educationQualification.getId())
-                    .universityName(educationQualification.getUniversityName())
-                    .qualification(educationQualification.getQualification())
-                    .startDate(educationQualification.getStartDate())
-                    .endDate(educationQualification.getEndDate())
-                    .build();
-            return educationQualificationResponse;
+            return modelMapper.map(educationQualification,EducationQualificationResponse.class);
         }
     @Override
-    public void delete(Long employeeId,Long id) throws  EmployeeNotFoundException{
+    public ResponseEntity<String> delete(Long employeeId, Long id) throws  EmployeeNotFoundException{
         Employee employee= employeeRepository.findById(employeeId).orElseThrow(()-> new EmployeeNotFoundException("Employee Not Found"));
 
             List<EducationQualification> educationQualificationList=employee.getEducationQualificationList();
@@ -55,23 +47,17 @@ public class EducationQualificationServiceImpl implements EducationQualification
                 educationQualificationList.remove(qualificationToDelete);
                 employeeRepository.save(employee);
                 educationQualificationRepository.deleteById(id);
-                System.out.println("Education Qualification Delete Successfully");
             }
-        }
+        return ResponseEntity.status(HttpStatus.OK).body("Education Qualification Delete Successfully");
+    }
     @Override
     public List<EducationQualificationResponse> getSpecific(Long id) throws EmployeeNotFoundException {
         Employee employee = employeeRepository.findById(id).orElseThrow(()->new  EmployeeNotFoundException("Employee Not Found"));
             List<EducationQualification> allQualifications = educationQualificationRepository.findEducationQualificationsByEmployee(employee);
-            List<EducationQualificationResponse> qualificationResponseList = allQualifications.stream()
-                    .map(qualification -> EducationQualificationResponse.builder()
-                            .id(qualification.getId())
-                            .universityName(qualification.getUniversityName())
-                            .qualification(qualification.getQualification())
-                            .startDate(qualification.getStartDate())
-                            .endDate(qualification.getEndDate())
-                            .build())
-                    .collect(Collectors.toList());
-            return qualificationResponseList;
+        ModelMapper modelMapper = new ModelMapper();
+        List<EducationQualificationResponse> qualificationResponseList = allQualifications.stream()
+                .map(qualification -> modelMapper.map(qualification, EducationQualificationResponse.class))
+                .collect(Collectors.toList());
+        return qualificationResponseList;
         }
     }
-
