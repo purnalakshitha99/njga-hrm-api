@@ -20,7 +20,7 @@ public interface AttendenceRepository extends JpaRepository<Attendance, Long> {
     @Query("from Attendance a where a.date=:date ")
     List<Attendance> findByDate(@Param("date") LocalDate date);
 
-    @Query(value = "SELECT COUNT(*) AS attcount FROM attendances a WHERE a.employee_id = :empId AND MONTH(a.date) = 3  AND YEAR(a.date) = YEAR(CURRENT_DATE()) AND TIME(a.actual_check_in) > '10:00' AND TIME(a.actual_check_in) < '10:30'", nativeQuery = true)
-    Integer getAttendanceCount(@Param("empId") Long id);
+    @Query(value = "SELECT COUNT(*) AS attendanceCount FROM attendances a WHERE a.employee_id = :empId AND MONTH(a.date) = 3  AND YEAR(a.date) = YEAR(CURRENT_DATE()) AND TIME(a.actual_check_in) > '13:50' AND TIME(a.actual_check_in) < '14:20'", nativeQuery = true)
+    AttendanceCountProjection getAttendanceCount(@Param("empId") Long id);
 
 }
