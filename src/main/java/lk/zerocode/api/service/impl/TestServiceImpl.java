@@ -14,6 +14,7 @@ import lk.zerocode.api.repository.TestRepo;
 import lk.zerocode.api.service.TestService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.expression.spel.ast.Projection;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class TestServiceImpl implements TestService {
     private FingerPrintRepository fingerPrintRepository;
     private EmployeeRepository employeeRepository;
     private AttendenceRepository attendenceRepository;
+
     @Override
     public void saveDate(Testrq testrq) {
 
@@ -49,10 +51,12 @@ public class TestServiceImpl implements TestService {
 
         System.out.println(employee.getId());
 
-        Integer count = attendenceRepository.getAttendanceCount(employee.getId());
-        System.out.println("Count = " + count);
+        AttendanceCountProjection count = attendenceRepository.getAttendanceCount(employee.getId());
 
-        if (count >= 2){
+        System.out.println("Count = " + count.getAttendanceCount());
+
+
+        if (count.getAttendanceCount() >= 2){
             System.out.println("aye not covering be");
         }else {
             System.out.println("not covering puluwn");

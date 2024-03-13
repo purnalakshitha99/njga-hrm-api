@@ -5,6 +5,7 @@ import lk.zerocode.api.controller.dto.AttendanceDTO;
 import lk.zerocode.api.controller.dto.FingerPrintDTO;
 import lk.zerocode.api.exceptions.AttendanceException;
 import lk.zerocode.api.model.*;
+import lk.zerocode.api.proj.AttendanceCountProjection;
 import lk.zerocode.api.repository.*;
 import lk.zerocode.api.service.AttendenceService;
 import lombok.AllArgsConstructor;
@@ -34,10 +35,10 @@ public class AttendenceServiceImpl implements AttendenceService {
     @Override
     public ResponseEntity<String> addAttendenceCheckIn(FingerPrintDTO fingerPrintDTO) throws AttendanceException {
 
-        LocalDate today = LocalDate.of(2024,3,7);
-        LocalTime requiredCheckInSTD = LocalTime.of(10, 0);
+        LocalDate today = LocalDate.of(2024,3,12);
+        LocalTime requiredCheckInSTD = LocalTime.of(13, 50);
         LocalTime requiredCheckOutSTD = LocalTime.of(18, 30);
-        LocalTime afterRequiredTimeSTD = LocalTime.of(10, 30);
+        LocalTime afterRequiredTimeSTD = LocalTime.of(14, 20);
         LocalTime checkOutEarlySTD = LocalTime.of(18, 0);
         Duration lateTimeSTD = Duration.between(requiredCheckInSTD, LocalTime.now());
 
@@ -57,7 +58,7 @@ public class AttendenceServiceImpl implements AttendenceService {
         );
 
         String empCategory = employee.getCurrentWorkDetails().getEmpCategory().getEmpCategory();
-        Integer count = attendenceRepository.getAttendanceCount(employee.getId());
+        AttendanceCountProjection count = attendenceRepository.getAttendanceCount(employee.getId());
 
         Optional<Attendance> existingAttendance = attendenceRepository.findAttendanceByDateAndEmployee(today, fingerPrint.getEmployee());
 
@@ -96,7 +97,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                 //mark attendance late comers
                 else {
 
-                    if (count >= 2){
+                    if (count.getAttendanceCount() >= 2){
                         Attendance attendanceLate = new Attendance();
                         attendanceLate.setDate(today);
                         attendanceLate.setActualCheckIn(LocalTime.now());
@@ -110,6 +111,7 @@ public class AttendenceServiceImpl implements AttendenceService {
 
                         throw new AttendanceException("Sorry, you are late, " + "(" + empCategory + ")" + fingerPrint.getEmployee().getFirstName());
                     }else {
+                        System.out.println(count.getAttendanceCount());
                         System.out.println("not covering puluwn");
                     }
 
@@ -266,12 +268,12 @@ public class AttendenceServiceImpl implements AttendenceService {
                     }
 
                 } else {
-                    if (count >= 2){
+                    if (count.getAttendanceCount() >= 2){
                         Attendance attendanceLate = new Attendance();
                         attendanceLate.setDate(today);
                         attendanceLate.setActualCheckIn(LocalTime.now());
-                        attendanceLate.setRequiredCheckIn(requiredCheckInSTD);
-                        attendanceLate.setRequiredCheckOut(requiredCheckOutSTD.plus(lateTimeSTD));
+                        attendanceLate.setRequiredCheckIn(requiredCheckInPL);
+                        attendanceLate.setRequiredCheckOut(requiredCheckOutPL.plus(lateTimeSTD));
                         attendanceLate.setEmployee(fingerPrint.getEmployee());
                         attendanceLate.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
                         attendanceLate.setStatus(Status.PENDING);
@@ -384,7 +386,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                 attendance.setRequiredCheckOut(requiredCheckOutSTD);
                 attendance.setEmployee(fingerPrint.getEmployee());
                 attendance.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
-                attendance.setStatus(Status.APPROVED);
+                attendance.setStatus(Status.PENDING);
 
                 attendenceRepository.save(attendance);
 
@@ -397,7 +399,7 @@ public class AttendenceServiceImpl implements AttendenceService {
                 attendance.setRequiredCheckOut(requiredCheckOutSTD);
                 attendance.setEmployee(fingerPrint.getEmployee());
                 attendance.setDayType(String.valueOf(LocalDate.now().getDayOfWeek()));
-                attendance.setStatus(Status.APPROVED);
+                attendance.setStatus(Status.PENDING);
 
                 attendenceRepository.save(attendance);
 
@@ -448,13 +450,10 @@ public class AttendenceServiceImpl implements AttendenceService {
         otherLeavesRepository.deleteAll();
     }
 
-
     @Override
     public ResponseEntity<String> delete() {
 
         attendenceRepository.deleteAll();
         return ResponseEntity.status(HttpStatus.CREATED).body("success");
     }
-
-
 }
