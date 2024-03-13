@@ -1,5 +1,6 @@
 package lk.zerocode.api.service.impl;
 import lk.zerocode.api.controller.OtherLeavesController;
+import lk.zerocode.api.controller.dto.OtherLeavesDTO;
 import lk.zerocode.api.controller.request.OtherLeavesRequest;
 import lk.zerocode.api.controller.response.OtherLeavesResponse;
 import lk.zerocode.api.exceptions.CannotCreateLeaveException;
@@ -10,6 +11,7 @@ import lk.zerocode.api.repository.*;
 import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.service.OtherLeavesService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -21,13 +23,15 @@ import java.util.List;
 @AllArgsConstructor
 public class OtherLeavesServiceImpl implements OtherLeavesService {
 
+    private ModelMapper modelMapper;
+
 
     private OtherLeavesRepository otherLeavesRepository;
     private EmployeeRepository employeeRepository;
     private MonthlyBasedLeavesRepository monthlyBasedLeavesRepository;
 
     @Override
-    public OtherLeavesResponse createLeave(Long empId, OtherLeavesRequest otherLeavesRequest) throws EmployeeNotFoundException, EmpCategoryNotFoundException, CannotCreateLeaveException {
+    public OtherLeavesResponse createLeave(Long empId, OtherLeavesDTO otherLeavesDTO) throws EmployeeNotFoundException, EmpCategoryNotFoundException, CannotCreateLeaveException {
 
 
         // Get the current local date
@@ -38,27 +42,27 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
 
 
 
-        String year = String.valueOf(otherLeavesRequest.getWantedDate().getYear());
-        String month = String.valueOf(otherLeavesRequest.getWantedDate().getMonth().getValue());
+        String year = String.valueOf(otherLeavesDTO.getWantedDate().getYear());
+        String month = String.valueOf(otherLeavesDTO.getWantedDate().getMonth().getValue());
 
         Employee employee = employeeRepository.findById(empId).orElseThrow(
                 () -> new EmployeeNotFoundException("that employee not in a database")
         );
 
-        List<OtherLeave> existingLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndWantedDateAndWantedTime(employee,otherLeavesRequest.getWantedDate(),otherLeavesRequest.getWontedTime());
+        List<OtherLeave> existingLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndWantedDateAndWantedTime(employee,otherLeavesDTO.getWantedDate(),otherLeavesDTO.getWantedTime());
 
         if (!existingLeaves.isEmpty()){
             throw new CannotCreateLeaveException("cant create leave in same date and same time");
         }
 
         String category = employee.getCurrentWorkDetails().getEmpCategory().getEmpCategory();
-        MonthlyBasedLeave monthlyBasedLeave = monthlyBasedLeavesRepository.findMonthlyBasedLeaveByCategoryAndType(category, otherLeavesRequest.getLeaveType()).orElseThrow(
+        MonthlyBasedLeave monthlyBasedLeave = monthlyBasedLeavesRepository.findMonthlyBasedLeaveByCategoryAndType(category, otherLeavesDTO.getLeaveType()).orElseThrow(
                 () -> new EmpCategoryNotFoundException("that emp category not found")
         );
 
         int allowedHours = monthlyBasedLeave.getNoOfHours();
 
-        List<OtherLeave> takenLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndLeaveTypeAndFinancialYearAndFinancialMonth(employee, otherLeavesRequest.getLeaveType(),year,month);
+        List<OtherLeave> takenLeaves = otherLeavesRepository.findOtherLeaveByEmployeeAndLeaveTypeAndFinancialYearAndFinancialMonth(employee, otherLeavesDTO.getLeaveType(),year,month);
 
         float noOfTakenHours = 0;
 
@@ -66,35 +70,45 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
             noOfTakenHours = noOfTakenHours+otherLeave.getHours();
         }
 
-        if (allowedHours<noOfTakenHours+otherLeavesRequest.getHours()){
+        if (allowedHours<noOfTakenHours+otherLeavesDTO.getHours()){
             throw new CannotCreateLeaveException("cant create");
         }
 
-        if (!otherLeavesRequest.getLeaveType().equals("halfday")){
-            otherLeavesRequest.setDayType(null);
+        if (!otherLeavesDTO.getLeaveType().equals("halfday")){
+            otherLeavesDTO.setDayType(null);
         }
 
-        OtherLeave otherLeave = new OtherLeave();
 
+        OtherLeave otherLeave = modelMapper.map(otherLeavesDTO,OtherLeave.class);
 
-        otherLeave.setWantedDate(otherLeavesRequest.getWantedDate());
-        otherLeave.setWantedTime(otherLeavesRequest.getWontedTime());
+        otherLeave.setName(employee.getFirstName());
+        otherLeave.setStatus(Status.PENDING);
         otherLeave.setFinancialMonth(month);
         otherLeave.setFinancialYear(year);
-        otherLeave.setReason(otherLeavesRequest.getReason());
-        otherLeave.setLeaveType(otherLeavesRequest.getLeaveType());
-
         otherLeave.setDepartment(employee.getCurrentWorkDetails().getDepartment().getName());
-        otherLeave.setName(employee.getFirstName());
-
-        otherLeave.setStatus(Status.PENDING);
-        otherLeave.setHours(otherLeavesRequest.getHours());
-        otherLeave.setApplyTime(currentTime);
         otherLeave.setApplyDate(currentDate);
-
+        otherLeave.setApplyTime(currentTime);
         otherLeave.setEmployee(employee);
 
-        otherLeave.setDayType(otherLeavesRequest.getDayType());
+
+
+        if (otherLeavesDTO.getLeaveType().equals("gatepass")){
+            otherLeave.setRequiredCheckIn(otherLeavesDTO.getWantedTime().plusHours(1));
+        } else if (otherLeavesDTO.getLeaveType().equals("shortleave")) {
+            LocalTime time = otherLeavesDTO.getWantedTime();
+
+            Float originalTime = otherLeavesDTO.getHours();
+            if (originalTime == 0.5){
+                otherLeave.setRequiredCheckIn(otherLeavesDTO.getWantedTime().plusMinutes(30));
+            } else if (originalTime == 1.0) {
+                otherLeave.setRequiredCheckIn(otherLeavesDTO.getWantedTime().plusHours(1));
+            } else if (originalTime == 1.5) {
+                otherLeave.setRequiredCheckIn(otherLeavesDTO.getWantedTime().plusMinutes(90));
+
+            }
+
+        }
+
 
         otherLeavesRepository.save(otherLeave);
 
@@ -140,6 +154,11 @@ public class OtherLeavesServiceImpl implements OtherLeavesService {
                 .status(otherLeave.getStatus())
                 .hours(otherLeave.getHours())
                 .dayType(otherLeave.getDayType()).build()).toList();
+    }
+
+    @Override
+    public void deleteAll() {
+        otherLeavesRepository.deleteAll();
     }
 
 

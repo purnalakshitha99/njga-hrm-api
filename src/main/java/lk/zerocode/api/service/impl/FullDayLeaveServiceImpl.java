@@ -1,10 +1,10 @@
 package lk.zerocode.api.service.impl;
 
-import lk.zerocode.api.controller.request.FullDayLeavesRequest;
-import lk.zerocode.api.controller.response.EducationQualificationResponse;
+import lk.zerocode.api.controller.dto.FullDayLeavesRequestDTO;
 import lk.zerocode.api.controller.response.FullDayLeavesResponse;
 import lk.zerocode.api.exceptions.CannotCreateLeaveException;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
+import lk.zerocode.api.exceptions.FullDayLeavesNotFoundException;
 import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.model.FullDayLeave;
 import lk.zerocode.api.model.Status;
@@ -14,11 +14,13 @@ import lk.zerocode.api.repository.FullDayLeavesRepository;
 import lk.zerocode.api.repository.YearBasedLeaveRepository;
 import lk.zerocode.api.service.FullDayLeaveService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,68 +30,53 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
     private FullDayLeavesRepository fullDayLeavesRepository;
     private EmployeeRepository employeeRepository;
     private YearBasedLeaveRepository yearBasedLeaveRepository;
+    private ModelMapper modelMapper;
 
     @Override
-    public FullDayLeavesResponse create(Long empId, FullDayLeavesRequest fullDayLeavesRequest) throws EmployeeNotFoundException, CannotCreateLeaveException {
+    public FullDayLeavesResponse create(Long empId, FullDayLeavesRequestDTO fullDayLeavesRequestDTO) throws EmployeeNotFoundException, CannotCreateLeaveException {
         Employee employee = employeeRepository.findEmployeeById(empId).orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found"));
-        String startDate = String.valueOf(fullDayLeavesRequest.getStartDate().getYear());
-        String endDate = String.valueOf(fullDayLeavesRequest.getEndDate().getYear());
+        String startDate = String.valueOf(fullDayLeavesRequestDTO.getStartDate().getYear());
+        String endDate = String.valueOf(fullDayLeavesRequestDTO.getEndDate().getYear());
         if (!startDate.equals(endDate)) {
             throw new CannotCreateLeaveException("you can't take leaves from two different years.apply separately");
         }
-        List<FullDayLeave> existingLeaves = fullDayLeavesRepository.findFullDayLeaveByEmployeeAndStartDateAndEndDate(employee,fullDayLeavesRequest.getStartDate(),fullDayLeavesRequest.getEndDate());
+        List<FullDayLeave> existingLeaves = fullDayLeavesRepository.findFullDayLeaveByEmployeeAndStartDateAndEndDate(employee, fullDayLeavesRequestDTO.getStartDate(), fullDayLeavesRequestDTO.getEndDate());
         if (!existingLeaves.isEmpty()){
             throw new CannotCreateLeaveException("you cant create leaves on same date");
         }
         String category = employee.getCurrentWorkDetails().getEmpCategory().getEmpCategory();
-        Optional<YearlyBasedLeave> yearlyBasedLeaveResult = yearBasedLeaveRepository.findYearlyBasedLeaveByCategoryAndType(category, fullDayLeavesRequest.getLeaveType());
+        Optional<YearlyBasedLeave> yearlyBasedLeaveResult = yearBasedLeaveRepository.findYearlyBasedLeaveByCategoryAndType(category, fullDayLeavesRequestDTO.getLeaveType());
         int allowedLeaveCount = yearlyBasedLeaveResult.get().getNoOfDays();
-        List<FullDayLeave> takenLeavesByYear = fullDayLeavesRepository.findFullDayLeaveByEmployeeAndLeaveTypeAndFinancialYear(employee, fullDayLeavesRequest.getLeaveType(), startDate);
+        List<FullDayLeave> takenLeavesByYear = fullDayLeavesRepository.findFullDayLeaveByEmployeeAndLeaveTypeAndFinancialYear(employee, fullDayLeavesRequestDTO.getLeaveType(), startDate);
         int noOfTakenLeaves = 0;
         for (FullDayLeave fullDayLeave : takenLeavesByYear) {
             noOfTakenLeaves = noOfTakenLeaves + fullDayLeave.getNoOfDays();
         }
 
-        if (allowedLeaveCount < noOfTakenLeaves + fullDayLeavesRequest.getNoOfDays() || allowedLeaveCount < fullDayLeavesRequest.getNoOfDays()) {
+        if (allowedLeaveCount < noOfTakenLeaves + fullDayLeavesRequestDTO.getNoOfDays() || allowedLeaveCount < fullDayLeavesRequestDTO.getNoOfDays()) {
             throw new CannotCreateLeaveException("exceeded the leave limit");
         }
-        FullDayLeave fullDayLeave = new FullDayLeave();
-        fullDayLeave.setName(fullDayLeavesRequest.getName());
+        FullDayLeave fullDayLeave = modelMapper.map(fullDayLeavesRequestDTO,FullDayLeave.class);
         fullDayLeave.setApplyDate(LocalDate.now());
-        fullDayLeave.setNoOfDays(fullDayLeavesRequest.getNoOfDays());
-        fullDayLeave.setStartDate(fullDayLeavesRequest.getStartDate());
         fullDayLeave.setYearBasedLeave(yearlyBasedLeaveResult.get());
-        fullDayLeave.setEndDate(fullDayLeavesRequest.getEndDate());
-        fullDayLeave.setDepartment(fullDayLeavesRequest.getDepartment());
         fullDayLeave.setFinancialYear(startDate);
-        fullDayLeave.setReason(fullDayLeavesRequest.getReason());
-        fullDayLeave.setLeaveType(fullDayLeavesRequest.getLeaveType());
         fullDayLeave.setStatus(Status.PENDING);
         fullDayLeave.setEmployee(employee);
         fullDayLeavesRepository.save(fullDayLeave);
 
-        return FullDayLeavesResponse.builder()
-                .name(fullDayLeave.getName())
-                .applyDate(fullDayLeave.getApplyDate())
-                .noOfDays(fullDayLeave.getNoOfDays())
-                .startDate(fullDayLeave.getStartDate())
-                .endDate(fullDayLeave.getEndDate())
-                .approvedPersonName(fullDayLeave.getApprovedPersonName())
-                .department(fullDayLeave.getDepartment())
-                .financialYear(fullDayLeave.getFinancialYear())
-                .reason(fullDayLeave.getReason())
-                .status(fullDayLeave.getStatus())
-                .build();
+        return modelMapper.map(fullDayLeave, FullDayLeavesResponse.class);
     }
     @Override
-    public void leaveStatus(Long id, FullDayLeavesRequest fullDayLeavesRequest) {
+    public void leaveStatus(Long id, FullDayLeavesRequestDTO fullDayLeavesRequestDTO) throws FullDayLeavesNotFoundException {
         Optional<FullDayLeave> optionalFullDayLeave = fullDayLeavesRepository.findById(id);
-        if (optionalFullDayLeave.isPresent()) {
+        if (!optionalFullDayLeave.isPresent()) {
+            throw new FullDayLeavesNotFoundException(" not found");
+        }else {
             FullDayLeave fullDayLeave = optionalFullDayLeave.get();
             fullDayLeave.setApprovedDate(LocalDate.now());
             fullDayLeave.setApprovedTime(LocalTime.now());
             fullDayLeave.setApprovedPersonName("Viduth");
-            fullDayLeave.setStatus(fullDayLeavesRequest.getStatus());
+            fullDayLeave.setStatus(fullDayLeavesRequestDTO.getStatus());
             fullDayLeavesRepository.save(fullDayLeave);
         }
     }
@@ -98,17 +85,8 @@ public class FullDayLeaveServiceImpl implements FullDayLeaveService {
         Employee employee = employeeRepository.findEmployeeById(empId).orElseThrow(() -> new EmployeeNotFoundException("Employee Not Found"));
         List<FullDayLeave> allLeavesList = fullDayLeavesRepository.findFullDayLeaveByEmployee(employee);
         List<FullDayLeavesResponse> allSpecificLeavesResponse = allLeavesList.stream()
-                .map(allLeaves -> FullDayLeavesResponse.builder()
-                        .applyDate(allLeaves.getApplyDate())
-                        .startDate(allLeaves.getStartDate())
-                        .endDate(allLeaves.getEndDate())
-                        .financialYear(allLeaves.getFinancialYear())
-                        .noOfDays(allLeaves.getNoOfDays())
-                        .reason(allLeaves.getReason())
-                        .status(allLeaves.getStatus())
-                        .build())
+                .map(allLeaves -> modelMapper.map(allLeaves,FullDayLeavesResponse.class))
                 .collect(Collectors.toList());
         return allSpecificLeavesResponse;
     }
 }
-

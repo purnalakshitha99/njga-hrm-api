@@ -1,5 +1,6 @@
 package lk.zerocode.api.controller;
 
+import lk.zerocode.api.controller.dto.CurrentWorkDetailsDTO;
 import lk.zerocode.api.controller.request.CurrentWorkDetailRequest;
 import lk.zerocode.api.controller.response.CurrentWorkDetailResponse;
 import lk.zerocode.api.controller.response.IdResponse;
@@ -16,17 +17,17 @@ public class CurrentWorkDetailController {
     private CurrentWorkDetailService currentWorkDetailService;
 
     @PostMapping("/employees/{emp_id}/current_work_details")
-    public void saveWorkDetail(@PathVariable("emp_id")Long empId,@RequestBody CurrentWorkDetailRequest currentWorkDetailRequest)throws EmployeeNotFoundException, BranchNotFoundException, DepartmentNotFoundException, EmpCategoryNotFoundException {
+    public void saveWorkDetail(@PathVariable("emp_id")Long empId,@RequestBody CurrentWorkDetailsDTO currentWorkDetailsDTO)throws EmployeeNotFoundException, BranchNotFoundException, DepartmentNotFoundException, EmpCategoryNotFoundException {
 
-        System.out.println("branch"+currentWorkDetailRequest.getBranchCode());
-        System.out.println("category"+currentWorkDetailRequest.getEmpCategory());
-        System.out.println("type"+currentWorkDetailRequest.getEmpCategoryType());
+        System.out.println("branchvvvvvvvvvvvvvvv"+currentWorkDetailsDTO.getWorkTelephone());
+        System.out.println("category"+currentWorkDetailsDTO.getEmpCategory());
+        System.out.println("type"+currentWorkDetailsDTO.getEmpCategoryType());
         System.out.println("emp"+empId);
-        System.out.println("empcode"+currentWorkDetailRequest.getEmpCode());
-        System.out.println("depID"+currentWorkDetailRequest.getDepId());
+        System.out.println("empcode"+currentWorkDetailsDTO.getEmpCode());
+        System.out.println("depID"+currentWorkDetailsDTO.getDepId());
         System.out.println("==========================");
 
-        currentWorkDetailService.saveWorkDetail(empId,currentWorkDetailRequest);
+        currentWorkDetailService.saveWorkDetail(empId,currentWorkDetailsDTO);
     }
     @DeleteMapping("/employees/{emp_id}/current_work_details")
     public IdResponse deleteDetails(@PathVariable("emp_id")Long empId)throws EmployeeNotFoundException {

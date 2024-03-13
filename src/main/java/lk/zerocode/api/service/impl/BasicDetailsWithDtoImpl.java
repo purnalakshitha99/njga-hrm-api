@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -36,7 +37,12 @@ public class BasicDetailsWithDtoImpl implements BasicDetailsWithDto {
         if (employeeAll.isEmpty()){
             throw new EntityNotFoundException("No found Data");
         }
-        return modelMapper.map(employeeAll, new TypeToken<List<BasicDetailsDTO>>(){}.getType());
+//        return modelMapper.map(employeeAll, new TypeToken<List<BasicDetailsDTO>>(){}.getType());
+
+        return employeeAll.stream()
+                .map(details -> modelMapper.map(details, BasicDetailsDTO.class))
+                .collect(Collectors.toList());
+
     }
 
     @Override
