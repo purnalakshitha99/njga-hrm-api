@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lk.zerocode.api.controller.dto.BasicDetailsDTO;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.Employee;
-import lk.zerocode.api.service.BasicDetailsWithDto;
+import lk.zerocode.api.service.BasicDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,32 +14,32 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-public class BasicDetailControllerWithDto {
+public class BasicDetailController {
 
-    private BasicDetailsWithDto basicDetailsWithDto;
+    private BasicDetailsService basicDetailsService;
 
-    @PostMapping("/employees")
+    @PostMapping(value = "/employees", headers = "VERSION=V1")
     public ResponseEntity<BasicDetailsDTO> saveBasicDetails(@RequestBody @Valid BasicDetailsDTO basicDetailsDTO){
-        BasicDetailsDTO createdemployee = basicDetailsWithDto.saveBasicDetails(basicDetailsDTO);
+        BasicDetailsDTO createdemployee = basicDetailsService.saveBasicDetails(basicDetailsDTO);
         return new ResponseEntity<>(createdemployee, HttpStatus.CREATED);
     }
 
-    @GetMapping("/employees")
+    @GetMapping(value = "/employees", headers = "VERSION=V1")
     public ResponseEntity<List<BasicDetailsDTO>> getAllDetails(){
-        List<BasicDetailsDTO> allDetails = basicDetailsWithDto.getAllDetails();
+        List<BasicDetailsDTO> allDetails = basicDetailsService.getAllDetails();
         return new ResponseEntity<>(allDetails, HttpStatus.OK);
     }
 
 
-    @GetMapping("/employee/name")
+    @GetMapping(value = "/employee/name",headers = "VERSION=V1")
     public ResponseEntity<List<Employee>> getByName(@RequestBody BasicDetailsDTO basicDetailsDTO) {
-        List<Employee> details = basicDetailsWithDto.filterByName(basicDetailsDTO);
+        List<Employee> details = basicDetailsService.filterByName(basicDetailsDTO);
         return new ResponseEntity<>(details, HttpStatus.OK);
     }
 
-    @PutMapping("/employee/{empId}")
+    @PutMapping(value = "/employee/{empId}", headers = "VERSION=V1")
     public ResponseEntity<BasicDetailsDTO> updateBasicDetails(@PathVariable ("empId") Long id, @RequestBody BasicDetailsDTO basicDetailsDTO) throws EmployeeNotFoundException {
-        BasicDetailsDTO updatedEmployee = basicDetailsWithDto.updateBasicDetails(id,basicDetailsDTO);
+        BasicDetailsDTO updatedEmployee = basicDetailsService.updateBasicDetails(id,basicDetailsDTO);
         return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
     }
 }
