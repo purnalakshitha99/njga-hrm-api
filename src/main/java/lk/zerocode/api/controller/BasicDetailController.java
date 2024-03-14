@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lk.zerocode.api.controller.dto.BasicDetailsDTO;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.Employee;
-import lk.zerocode.api.service.BasicDetailsWithDto;
+import lk.zerocode.api.service.BasicDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 public class BasicDetailControllerWithDto {
 
-    private BasicDetailsWithDto basicDetailsWithDto;
+    private BasicDetailsService basicDetailsWithDto;
 
     @PostMapping("/employees")
     public ResponseEntity<BasicDetailsDTO> saveBasicDetails(@RequestBody @Valid BasicDetailsDTO basicDetailsDTO){

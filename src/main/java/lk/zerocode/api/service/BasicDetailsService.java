@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public interface BasicDetailsWithDto  {
+public interface BasicDetailsService {
 
     BasicDetailsDTO saveBasicDetails(BasicDetailsDTO basicDetailsDTO);
 
