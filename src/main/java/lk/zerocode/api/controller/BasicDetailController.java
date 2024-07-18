@@ -26,6 +26,7 @@ public class BasicDetailController {
     public ResponseEntity<BasicDetailsDTO> saveBasicDetails(@RequestBody BasicDetailsRequest basicDetailsRequest){
 
         BasicDetailsDTO basicDetailsDTO = modelMapper.map(basicDetailsRequest, BasicDetailsDTO.class);
+        basicDetailsService.saveBasicDetails(basicDetailsDTO);
         return new ResponseEntity<>(basicDetailsDTO, HttpStatus.CREATED);
     }
 

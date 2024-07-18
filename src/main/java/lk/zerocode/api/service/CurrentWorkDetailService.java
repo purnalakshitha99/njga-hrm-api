@@ -10,7 +10,7 @@ import lk.zerocode.api.exceptions.*;
 
 public interface CurrentWorkDetailService {
 
-    void saveWorkDetail(Long empId, CurrentWorkDetailsDTO currentWorkDetailsDTO)throws EmployeeNotFoundException, BranchNotFoundException, DepartmentNotFoundException, EmpCategoryNotFoundException;
+    CurrentWorkDetailsDTO saveWorkDetail(Long empId, CurrentWorkDetailsDTO currentWorkDetailsDTO)throws EmployeeNotFoundException, BranchNotFoundException, DepartmentNotFoundException, EmpCategoryNotFoundException;
     IdResponse deleteDetails(Long empId)throws EmployeeNotFoundException;
     CurrentWorkDetailResponse getDetails(Long empId)throws EmployeeNotFoundException;
 

@@ -1,7 +1,6 @@
 package lk.zerocode.api.service.impl;
 
 import lk.zerocode.api.controller.dto.CurrentWorkDetailsDTO;
-import lk.zerocode.api.controller.request.CurrentWorkDetailRequest;
 import lk.zerocode.api.controller.response.CurrentWorkDetailResponse;
 import lk.zerocode.api.controller.response.IdResponse;
 import lk.zerocode.api.exceptions.*;
@@ -11,9 +10,6 @@ import lk.zerocode.api.service.CurrentWorkDetailService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.EmptyStackException;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -27,32 +23,37 @@ public class CurrentWorkDetailServiceImpl implements CurrentWorkDetailService {
 
     private ModelMapper modelMapper;
 
-    public void saveWorkDetail(Long empId, CurrentWorkDetailsDTO currentWorkDetailsDTO) throws EmployeeNotFoundException,BranchNotFoundException ,DepartmentNotFoundException,EmpCategoryNotFoundException{
+    public CurrentWorkDetailsDTO saveWorkDetail(Long empId, CurrentWorkDetailsDTO currentWorkDetailsDTO) throws EmployeeNotFoundException,BranchNotFoundException ,DepartmentNotFoundException,EmpCategoryNotFoundException{
 
        Employee employee = employeeRepository.findById(empId).orElseThrow(
                () -> new EmployeeNotFoundException("Employee not found")
        );
-        System.out.println("category "+currentWorkDetailsDTO.getEmpCategory());
-        System.out.println("category type "+currentWorkDetailsDTO.getEmpCategoryType());
-        System.out.println("emp id "+empId);
-        System.out.println("branch code "+currentWorkDetailsDTO.getBranchCode());
-        System.out.println("employee code "+currentWorkDetailsDTO.getEmpCode());
+//        System.out.println("category "+currentWorkDetailsDTO.getEmpCategoryId());
+//        System.out.println("category type "+currentWorkDetailsDTO.getEmpCategoryId());
+//        System.out.println("emp id "+empId);
+//        System.out.println("branch code "+currentWorkDetailsDTO.getBranchId());
+//        System.out.println("employee code "+currentWorkDetailsDTO.getEmpCode());
 
-        Branch branch = branchesRepository.findBranchByBranchCode(currentWorkDetailsDTO.getBranchCode()).orElseThrow(
+        Branch branch = branchesRepository.findById(currentWorkDetailsDTO.getBranchId()).orElseThrow(
                 () -> new BranchNotFoundException("that branch not found")
         );
 
-        Department department = departmentRepository.findDepartmentByDepId(currentWorkDetailsDTO.getDepId()).orElseThrow(
+        Department department = departmentRepository.findById(currentWorkDetailsDTO.getDepId()).orElseThrow(
                 ()-> new DepartmentNotFoundException("that department not in the database")
         );
 
-        EmpCategory empCategory = empCategoryRepository.findEmpCategoriesByEmpCategoryAndEmpType(currentWorkDetailsDTO.getEmpCategory(),currentWorkDetailsDTO.getEmpCategoryType()).orElseThrow(
+        EmpCategory empCategory = empCategoryRepository.findById(currentWorkDetailsDTO.getEmpCategoryId()).orElseThrow(
                 ()-> new EmpCategoryNotFoundException("that employee category not having database")
         );
 
 
-        CurrentWorkDetail currentWorkDetail = modelMapper.map(currentWorkDetailsDTO,CurrentWorkDetail.class);
+//        CurrentWorkDetail currentWorkDetail = modelMapper.map(currentWorkDetailsDTO,CurrentWorkDetail.class);
 
+        CurrentWorkDetail currentWorkDetail = new CurrentWorkDetail();
+        currentWorkDetail.setWorkTelephone(currentWorkDetailsDTO.getWorkTelephone());
+        currentWorkDetail.setStartDate(currentWorkDetailsDTO.getStartDate());
+        currentWorkDetail.setDesignation(currentWorkDetailsDTO.getDesignation());
+        currentWorkDetail.setEmpCode(currentWorkDetailsDTO.getEmpCode());
         currentWorkDetail.setBranch(branch);
         currentWorkDetail.setEmployee(employee);
         currentWorkDetail.setDepartment(department);
@@ -60,7 +61,16 @@ public class CurrentWorkDetailServiceImpl implements CurrentWorkDetailService {
 
 
            currentWorkDetailRepository.save(currentWorkDetail);
+
+           return currentWorkDetailsDTO;
+
+//        return null;
+
     }
+
+
+
+
 
     public IdResponse deleteDetails(Long empId)throws EmployeeNotFoundException{
 

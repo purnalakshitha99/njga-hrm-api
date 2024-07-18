@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public interface BasicDetailsService {
 
-    BasicDetailsDTO saveBasicDetails(BasicDetailsDTO basicDetailsDTO);
+    void saveBasicDetails(BasicDetailsDTO basicDetailsDTO);
 
     List<BasicDetailsDTO> getAllDetails();
 
