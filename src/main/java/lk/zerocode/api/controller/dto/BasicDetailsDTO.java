@@ -13,32 +13,17 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class BasicDetailsDTO {
-    @NotBlank
+
     private String firstName;
-
-    @NotBlank
     private String lastName;
-
-    @Pattern(regexp = "[0-9]{9}[Vv]")
-    private String nic;
-
-    @Past
     private LocalDate dob;
-
-    @Email
-    private String email;
-
     private String address;
-
-    @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$")
     private String contactNumber;
-
-    @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$")
-    private String workTelephone;
-
+    private String email;
     private String imagePath;
+    private String nic;
+    private String workTelephone;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

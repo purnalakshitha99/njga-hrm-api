@@ -19,22 +19,14 @@ public class Employee {
     private Long id;
 
     private String firstName;
-
     private String lastName;
-
-    private String nic;
-
     private LocalDate dob;
-
-    private String email;
-
     private String address;
-
     private String contactNumber;
-
-    private String workTelephone;
-
+    private String email;
     private String imagePath;
+    private String nic;
+    private String workTelephone;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

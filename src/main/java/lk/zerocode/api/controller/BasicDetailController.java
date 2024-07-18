@@ -2,10 +2,13 @@ package lk.zerocode.api.controller;
 
 import jakarta.validation.Valid;
 import lk.zerocode.api.controller.dto.BasicDetailsDTO;
+import lk.zerocode.api.controller.request.BasicDetailsRequest;
+import lk.zerocode.api.controller.response.BasicDetailsResponse;
 import lk.zerocode.api.exceptions.EmployeeNotFoundException;
 import lk.zerocode.api.model.Employee;
 import lk.zerocode.api.service.BasicDetailsService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +20,13 @@ import java.util.List;
 public class BasicDetailController {
 
     private BasicDetailsService basicDetailsService;
+    private ModelMapper modelMapper;
 
-    @PostMapping(value = "/employees", headers = "VERSION=V1")
-    public ResponseEntity<BasicDetailsDTO> saveBasicDetails(@RequestBody @Valid BasicDetailsDTO basicDetailsDTO){
-        BasicDetailsDTO createdemployee = basicDetailsService.saveBasicDetails(basicDetailsDTO);
-        return new ResponseEntity<>(createdemployee, HttpStatus.CREATED);
+    @PostMapping(value = "/employees")
+    public ResponseEntity<BasicDetailsDTO> saveBasicDetails(@RequestBody BasicDetailsRequest basicDetailsRequest){
+
+        BasicDetailsDTO basicDetailsDTO = modelMapper.map(basicDetailsRequest, BasicDetailsDTO.class);
+        return new ResponseEntity<>(basicDetailsDTO, HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/employees", headers = "VERSION=V1")

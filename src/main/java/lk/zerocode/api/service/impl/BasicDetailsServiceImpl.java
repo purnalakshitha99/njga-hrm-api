@@ -22,8 +22,8 @@ public class BasicDetailsServiceImpl implements BasicDetailsService {
     private EmployeeRepository employeeRepository;
     @Override
     public BasicDetailsDTO saveBasicDetails(BasicDetailsDTO basicDetailsDTO) {
-        Employee employeeCreated = employeeRepository.save(modelMapper.map(basicDetailsDTO, Employee.class));
-        return modelMapper.map(employeeCreated, BasicDetailsDTO.class);
+        Employee employee = employeeRepository.save(modelMapper.map(basicDetailsDTO, Employee.class));
+        return modelMapper.map(employee, BasicDetailsDTO.class);
     }
 
     @Override

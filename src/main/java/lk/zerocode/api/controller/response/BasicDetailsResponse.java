@@ -11,16 +11,16 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class BasicDetailsResponse {
-    private String emp_id;
-    private String first_name;
-    private String last_name;
+
+    private String firstName;
+    private String lastName;
     private LocalDate dob;
     private String address;
-    private String contact_number;
+    private String contactNumber;
     private String email;
-    private String image_path;
+    private String imagePath;
     private String nic;
-    private String work_telephone;
+    private String workTelephone;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

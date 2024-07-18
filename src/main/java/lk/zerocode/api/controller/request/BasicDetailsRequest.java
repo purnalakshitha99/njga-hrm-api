@@ -1,5 +1,6 @@
 package lk.zerocode.api.controller.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lk.zerocode.api.model.Gender;
@@ -11,15 +12,16 @@ import java.time.LocalDate;
 public class BasicDetailsRequest {
 
     private Long id;
-    private String first_name;
-    private String last_name;
+
+    private String firstName;
+    private String lastName;
     private LocalDate dob;
     private String address;
-    private String contact_number;
+    private String contactNumber;
     private String email;
-    private String image_path;
+    private String imagePath;
     private String nic;
-    private String work_telephone;
+    private String workTelephone;
 
     @Enumerated(EnumType.STRING)
     private Gender gender;
