@@ -1,0 +1,49 @@
+.center-card {
+  width: 300%;
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-left: 0%;
+  margin-right: 0%;
+}
+
+.nav-align-top {
+  margin-top: 20px; /* Adjust the top margin as needed */
+}
+
+
+
+h1 {
+  text-indent: 24px; /* Adjust the value as needed */
+  /*font-size: 50px; !* Set your desired font size *!*/
+  /*font-weight: bold; !* Make the text bold *!*/
+}
+
+.userProfile {
+  grid-area: userProfile;
+}
+
+.bg-light-purple {
+  /*background-color: #f3e8ff; !* Light purple color, you can use any color code you prefer *!*/
+  background-color: #fdfbff;
+}
+
+.text-ash {
+  color: #5a5f6d; /* Ash color, you can use any color code you prefer */
+}
+
+.bg-purple {
+  background-color: #fdfbff;
+}
+
+#user{
+  margin-left: 63px;
+}
+
+#card12{
+  margin-top: -37px;
+}
+.spaceuser{
+  margin-right: 10px;
+}

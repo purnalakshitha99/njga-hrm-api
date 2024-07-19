@@ -1,0 +1,27 @@
+.container {
+    max-width: 1000px; /* Adjust the max-width as needed */
+  }
+  
+  .center-card {
+    width: 100%;
+    
+  }
+  
+  .card {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .nav-align-top {
+    margin-top: 20px; /* Adjust the top margin as needed */
+  }
+
+ .addmore{
+  margin-left: 550px;
+ }
+
+ 
+*{
+  font-weight: 400;
+  font-size: 18px;
+}
+

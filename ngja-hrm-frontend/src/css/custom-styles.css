@@ -1,0 +1,68 @@
+.badge{
+    padding: 10px 15px!important;
+    border-radius: 50px!important;
+}
+
+.badges-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.border-bottom-0 td{
+    border-bottom: 0!important;
+}
+
+.big-label{
+    padding: 15px 25px!important;
+    font-size: 18px!important;
+}
+
+.label-button{
+    cursor: pointer;
+}
+
+.fs-16{
+    font-size: 16px!important;
+}
+
+.pl-50{
+    padding-left: 50px!important;
+}
+
+.custom-close{
+    right: 0!important;
+    top: -1.25rem!important;
+}
+
+.mw-30{
+    max-width: 30rem!important;
+}
+
+.ptb-30{
+    padding: 30px 0!important;
+}
+
+.g10{
+    gap: 10px!important;
+}
+
+.wh15{
+    width: 1.5em!important;
+    height: 1.5em!important;
+}
+
+.w60{
+    width: 60%!important;
+}
+
+.w30{
+    width: 30%!important;
+}
+
+.mlb-25{
+    margin-left: 25px!important;
+    margin-bottom: 25px!important;
+}

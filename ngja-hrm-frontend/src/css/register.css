@@ -1,0 +1,25 @@
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.nav-align-top {
+  margin-top: 20px; 
+}
+
+.addmore {
+  margin-left: 550px;
+}
+
+
+
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-link:focus {
+  background-color: #696cff; 
+  border-color: #696cff; 
+  color: white !important; 
+}
+
+#form-container {
+  max-height: calc(100% - 3rem);
+  overflow-y: auto;
+}

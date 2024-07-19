@@ -1,0 +1,33 @@
+#leavesTable {
+  margin-top: 1%;
+}
+
+#search {
+  margin-top: -20px;
+}
+
+#filter {
+  width: 20%;
+  display: inline;
+}
+
+#filter2 {
+  width: 20%;
+  display: inline;
+}
+#filter3 {
+  width: 20%;
+  display: inline;
+}
+
+#allFilters {
+  margin-top: 1%;
+  margin-left: -25px;
+  z-index: 1;
+}
+
+.filters {
+  display: flex;
+  justify-content: start;
+  margin-right: 300px;
+}

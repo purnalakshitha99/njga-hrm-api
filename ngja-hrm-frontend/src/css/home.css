@@ -1,0 +1,74 @@
+/* Update the CSS in your home.css file */
+
+.content {
+  padding: 10px;
+  margin-right: 70px; /* Adjust this value to change the gap between sidebar and navbar */
+}
+
+/* Move the section to the right when the sidebar is open */
+.sidebar-open .home {
+  margin-right: 300px; /* Adjust based on the width of your sidebar */
+}
+
+
+
+/* CSS in sidebar.css */
+
+/* Adjust sidebar width for smaller screens */
+@media (max-width: 768px) {
+  nav {
+    width: 200px;
+  }
+}
+
+/* Adjust content margin for smaller screens */
+@media (max-width: 992px) {
+  .content {
+    margin-right: 0;
+  }
+}
+
+/* Adjust layout for smaller screens */
+@media (max-width: 576px) {
+  .layout-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .home {
+    margin-top: 20px;
+  }
+}
+
+/* CSS in sidebar.css */
+
+/* Ensure content fits within the container */
+.layout-wrapper,
+.layout-container {
+  width: 100%; /* Ensure full width */
+  overflow-x: hidden;
+}
+
+/* Adjust sidebar width for smaller screens */
+@media (max-width: 768px) {
+  nav {
+    width: 200px;
+  }
+}
+
+/* Adjust content margin for smaller screens */
+@media (max-width: 992px) {
+  .content {
+    margin-right: 0;
+  }
+}
+
+/* Adjust layout for smaller screens */
+@media (max-width: 576px) {
+  .layout-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .home {
+    margin-top: 20px;
+  }
+}

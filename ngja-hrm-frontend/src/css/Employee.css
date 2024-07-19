@@ -1,0 +1,40 @@
+#search {
+  margin-top: -20px;
+}
+#employees {
+  margin-top: 15px;
+}
+#addBtn {
+  margin-left: 85%;
+  margin-top: 20px;
+}
+
+#filter {
+  width: 20%;
+  display: inline;
+  margin-left: -2.5%;
+}
+#filter2 {
+  width: 20%;
+  display: inline;
+}
+#filter3 {
+  width: 20%;
+  display: inline;
+}
+
+#allFilters {
+  position: absolute;
+  top: 32.5%;
+  display: inline;
+}
+
+#emphead {
+  text-align: start;
+}
+
+.pegination-custom {
+  display: flex;
+  justify-content: end;
+  margin-top: 2%;
+}

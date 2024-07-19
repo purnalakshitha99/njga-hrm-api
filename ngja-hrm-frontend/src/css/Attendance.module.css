@@ -1,0 +1,19 @@
+#attendanceSearch {
+  margin-top: -20px;
+}
+
+#personal {
+  margin-top: 20px;
+}
+#userId {
+  text-align: center;
+}
+
+#date {
+  margin-top: 25%;
+}
+
+#pagination {
+  margin-top: 2%;
+  margin-left: 74%;
+}
